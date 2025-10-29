@@ -1,4 +1,4 @@
-# 🌾 Karpós - Plataforma de serviço de agricultura de precisão
+# 🌾 Karpós - Sistema de Gestão Rural
 
 **Disciplina:** Projeto Integrador IV  
 **Orientadora:** Profa. Dra. Renata Antônia Tadeu Arantes
@@ -95,37 +95,34 @@ Funcionalidades que podem ser desenvolvidas futuramente:
 
 ---
 
-### 2.2 Implementação do Servidor Java
+### 2.2 Implementação do Servidor Java (Socket)
 
 **Linguagem:** Java 17+ (LTS)
 
-**Framework:** Spring Boot 3.2.x
+**Tecnologia:** Java Socket Programming
 
 **Justificativa:**
-- Requisito obrigatório da disciplina
-- Framework robusto e amplamente utilizado para APIs REST
-- Facilita integração com MongoDB através do Spring Data
-- Suporte nativo à segurança, validação e configuração
+- Requisito obrigatório da disciplina (servidor em Java)
+- Comunicação em tempo real entre cliente e servidor
+- Controle total sobre o protocolo de comunicação
+- Leve e sem necessidade de frameworks pesados
 
-**Bibliotecas Escolhidas:**
+**Bibliotecas Java Utilizadas:**
 
 | Biblioteca | Finalidade |
 |------------|------------|
-| `spring-boot-starter-web` | Criação de API REST |
-| `spring-boot-starter-data-mongodb` | Integração Java ↔ MongoDB |
-| `spring-boot-starter-security` | Autenticação e autorização |
-| `spring-boot-starter-validation` | Validação de dados de entrada |
-| `spring-boot-starter-mail` | Envio de e-mails (recuperação de senha) |
-| `jjwt` (Java JWT) | Geração e validação de tokens de autenticação |
-| `bcrypt` | Hash de senhas com segurança |
+| `java.net.ServerSocket` | Criação do servidor socket |
+| `java.net.Socket` | Conexões cliente-servidor |
+| `org.mongodb.driver` | Driver oficial MongoDB para Java |
+| `javax.crypto` | Criptografia de senhas (BCrypt) |
+| `java.util.concurrent` | Gerenciamento de threads (múltiplos clientes) |
 
-**Arquitetura do Backend:**
-- **Controllers:** Recebem requisições HTTP e retornam respostas JSON
-- **Services:** Contêm a lógica de negócio
-- **Repositories:** Fazem acesso ao MongoDB usando Spring Data
-- **Models:** Representam as entidades (User, Atividade, Custo)
-- **DTOs:** Transferem dados entre camadas
-- **Security:** Gerenciam autenticação JWT e autorização
+**Arquitetura do Servidor Java:**
+- **ServerSocket:** Aguarda conexões na porta 8080
+- **ClientHandler:** Thread dedicada para cada cliente conectado
+- **RequestParser:** Interpreta comandos recebidos (ex: "LOGIN", "REGISTER", "ADD_ATIVIDADE")
+- **MongoDB Connection:** Gerencia conexão com banco de dados
+- **Response Builder:** Formata respostas em JSON para
 
 ---
 
