@@ -1,7 +1,4 @@
-# 🌾 Karpós - Sistema de Gestão Rural
-
-**Disciplina:** Projeto Integrador IV  
-**Orientadora:** Profa. Dra. Renata Antônia Tadeu Arantes
+# 🌾 Karpós - Plataforma de serviço de agricultura de precisão
 
 ## 👥 Equipe
 
