@@ -1,3 +1,6 @@
+package servidor;
+
+import comum.*;
 import java.net.*;
 import java.util.*;
 

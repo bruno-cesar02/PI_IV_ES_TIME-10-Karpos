@@ -1,3 +1,7 @@
+package servidor;
+
+import comum.*;
+
 import java.util.regex.Pattern;
 
 public final class ValidarCadastro {

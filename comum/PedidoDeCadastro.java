@@ -1,3 +1,5 @@
+package comum;
+
 public class PedidoDeCadastro extends Comunicado {
     private static final long serialVersionUID = 1L;
 

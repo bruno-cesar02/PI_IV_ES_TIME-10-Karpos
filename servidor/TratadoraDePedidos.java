@@ -1,3 +1,7 @@
+package servidor;
+
+import comum.*;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 

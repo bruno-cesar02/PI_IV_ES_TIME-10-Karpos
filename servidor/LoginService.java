@@ -1,3 +1,6 @@
+package servidor;
+
+import comum.*;
 import java.util.Optional;
 
 public class LoginService {

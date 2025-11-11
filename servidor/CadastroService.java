@@ -1,3 +1,7 @@
+package servidor;
+
+import comum.*;
+
 public class CadastroService {
     private final RepositorioClientes repo;
 

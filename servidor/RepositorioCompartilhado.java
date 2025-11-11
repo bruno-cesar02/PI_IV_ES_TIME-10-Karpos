@@ -1,3 +1,7 @@
+package servidor;
+
+import comum.*;
+
 public final class RepositorioCompartilhado {
 
     // Repositório único, usado por todas as threads do servidor

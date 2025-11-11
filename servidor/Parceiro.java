@@ -1,3 +1,7 @@
+package servidor;
+
+import comum.*;
+
 import com.sun.jdi.event.ExceptionEvent;
 
 import java.io.IOException;

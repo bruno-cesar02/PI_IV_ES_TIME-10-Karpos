@@ -1,3 +1,5 @@
+package comum;
+
 public class RespostaErro extends Comunicado {
     private static final long serialVersionUID = 1L;
     public final String erro;
