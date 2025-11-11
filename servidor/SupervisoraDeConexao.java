@@ -1,132 +1,71 @@
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.ArrayList;
 
 public class SupervisoraDeConexao extends Thread
 {
     private Parceiro usuario;
-    private Socket conexao;
-    private ArrayList<Parceiro> usuarios;
+    private final Socket conexao;
+    private final ArrayList<Parceiro> usuarios;
 
-    public SupervisoraDeConexao
-            (Socket conexao, ArrayList<Parceiro> usuarios)
-            throws Exception
+    public SupervisoraDeConexao(Socket conexao, ArrayList<Parceiro> usuarios) throws Exception
     {
-        if (conexao==null)
-            throw new Exception ("Conexao ausente");
-
-        if (usuarios==null)
-            throw new Exception ("Usuarios ausentes");
+        if (conexao == null)
+            throw new Exception("Conexao ausente");
+        if (usuarios == null)
+            throw new Exception("Usuarios ausentes");
 
         this.conexao  = conexao;
         this.usuarios = usuarios;
     }
 
-    public void run ()
+    @Override
+    public void run()
     {
-
-        ObjectOutputStream transmissor;
-        try
-        {
-            transmissor =
-                    new ObjectOutputStream(
-                            this.conexao.getOutputStream());
-        }
-        catch (Exception erro)
-        {
-            return;
-        }
-
-        ObjectInputStream receptor=null;
-        try
-        {
-            receptor=
-                    new ObjectInputStream(
-                            this.conexao.getInputStream());
-        }
-        catch (Exception err0)
-        {
-            try
-            {
-                transmissor.close();
-            }
-            catch (Exception falha)
-            {} // so tentando fechar antes de acabar a thread
-
-            return;
-        }
+        ObjectOutputStream transmissor = null;
+        ObjectInputStream  receptor    = null;
 
         try
         {
-            this.usuario =
-                    new Parceiro (this.conexao,
-                            receptor,
-                            transmissor);
+            // Cria streams nesta ordem (ObjectOutputStream primeiro evita deadlock)
+            transmissor = new ObjectOutputStream(this.conexao.getOutputStream());
+            receptor    = new ObjectInputStream (this.conexao.getInputStream());
+
+            // Registra o parceiro desta conexão
+            this.usuario = new Parceiro(this.conexao, receptor, transmissor);
+            synchronized (this.usuarios) {
+                this.usuarios.add(this.usuario);
+            }
+
+            // >>> Integração com AUTENTICAÇÃO <<<
+            // Sobe a tratadora que cuida de PedidoDeCadastro/PedidoDeLogin.
+            // Ela ficará lendo do mesmo receptor e respondendo pelo transmissor.
+            Thread tratadora = new Thread(
+                    new TratadoraDePedidos(receptor, transmissor, RepositorioCompartilhado.INSTANCE),
+                    "auth-" + this.conexao.getPort()
+            );
+            tratadora.setDaemon(true);
+            tratadora.start();
+
+
+            tratadora.join();
+
         }
-        catch (Exception erro)
-        {}
-
-        try
+        catch (Exception e)
         {
-            synchronized (this.usuarios)
-            {
-                this.usuarios.add (this.usuario);
-            }
-
-
-            for(;;)
-            {
-                Comunicado comunicado = this.usuario.envie ();
-
-                if (comunicado==null)
-                    return;
-                else if (comunicado instanceof PedidoDeOperacao)
-                {
-                    PedidoDeOperacao pedidoDeOperacao = (PedidoDeOperacao)comunicado;
-
-                    switch (pedidoDeOperacao.getOperacao())
-                    {
-                        case '+':
-                            this.valor += pedidoDeOperacao.getValor();
-                            break;
-
-                        case '-':
-                            this.valor -= pedidoDeOperacao.getValor();
-                            break;
-
-                        case '*':
-                            this.valor *= pedidoDeOperacao.getValor();
-                            break;
-
-                        case '/':
-                            this.valor /= pedidoDeOperacao.getValor();
-                    }
-                }
-                else if (comunicado instanceof PedidoDeResultado)
-                {
-                    this.usuario.receba (new Resultado (this.valor));
-                }
-                else if (comunicado instanceof PedidoParaSair)
-                {
-                    synchronized (this.usuarios)
-                    {
-                        this.usuarios.remove (this.usuario);
-                    }
-                    this.usuario.adeus();
-                }
-            }
+            // (opcional) logar erro
         }
-        catch (Exception erro)
+        finally
         {
-            try
-            {
-                transmissor.close ();
-                receptor   .close ();
+            // Tira o parceiro da lista e encerra recursos
+            synchronized (this.usuarios) {
+                if (this.usuario != null)
+                    this.usuarios.remove(this.usuario);
             }
-            catch (Exception falha)
-            {} // so tentando fechar antes de acabar a thread
-
-            return;
+            try { if (transmissor != null) transmissor.close(); } catch (Exception ignore) {}
+            try { if (receptor    != null) receptor.close();    } catch (Exception ignore) {}
+            try { this.conexao.close(); } catch (Exception ignore) {}
         }
     }
 }
