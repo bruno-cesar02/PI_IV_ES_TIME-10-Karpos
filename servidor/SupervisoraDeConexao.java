@@ -56,6 +56,7 @@ public class SupervisoraDeConexao extends Thread
             tratadora.join();
 
         }
+<<<<<<< HEAD
         catch (Exception e)
         {
             // (opcional) logar erro
@@ -71,5 +72,9 @@ public class SupervisoraDeConexao extends Thread
             try { if (receptor    != null) receptor.close();    } catch (Exception ignore) {}
             try { this.conexao.close(); } catch (Exception ignore) {}
         }
+=======
+        catch (Exception erro)
+        {}
+>>>>>>> 6e11dff (conecção banco Mongo)
     }
 }
