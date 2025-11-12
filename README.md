@@ -247,7 +247,7 @@ Funcionalidades que podem ser desenvolvidas futuramente:
 
 ## 3. Prototipagem Inicial
 
-**Ferramenta:** Figma
+**Ferramenta:** Canva
 
 **Link do protótipo:** [Será adicionado]
 
