@@ -25,16 +25,14 @@ public class SupervisoraDeConexao extends Thread
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         ObjectOutputStream transmissor = null;
-        ObjectInputStream  receptor    = null;
+        ObjectInputStream receptor = null;
 
-        try
-        {
+        try {
             // Cria streams nesta ordem (ObjectOutputStream primeiro evita deadlock)
             transmissor = new ObjectOutputStream(this.conexao.getOutputStream());
-            receptor    = new ObjectInputStream (this.conexao.getInputStream());
+            receptor = new ObjectInputStream(this.conexao.getInputStream());
 
             // Registra o parceiro desta conexão
             this.usuario = new Parceiro(this.conexao, receptor, transmissor);
@@ -56,8 +54,7 @@ public class SupervisoraDeConexao extends Thread
             tratadora.join();
 
         }
-<<<<<<< HEAD
-        catch (Exception e)
+        catch(Exception e)
         {
             // (opcional) logar erro
         }
@@ -68,13 +65,18 @@ public class SupervisoraDeConexao extends Thread
                 if (this.usuario != null)
                     this.usuarios.remove(this.usuario);
             }
-            try { if (transmissor != null) transmissor.close(); } catch (Exception ignore) {}
-            try { if (receptor    != null) receptor.close();    } catch (Exception ignore) {}
-            try { this.conexao.close(); } catch (Exception ignore) {}
+            try {
+                if (transmissor != null) transmissor.close();
+            } catch (Exception ignore) {
+            }
+            try {
+                if (receptor != null) receptor.close();
+            } catch (Exception ignore) {
+            }
+            try {
+                this.conexao.close();
+            } catch (Exception ignore) {
+            }
         }
-=======
-        catch (Exception erro)
-        {}
->>>>>>> 6e11dff (conecção banco Mongo)
     }
 }
