@@ -1,3 +1,5 @@
+package comum;
+
 import java.io.Serializable;
 import java.util.Objects;
 
