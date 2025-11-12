@@ -1,13 +1,13 @@
-package dbConection;
+package servidor.dbConection;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 public class DBUse {
+    public static final MongoDatabase mongoDatabase = DBConection.conectarMongoDB();
     public static MongoCollection<Document> makeCollection(String collectionName) {
 
-        MongoDatabase mongoDatabase = DBConection.conectarMongoDB();
         assert mongoDatabase != null;
 
         MongoCollection<Document> collection = mongoDatabase.getCollection(collectionName);

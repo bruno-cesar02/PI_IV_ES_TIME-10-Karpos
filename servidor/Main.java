@@ -1,6 +1,6 @@
 
 import java.util.Scanner;
-import dbConection.*;
+import servidor.dbConection.*;
 
 public class Main {
     public static void main(String[] args) {

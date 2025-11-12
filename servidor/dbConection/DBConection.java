@@ -1,4 +1,4 @@
-package dbConection;
+package servidor.dbConection;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;

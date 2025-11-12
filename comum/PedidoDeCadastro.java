@@ -25,4 +25,31 @@ public class PedidoDeCadastro extends Comunicado {
         this.hectares = hectares;
         this.cultura = cultura;
     }
+    public String getNomeCompleto() {
+        return nomeCompleto;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public String getSenha() {
+        return senha;
+    }
+    public String getTelefone() {
+        return telefone;
+    }
+    public String getCpfCnpj() {
+        return cpfCnpj;
+    }
+    public String getNomeEmpresa() {
+        return nomeEmpresa;
+    }
+    public String getEndereco() {
+        return endereco;
+    }
+    public double getHectares() {
+        return hectares;
+    }
+    public String getCultura() {
+        return cultura;
+    }
 }

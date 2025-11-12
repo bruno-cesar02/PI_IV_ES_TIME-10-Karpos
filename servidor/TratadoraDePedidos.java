@@ -24,7 +24,7 @@ public class TratadoraDePedidos implements Runnable {
 
                 if (msg instanceof PedidoDeCadastro pc) {
                     try {
-                        var cli = cadastro.cadastrar(
+                        cadastro.cadastrar(
                                 pc.nomeCompleto, pc.email, pc.senha,
                                 pc.telefone, pc.cpfCnpj, pc.nomeEmpresa,
                                 pc.endereco, pc.hectares, pc.cultura
@@ -32,17 +32,17 @@ public class TratadoraDePedidos implements Runnable {
 
                         // >>> LOG NO SERVIDOR <<<
                         System.out.println("\n=== Novo Cadastro Recebido ===");
-                        System.out.println("Nome: " + cli.getNomeCompleto());
-                        System.out.println("E-mail: " + cli.getEmail());
-                        System.out.println("Telefone: " + cli.getTelefone());
-                        System.out.println("CPF/CNPJ: " + cli.getDocumento());
-                        System.out.println("Empresa/Propriedade: " + cli.getNomeEmpresa());
-                        System.out.println("Endereço: " + cli.getEndereco());
-                        System.out.println("Tamanho (ha): " + cli.getTamanhoHectares());
-                        System.out.println("Cultura: " + cli.getCultura());
+                        System.out.println("Nome: " + pc.getNomeCompleto());
+                        System.out.println("E-mail: " + pc.getEmail());
+                        System.out.println("Telefone: " + pc.getTelefone());
+                        System.out.println("CPF/CNPJ: " + pc.getCpfCnpj());
+                        System.out.println("Empresa/Propriedade: " + pc.getNomeEmpresa());
+                        System.out.println("Endereço: " + pc.getEndereco());
+                        System.out.println("Tamanho (ha): " + pc.getHectares());
+                        System.out.println("Cultura: " + pc.getCultura());
                         System.out.println("===============================\n");
 
-                        out.writeObject(new RespostaOk("Cadastro ok: " + cli.getEmail()));
+                        out.writeObject(new RespostaOk("Cadastro ok: " + pc.getEmail()));
                         out.flush();
                     } catch (Exception e) {
                         out.writeObject(new RespostaErro(e.getMessage()));

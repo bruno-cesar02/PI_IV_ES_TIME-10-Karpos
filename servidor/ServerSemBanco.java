@@ -1,6 +1,7 @@
 package servidor;
 
 import comum.*;
+import servidor.dbConection.DBConection;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,6 +14,7 @@ public class ServerSemBanco {
         RepositorioClientes repo = new RepositorioClientesEmMemoria(); // apenas memória
         try (ServerSocket servidor = new ServerSocket(porta)) {
             System.out.println("Servidor ouvindo na porta " + porta);
+            DBConection.conectarMongoDB();
             while (true) {
                 Socket s = servidor.accept();
                 ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
