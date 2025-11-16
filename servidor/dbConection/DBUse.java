@@ -20,7 +20,7 @@ public class DBUse {
         MongoCollection<Document> collection = DBUse.makeCollection("usuario");
         Document document = new Document("nome", nome).append("email", email).append("senha", senha);
 
-        Document filtroBusca = new Document("email", email).append("senha", senha);
+        Document filtroBusca = new Document("email", email);
 
         Document usuarioExistente = collection.find(filtroBusca).first();
 
