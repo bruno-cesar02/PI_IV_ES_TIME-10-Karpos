@@ -5,19 +5,21 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 public class DBUse {
-    public static final MongoDatabase mongoDatabase = DBConection.conectarMongoDB();
-    public static MongoCollection<Document> makeCollection(String collectionName) {
+    public static MongoCollection<Document> makeCollection(String collectionName , String dataBaseName) {
+
+        MongoDatabase mongoDatabase = DBConection.conectarMongoDB(dataBaseName);
 
         assert mongoDatabase != null;
 
         MongoCollection<Document> collection = mongoDatabase.getCollection(collectionName);
+
         assert collection != null;
 
         return collection;
     }
     public static void inserirUsuario (String nome, String email, String senha){
 
-        MongoCollection<Document> collection = DBUse.makeCollection("usuario");
+        MongoCollection<Document> collection = DBUse.makeCollection("usuario" , "Karpos-PI");
         Document document = new Document("nome", nome).append("email", email).append("senha", senha);
 
         Document filtroBusca = new Document("email", email);
@@ -32,5 +34,43 @@ public class DBUse {
             return;
         }
         System.out.println("Usuário já cadastrado, não pode cadastrar dois");
+    }
+    public static Document loginUsuario (String email, String senha){
+        MongoCollection<Document> collection = DBUse.makeCollection("usuario" ,  "Karpos-PI");
+
+
+        Document filtroBusca = new Document("email", email);
+
+        Document usuarioExistente = collection.find(filtroBusca).first();
+
+        if (usuarioExistente != null){
+
+            String nome = usuarioExistente.getString("nome");
+            String emailBD = usuarioExistente.getString("email");
+            String senhaBD = usuarioExistente.getString("senha");
+            String telefoneBD = usuarioExistente.getString("telefone");
+            String documentoBD = usuarioExistente.getString("documento");
+            String nomeEmpresaBD = usuarioExistente.getString("nomeEmpresa");
+            String enderecoBD = usuarioExistente.getString("endereco");
+            Double tamanhoHectaresBD = usuarioExistente.getDouble("tamanhoHectares");
+            String categoriaBD = usuarioExistente.getString("cultura");
+
+
+            if (emailBD.equals(email)){
+
+                System.out.println("usuário encontrado no Banco de Dados");
+
+                Document document = new Document("nome",nome).append("email",emailBD).append("senha",senhaBD).append("telefone",telefoneBD).append("documento",documentoBD).append("nomeEmpresa",nomeEmpresaBD).append("endereco",enderecoBD).append("tamanhoHectares",tamanhoHectaresBD).append("categoria",categoriaBD);
+
+                return document;
+            }
+            else {
+
+                System.out.println("Email ou Senha incorretos");
+
+                return null;
+            }
+        }
+        return  null;
     }
 }

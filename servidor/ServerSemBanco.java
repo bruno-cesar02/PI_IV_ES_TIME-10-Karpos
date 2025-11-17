@@ -14,7 +14,7 @@ public class ServerSemBanco {
         RepositorioClientes repo = new RepositorioClientesEmMemoria(); // apenas memória
         try (ServerSocket servidor = new ServerSocket(porta)) {
             System.out.println("Servidor ouvindo na porta " + porta);
-            DBConection.conectarMongoDB();
+            DBConection.conectarMongoDB("Karpos-PI");
             while (true) {
                 Socket s = servidor.accept();
                 ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());

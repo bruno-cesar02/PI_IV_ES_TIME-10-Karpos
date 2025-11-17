@@ -1,6 +1,9 @@
 package servidor;
 
 import comum.*;
+import org.bson.Document;
+import servidor.dbConection.DBUse;
+
 import java.util.Optional;
 
 public class LoginService {
@@ -8,9 +11,17 @@ public class LoginService {
     public LoginService(RepositorioClientes repo){ this.repo = repo; }
 
     public Cliente autenticar(String email, String senha) {
-        Optional<Cliente> o = repo.buscarPorEmail(email);
-        if (o.isEmpty()) throw new IllegalArgumentException("Usuário não encontrado");
-        Cliente c = o.get();
+        Document b = DBUse.loginUsuario(email, senha);
+        if (b == null) throw new IllegalArgumentException("Usuário não encontrado");
+        Cliente c = new Cliente(b.getString("nome"),
+                                b.getString("email"),
+                                b.getString("senha"),
+                                b.getString("telefone"),
+                                b.getString("documento"),
+                                b.getString("nomeEmpresa"),
+                                b.getString("endereço"),
+                                b.getDouble("tamanhoHectares"),
+                                b.getString("cultura") );
         if (!HashSenha.confere(senha, c.getHashSenha())) throw new IllegalArgumentException("Senha inválida");
         return c;
     }
