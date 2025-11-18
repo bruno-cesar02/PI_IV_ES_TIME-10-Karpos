@@ -17,10 +17,10 @@ public class DBUse {
 
         return collection;
     }
-    public static void inserirUsuario (String nome, String email, String senha){
+    public static void inserirUsuario (String nome, String email, String senha , String telefone , String documento , String nomeEmpresa, String endereco, double tamanhoHectares, String categoria){
 
         MongoCollection<Document> collection = DBUse.makeCollection("usuario" , "Karpos-PI");
-        Document document = new Document("nome", nome).append("email", email).append("senha", senha);
+        Document document = new Document("nome",nome).append("email",email).append("senha",senha).append("telefone",telefone).append("documento",documento).append("nomeEmpresa",nomeEmpresa).append("endereco",endereco).append("tamanhoHectares",tamanhoHectares).append("categoria",categoria);
 
         Document filtroBusca = new Document("email", email);
 
@@ -52,17 +52,15 @@ public class DBUse {
             String documentoBD = usuarioExistente.getString("documento");
             String nomeEmpresaBD = usuarioExistente.getString("nomeEmpresa");
             String enderecoBD = usuarioExistente.getString("endereco");
-            Double tamanhoHectaresBD = usuarioExistente.getDouble("tamanhoHectares");
-            String categoriaBD = usuarioExistente.getString("cultura");
+            double tamanhoHectaresBD = usuarioExistente.getDouble("tamanhoHectares");
+            String categoriaBD = usuarioExistente.getString("categoria");
 
 
             if (emailBD.equals(email)){
 
                 System.out.println("usuário encontrado no Banco de Dados");
 
-                Document document = new Document("nome",nome).append("email",emailBD).append("senha",senhaBD).append("telefone",telefoneBD).append("documento",documentoBD).append("nomeEmpresa",nomeEmpresaBD).append("endereco",enderecoBD).append("tamanhoHectares",tamanhoHectaresBD).append("categoria",categoriaBD);
-
-                return document;
+                return new Document("nome",nome).append("email",emailBD).append("senha",senhaBD).append("telefone",telefoneBD).append("documento",documentoBD).append("nomeEmpresa",nomeEmpresaBD).append("endereco",enderecoBD).append("tamanhoHectares",tamanhoHectaresBD).append("categoria",categoriaBD);
             }
             else {
 

@@ -13,7 +13,7 @@ public class ClienteTeste {
 
             // 1) Cadastro
             out.writeObject(new PedidoDeCadastro(
-                    "Maria Silva", "maria@karpos.com", "Secreta#123",
+                    "Maria Silva", "mariateste@karpos.com", "Secreta#123",
                     "(19) 99999-0000", "123.456.789-09",
                     "Sítio Alecrim", "Estrada Rural, 100", 12.5, "Café"
             ));
@@ -21,7 +21,7 @@ public class ClienteTeste {
             System.out.println(in.readObject()); // RespostaOk ou RespostaErro
 
             // 2) Login
-            out.writeObject(new PedidoDeLogin("maria@karpos.com", "Secreta#123"));
+            out.writeObject(new PedidoDeLogin("mariateste@karpos.com", "Secreta#123"));
             out.flush();
             Object resp = in.readObject();
             System.out.println(resp); // ClienteLogado ou RespostaErro

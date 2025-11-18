@@ -14,11 +14,11 @@ public class DBConection {
                 mongoClient = MongoClients.create(CONNECTION_STRING);
             }
 
-            MongoDatabase database = mongoClient.getDatabase(dataBaseName);
+            MongoDatabase dataBase = mongoClient.getDatabase(dataBaseName);
 
             System.out.println("Conexão MongoDB estabelecida com sucesso!");
 
-            return database;
+            return dataBase;
         } catch (Exception e) {
             System.err.println("Erro ao conectar ou usar o MongoDB: " + e.getMessage());
             e.printStackTrace();

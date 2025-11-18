@@ -14,6 +14,6 @@ public class CadastroService {
         if (repo.existePorEmail(email)) throw new IllegalArgumentException("E-mail já cadastrado");
         String hash = HashSenha.gerar(senhaPura);
         String docNum = ValidarCadastro.normalizarDoc(doc);
-        DBUse.inserirUsuario(nome , email , hash);
+        DBUse.inserirUsuario(nome , email , hash , tel , doc , empresa, endereco, ha, cultura);
     }
 }
