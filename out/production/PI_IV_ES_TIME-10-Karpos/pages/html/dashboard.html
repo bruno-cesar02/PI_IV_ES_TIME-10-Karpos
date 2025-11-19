@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<link>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karpos - Dashboard</title>
+    <link rel="stylesheet" href="/pages/css/dashboard.css"></link>
+</head>
+<body>
+    <div class="container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="/pages/img/LogoFundoTransparenteKarpos.png" alt="Karpos Logo" class="logo-img">
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">MENU</div>
+                <div class="menu-item active">
+                    <span class="menu-icon">⊞</span>
+                    <span>DASHBOARD</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>ANÁLISES</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">🕐</span>
+                    <span>HISTÓRICO</span>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Geral</div>
+                <div class="menu-item">
+                    <span class="menu-icon">ℹ</span>
+                    <span>AJUDA</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">👤</span>
+                    <span>PERFIL</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">↪</span>
+                    <span>LOGOUT</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- TOPBAR arredondada -->
+            <div class="topbar">
+                <div class="header-profile">
+                    <div class="profile-avatar">
+                        <img src="imgs/usuario.png" alt="Carlos Pereira">
+                    </div>
+                    <div class="profile-info">
+                        <h3>Carlos Pereira</h3>
+                        <p>Fazenda Sta Cândida</p>
+                    </div>
+                </div>
+                <div class="notification-icon">🔔</div>
+            </div>
+
+            <!-- PAINEL PRINCIPAL arredondado -->
+            <section class="dashboard-panel">
+                <div class="panel-header">
+                    <div class="page-title">
+                        <h1>Dashboard</h1>
+                        <p class="subtitle">Entenda, organize e administre sua lavoura com facilidade</p>
+                    </div>
+
+                    <div class="panel-actions">
+                        <button class="btn btn-primary">Novo Registro</button>
+                        <button class="btn btn-outline">Novos Custos</button>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="left-col">
+                        <div class="registros-card rounded-card">
+                            <div class="registros-header">
+                                <h2 class="registros-title">Últimos<br>Registros</h2>
+                                <button class="nav-button">‹</button>
+                            </div>
+                            <ol class="registros-list">
+                                <li>Preparação do Solo</li>
+                                <li>Plantio e Sementeira</li>
+                                <li>Manejo e Tratos Culturais</li>
+                                <li>Monitoramento e Colheita</li>
+                            </ol>
+                            <button class="btn-details">Detalhes</button>
+                        </div>
+                    </div>
+
+                    <div class="right-col">
+                        <div class="metric-card total">
+                            <div class="metric-left">
+                                <h3 class="metric-title">CUSTO TOTAL</h3>
+                                <p class="metric-sub">(Custo por Hectare)</p>
+                            </div>
+                            <div class="metric-right">
+                                <div class="metric-value">R$ 13.790,00</div>
+                                <div class="metric-small">R$ 3.447,50</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card big receita-card">
+                            <div class="circle-icon green">↗</div>
+                            <div class="metric-content">
+                                <h4>RECEITA</h4>
+                                <div class="metric-value">+ R$ 39.997,00</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card big despesa-card">
+                            <div class="circle-icon red">↘</div>
+                            <div class="metric-content">
+                                <h4>DESPESAS</h4>
+                                <div class="metric-value">- R$ 13.790,00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+const express = require('express');
+const route = express.Router();
+const indexController = require('./src/controllers/indexController');
+const loginController = require('./src/controllers/loginController');
+const registerController = require('./src/controllers/registerController');
+const dadosController = require('./src/controllers/dadosController');
+const dashboardController = require('./src/controllers/dashboardController');
+
+
+const { redirecionarSeLogado } = require('./src/middlewares/redirecionarSeLogado');
+const { verificarSeLogado } = require('./src/middlewares/verificarSeLogado');
+
+
+//  Rota principal
+route.get('/', redirecionarSeLogado, indexController.index);
+
+
+//Rota de Registro
+route.get('/register', redirecionarSeLogado,registerController.register);
+
+route.post('/register',registerController.registerForm);
+
+
+//  Rota de Login
+route.get('/login', redirecionarSeLogado, loginController.login);
+
+route.post('/login', loginController.loginForm);
+
+
+// Rota de dados
+route.get('dados',verificarSeLogado, dadosController.dados);
+
+
+// Rota do dashboard
+route.get('/dashboard',verificarSeLogado, dashboardController.dashboard);
+
+
+
+
+
+module.exports = route;
