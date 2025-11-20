@@ -17,9 +17,11 @@ public final class HashSenha {
     public static String gerar(String senhaPura) {
         byte[] salt = new byte[16]; RNG.nextBytes(salt);
         byte[] hash = pbkdf2(senhaPura.toCharArray(), salt, ITERACOES);
+        String hashSalvo = HashSenha.gerar(senhaPura);
         return "pbkdf2$" + ITERACOES + "$" +
                 Base64.getEncoder().encodeToString(salt) + "$" +
                 Base64.getEncoder().encodeToString(hash);
+
     }
 
     public static boolean confere(String senhaPura, String armazenado) {

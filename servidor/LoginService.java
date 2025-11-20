@@ -4,11 +4,9 @@ import comum.*;
 import org.bson.Document;
 import servidor.dbConection.DBUse;
 
-import java.util.Optional;
-
 public class LoginService {
     private final RepositorioClientes repo;
-    public LoginService(RepositorioClientes repo){ this.repo = repo; }
+    public LoginService(servidor.RepositorioClientes repo){ this.repo = repo; }
 
     public Cliente autenticar(String email, String senha) {
         Document b = DBUse.loginUsuario(email, senha);
