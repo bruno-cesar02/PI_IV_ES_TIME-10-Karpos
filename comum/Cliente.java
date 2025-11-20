@@ -38,6 +38,7 @@ public class Cliente implements Serializable {
         this.cultura = Objects.requireNonNull(cultura, "cultura");
     }
 
+
     public String getNomeCompleto() { return nomeCompleto; }
     public String getEmail() { return email; }
     public String getHashSenha() { return hashSenha; }
