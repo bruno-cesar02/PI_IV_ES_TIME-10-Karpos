@@ -1,0 +1,67 @@
+<%- include('includes/head')%>
+<body>
+    <div class="container">
+        <!-- Seção Esquerda - Formulário -->
+        <div class="form-section">
+            <div class="form-wrapper">
+                <img src="/img/logoverde.png" class="logo">
+                
+                <h1 class="title">DADOS DA EMPRESA</h1>
+                
+                <form id="dadosForm" class="dados-form">
+                    <div class="form-group">
+                        <label for="businessName">NOME DA EMPRESA</label>
+                        <input type="text" id="businessName" name="businessName" placeholder="PUC Agronegócio" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cnpj">CNPJ</label>
+                        <input type="cnpj" id="cnpj" name="cnpj" placeholder="xx.xxx.xxx/xxxx-xx" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="address">ENDERECO</label>
+                            <input type="text" id="address" name="address" placeholder="Avenida da Cidade, 123, Bairro, Campinas/SP, 13050-333
+
+                            " required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">PRINCIPAIS CULTURAS</label>
+                            <input type="principais" id="principais" name="principais" placeholder="Ex: Tomate, Soja, Café..." required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="size">TAMANHO DA PROPRIEDADE</label>
+                        <select id="hectares" name="hectares" aria-label="Tamanho da propriedade em hectares" required>
+                            <option value="" disabled selected>Selecione o tamanho em hectares</option>
+                            <option value="0.25">0.25 ha</option>
+                            <option value="0.5">0.5 ha</option>
+                            <option value="1">1 ha</option>
+                            <option value="2">2 ha</option>
+                            <option value="5">5 ha</option>
+                            <option value="10">10 ha</option>
+                            <option value="20">20 ha</option>
+                            <option value="50">50 ha</option>
+                            <option value="100">100 ha</option>
+                            <option value="100+">Mais de 100 ha</option>
+                          </select>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="submit-btn">ENTRAR</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Seção Direita - Imagem -->
+        <div class="image-section">
+            <img src="/img/fundo_dados.png">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
