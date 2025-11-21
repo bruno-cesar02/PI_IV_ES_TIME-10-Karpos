@@ -1,0 +1,250 @@
+@font-face
+{
+    font-family: 'Rooftop';
+    src: url('../fonts/RooftopRegular.woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body
+{ 
+    font-family: 'Rooftop', sans-serif;
+}
+
+
+header
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    height: 60px;
+
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter:  blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    z-index: 10;
+    
+}
+
+
+nav
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+main
+{
+    background-image: url('../img/curveLines.png'), url('../img/fundoHome.jpg');
+    background-size: cover, cover;
+    background-position: center, center;
+    height: 100vh;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 10%;
+    color: white;
+
+    position: relative;
+    overflow: hidden; 
+}
+
+
+main h1
+{
+    font-size: 60px;
+    line-height: 1.1;
+    max-width: 600px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+}
+
+
+.botao
+{
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+
+    border: 1px solid white;
+    border-radius: 50px;
+
+    padding: 15px 40px;
+
+    transition: background 0.3s;
+
+    align-self: flex-start;
+}
+
+
+.botao:hover
+{
+    background-color: white;
+    color: #00332a;
+}
+
+
+footer
+{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    background-color: #053026;
+    padding: 20px 50px;
+
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    z-index: 10;
+
+}
+
+
+.footer-item
+{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+
+.icone-circulo
+{
+    background-color: #01d74f;
+    color: #00332a;
+
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 24px;
+}
+
+
+.texto-info
+{
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+
+.texto-info .titulo
+{
+    color: #01d74f;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+.texto-info .email
+{
+    color: #01d74f;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+
+
+footer p
+{
+    font-size: 12px;
+}
+
+
+@media (max-width: 768px)
+{
+    main
+    {
+        padding-left: 0;
+        align-items: center;
+    }
+
+
+    main h1
+    {
+        font-size: 28px;
+        text-align: center;
+        padding: 0 15px;  
+        margin-bottom: 15px;      
+    }
+
+
+    .botao
+    {
+        display: block;
+        margin: 0 auto;
+        width: 90%;
+        text-align: center;
+        max-width: 300px;
+    
+    }
+
+
+    footer
+    {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+        height: auto;
+    }
+
+    .footer-item
+    {
+        justify-content: center;
+        
+    }
+
+
+    header
+    {
+        height: 60px;
+    }
+
+
+    .logo img {
+        height: 35px;
+    }
+
+    .texto-info .titulo
+    {
+        font-size: 13px;
+    }
+
+
+    .texto-info .email
+    {
+        font-size: 11px;
+    }
+
+
+}
