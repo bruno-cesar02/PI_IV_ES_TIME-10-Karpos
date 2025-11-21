@@ -17,24 +17,39 @@ public class DBUse {
 
         return collection;
     }
-    public static void inserirUsuario (String nome, String email, String senha , String telefone , String documento , String nomeEmpresa, String endereco, double tamanhoHectares, String categoria){
+    public static void inserirUsuario (String nome, String email, String senha,
+                                       String telefone , String cpfCnpj,
+                                       String nomeEmpresa, String endereco,
+                                       double tamanhoHectares, String categoria){
+
+        System.out.println("[DBUse] inserirUsuario chamado para: " + email);
 
         MongoCollection<Document> collection = DBUse.makeCollection("usuario" , "Karpos-PI");
-        Document document = new Document("nome",nome).append("email",email).append("senha",senha).append("telefone",telefone).append("documento",documento).append("nomeEmpresa",nomeEmpresa).append("endereco",endereco).append("tamanhoHectares",tamanhoHectares).append("categoria",categoria);
+
+        Document document = new Document("nome",nome)
+                .append("email",email)
+                .append("senha",senha)
+                .append("telefone",telefone)
+                .append("documento",cpfCnpj)
+                .append("nomeEmpresa",nomeEmpresa)
+                .append("endereco",endereco)
+                .append("tamanhoHectares",tamanhoHectares)
+                .append("cultura",categoria);
 
         Document filtroBusca = new Document("email", email);
 
         Document usuarioExistente = collection.find(filtroBusca).first();
 
         if (usuarioExistente == null ){
-
             collection.insertOne(document);
-            System.out.println("Usuário " + nome + " inserido com sucesso na coleção.");
-
+            System.out.println("[DBUse] Usuário " + nome + " inserido com sucesso na coleção.");
             return;
         }
-        System.out.println("Usuário já cadastrado, não pode cadastrar dois");
+
+        System.out.println("[DBUse] Usuário já cadastrado, não pode cadastrar dois: " + email);
     }
+
+
     public static Document loginUsuario (String email, String senha){
         MongoCollection<Document> collection = DBUse.makeCollection("usuario" ,  "Karpos-PI");
 
