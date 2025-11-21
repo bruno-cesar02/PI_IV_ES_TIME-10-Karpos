@@ -1,0 +1,148 @@
+<%- include('includes/head') %>
+<body>
+    <div class="container">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="./img/LogoFundoTransparenteKarpos.png" alt="Karpos Logo" class="logo-img">
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">MENU</div>
+                <div class="menu-item active">
+                    <span class="menu-icon">⊞</span>
+                    <span>DASHBOARD</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>ANÁLISES</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">🕐</span>
+                    <span>HISTÓRICO</span>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Geral</div>
+                <div class="menu-item">
+                    <span class="menu-icon">ℹ</span>
+                    <span>AJUDA</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">👤</span>
+                    <span>PERFIL</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">↪</span>
+                    <span>LOGOUT</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- TOPBAR -->
+            <div class="topbar">
+                <div class="header-profile">
+                    <div class="profile-avatar">
+                        <img src="./img/usuario.png" alt="Carlos Pereira">
+                    </div>
+                    <div class="profile-info">
+                        <h3>Carlos Pereira</h3>
+                        <p>Fazenda Sta Cândida</p>
+                    </div>
+                </div>
+                <div class="notification-icon">🔔</div>
+            </div>
+
+            <!-- PAINEL PRINCIPAL - CUSTOS REGISTRADOS -->
+            <section class="dashboard-panel">
+                <div class="panel-header">
+                    <div class="page-title">
+                        <h1>Custos<br>Registrados</h1>
+                    </div>
+
+                    <div class="panel-actions">
+                        <button class="btn btn-primary">Salvar</button>
+                        <button class="btn btn-outline">Excluir</button>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <form class="filtros-section" id="filtro-custos-form">
+                    <h3 class="filtros-title">Filtrar por</h3>
+                    <p class="filtros-subtitle">Data / Categoria</p>
+                
+                    <div class="filtros-fields">
+                        <div class="filtro-field">
+                            <label for="filtro-data-custo">Data</label>
+                            <input type="date" id="filtro-data-custo" class="input-field">
+                        </div>
+                
+                        <div class="filtro-field">
+                            <label for="filtro-categoria">Categoria</label>
+                            <select id="filtro-categoria" class="input-field">
+                                <option value="">Todas</option>
+                                <option value="Insumos">Insumos</option>
+                                <option value="Maquinário">Maquinário</option>
+                                <option value="Mão de Obra">Mão de Obra</option>
+                                <option value="Sementes">Sementes</option>
+                                <option value="Fertilizantes">Fertilizantes</option>
+                                <!-- depois você ajusta as categorias reais -->
+                            </select>
+                        </div>
+                
+                        <button type="button" id="btn-filtrar-custos" class="btn btn-primary">
+                            Aplicar filtro
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Tabela de Custos -->
+                <div class="table-container">
+                    <table class="atividades-table">
+                        <thead>
+                            <tr>
+                                <th class="col-checkbox">
+                                    <input type="checkbox" id="selectAll">
+                                </th>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Categoria</th>
+                                <th>AA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="row-checkbox">
+                                </td>
+                                <td>12/11/25</td>
+                                <td>Compra Fertilizantes</td>
+                                <td>R$1.560,00</td>
+                                <td>Insumos</td>
+                                <td>ap - 13/nov</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="row-checkbox">
+                                </td>
+                                <td>11/11/25</td>
+                                <td>Manutenção Maquinário</td>
+                                <td>R$357,90</td>
+                                <td>Maquinário</td>
+                                <td>ap - 14/nov</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="custos-registrados.js"></script>
+</body>
+</html>

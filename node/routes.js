@@ -5,10 +5,13 @@ const loginController = require('./src/controllers/loginController');
 const registerController = require('./src/controllers/registerController');
 const dadosController = require('./src/controllers/dadosController');
 const dashboardController = require('./src/controllers/dashboardController');
-
+const cadernoCampoController = require('./src/controllers/cadernoCampoController');
+const custosController = require('./src/controllers/custosController');
 
 const { redirecionarSeLogado } = require('./src/middlewares/redirecionarSeLogado');
 const { verificarSeLogado } = require('./src/middlewares/verificarSeLogado');
+
+
 
 
 //  Rota principal
@@ -28,13 +31,21 @@ route.post('/login', loginController.loginForm);
 
 
 // Rota de dados
-route.get('dados',verificarSeLogado, dadosController.dados);
+route.get('/dados',verificarSeLogado, dadosController.dados);
 
 
 // Rota do dashboard
-route.get('/dashboard',verificarSeLogado, dashboardController.dashboard);
+route.get('/dashboard',/*verificarSeLogado,*/ dashboardController.dashboard);
 
+// ========= CADERNO DE CAMPO =========
+route.get('/caderno-campo',/*verificarSeLogado,*/cadernoCampoController.mostrarCadernoCampo);
 
+route.get('/novo-registro',/*verificarSeLogado,*/cadernoCampoController.mostrarNovoRegistro);
+
+// ========= CUSTOS =========
+route.get('/custos-registrados',/*verificarSeLogado,*/custosController.mostrarCustosRegistrados);
+
+route.get('/novo-custo',/*verificarSeLogado,*/custosController.mostrarNovoCusto);
 
 
 

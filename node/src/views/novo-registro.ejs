@@ -1,0 +1,111 @@
+<%- include('includes/head') %>
+<body>
+    <div class="container">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="./img/LogoFundoTransparenteKarpos.png" alt="Karpos Logo" class="logo-img">
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">MENU</div>
+                <div class="menu-item active">
+                    <span class="menu-icon">⊞</span>
+                    <span>DASHBOARD</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>ANÁLISES</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">🕐</span>
+                    <span>HISTÓRICO</span>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Geral</div>
+                <div class="menu-item">
+                    <span class="menu-icon">ℹ</span>
+                    <span>AJUDA</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">👤</span>
+                    <span>PERFIL</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">↪</span>
+                    <span>LOGOUT</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- TOPBAR -->
+            <div class="topbar">
+                <div class="header-profile">
+                    <div class="profile-avatar">
+                        <img src="./img/usuario.png" alt="Carlos Pereira">
+                    </div>
+                    <div class="profile-info">
+                        <h3>Carlos Pereira</h3>
+                        <p>Fazenda Sta Cândida</p>
+                    </div>
+                </div>
+                <div class="notification-icon">🔔</div>
+            </div>
+
+            <!-- PAINEL PRINCIPAL - NOVO REGISTRO -->
+            <section class="dashboard-panel">
+                <div class="panel-header">
+                    <div class="page-title">
+                        <h1>Novo<br>Registro</h1>
+                    </div>
+
+                    <div class="panel-actions">
+                        <button class="btn btn-primary">Salvar</button>
+                        <button class="btn btn-outline">Cancelar</button>
+                    </div>
+                </div>
+
+                <!-- Formulário -->
+                <form class="form-registro">
+                    <!-- Data da Atividade -->
+                    <div class="form-group-horizontal">
+                        <div class="form-field">
+                            <h3 class="field-title">Data da Atividade</h3>
+                            <p class="field-subtitle">DD/MM/AAAA</p>
+                            <input type="date" class="input-field" id="dataAtividade">
+                        </div>
+
+                        <!-- Tipo de Atividade -->
+                        <div class="form-field">
+                            <h3 class="field-title">Tipo de Atividade</h3>
+                            <p class="field-subtitle">Selecione o tipo</p>
+                            <select class="input-field" id="tipoAtividade">
+                                <option value="">Selecione o tipo</option>
+                                <option value="Plantio">Plantio</option>
+                                <option value="Colheita">Colheita</option>
+                                <option value="Aplicação de Fertilizantes">Aplicação de Fertilizantes</option>
+                                <option value="Irrigação">Irrigação</option>
+                                <option value="Manutenção">Manutenção</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Notas -->
+                    <div class="form-field full-width">
+                        <h3 class="field-title">Notas</h3>
+                        <p class="field-subtitle">Descreva como aconteceu a execução da atividade.</p>
+                        <textarea class="textarea-field" id="notas" rows="6" placeholder="Digite as observações..."></textarea>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script src="novo-registro.js"></script>
+</body>
+</html>

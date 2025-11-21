@@ -1,0 +1,142 @@
+<%- include('includes/head') %>
+<body>
+    <div class="container">
+
+        <!-- SIDEBAR (mesmo do dashboard) -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="./img/LogoFundoTransparenteKarpos.png" alt="Karpos Logo" class="logo-img">
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">MENU</div>
+                <div class="menu-item">
+                    <span class="menu-icon">⊞</span>
+                    <span>DASHBOARD</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span>ANÁLISES</span>
+                </div>
+                <div class="menu-item active">
+                    <span class="menu-icon">🕐</span>
+                    <span>HISTÓRICO</span>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-title">Geral</div>
+                <div class="menu-item">
+                    <span class="menu-icon">ℹ</span>
+                    <span>AJUDA</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">👤</span>
+                    <span>PERFIL</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-icon">↪</span>
+                    <span>LOGOUT</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- TOPBAR (mesmo do dashboard) -->
+            <div class="topbar">
+                <div class="header-profile">
+                    <div class="profile-avatar">
+                        <img src="./img/usuario.png" alt="Carlos Pereira">
+                    </div>
+                    <div class="profile-info">
+                        <h3>Carlos Pereira</h3>
+                        <p>Fazenda Sta Cândida</p>
+                    </div>
+                </div>
+                <div class="notification-icon">🔔</div>
+            </div>
+
+            <!-- PAINEL PRINCIPAL - MEU CADERNO DE CAMPO -->
+            <section class="dashboard-panel">
+                <div class="panel-header">
+                    <div class="page-title">
+                        <h1>Meu Caderno<br>de Campo</h1>
+                    </div>
+
+                    <div class="panel-actions">
+                        <button class="btn btn-primary">Salvar</button>
+                        <button class="btn btn-outline">Excluir</button>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <form class="filtros-section" id="filtro-form">
+                    <h3 class="filtros-title">Filtrar por</h3>
+                    <p class="filtros-subtitle">Data / Tipo de Atividade</p>
+
+                    <div class="filtros-fields">
+                        <div class="filtro-field">
+            <label for="filtro-data">Data</label>
+            <input type="date" id="filtro-data" class="input-field">
+        </div>
+
+        <div class="filtro-field">
+            <label for="filtro-tipo">Tipo de Atividade</label>
+            <select id="filtro-tipo" class="input-field">
+                <option value="">Todos</option>
+                <option value="Aplicação de Fertilizantes">Aplicação de Fertilizantes</option>
+                <option value="Irrigação de Lavoura">Irrigação de Lavoura</option>
+                <!-- depois você completa com os tipos reais -->
+            </select>
+        </div>
+
+        <button type="button" id="btn-filtrar" class="btn btn-primary">
+            Aplicar filtro
+        </button>
+    </div>
+</form>
+
+                <!-- Tabela de Atividades -->
+                <div class="table-container">
+                    <table class="atividades-table">
+                        <thead>
+                            <tr>
+                                <th class="col-checkbox">
+                                    <input type="checkbox" id="selectAll">
+                                </th>
+                                <th>Data</th>
+                                <th>Tipo de Atividade</th>
+                                <th>Detalhe</th>
+                                <th>CA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="row-checkbox">
+                                </td>
+                                <td>12/11/25</td>
+                                <td>Aplicação de Fertilizantes</td>
+                                <td>Fertilizante utilizado [...]</td>
+                                <td>R$985,57</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="row-checkbox">
+                                </td>
+                                <td>11/11/25</td>
+                                <td>Irrigação de Lavoura</td>
+                                <td>200l no talhão 4</td>
+                                <td>R$0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="caderno-campo.js"></script>
+</body>
+</html>

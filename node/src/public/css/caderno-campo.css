@@ -1,0 +1,198 @@
+/* =========================================================
+   caderno-campo.css
+   Estilos compartilhados entre:
+     - caderno-campo.ejs (lista de atividades)
+     - custos-registrados.ejs (lista de custos)
+     - novo-registro.ejs (form de atividade)
+     - novo-custo.ejs (form de custo)
+   ========================================================= */
+
+
+/* =========================================================
+   1) SEÇÃO DE FILTROS
+   - Usado em: caderno-campo.ejs, custos-registrados.ejs
+   ========================================================= */
+
+.filtros-section {
+    margin-bottom: 28px;
+}
+
+.filtros-title {
+    font-size: 24px;
+    color: var(--color-primary-dark);
+    font-weight: 900;
+    margin-bottom: 4px;
+}
+
+.filtros-subtitle {
+    font-size: 15px;
+    color: var(--muted);
+    font-style: italic;
+}
+
+/* Layout dos campos do filtro (label + input/select + botão) */
+.filtros-fields {
+    margin-top: 14px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+}
+
+.filtro-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 180px;
+}
+
+.filtro-field label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+    margin-bottom: 4px;
+    display: block;
+}
+
+
+
+/* =========================================================
+   2) TABELA DE ATIVIDADES / CUSTOS
+   - Usado em: caderno-campo.ejs, custos-registrados.ejs
+   ========================================================= */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 22px;
+}
+
+.atividades-table {
+    width: 100%;
+    border-collapse: collapse; /* colunas bem alinhadas */
+}
+
+/* Cabeçalho da tabela */
+.atividades-table thead th {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--color-primary-dark);
+    text-align: left;
+    padding: 14px 18px;
+    border-bottom: 3px solid rgba(0, 0, 0, 0.08);
+    border-right: 1px solid rgba(0, 0, 0, 0.06); /* divisória vertical */
+    background: transparent;
+}
+
+/* Remove borda da última coluna */
+.atividades-table thead th:last-child {
+    border-right: none;
+}
+
+/* Corpo da tabela */
+.atividades-table tbody tr {
+    background: white;
+}
+
+.atividades-table tbody td {
+    padding: 18px;
+    font-size: 16px;
+    color: #11392f;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.06); /* linha horizontal */
+    border-right: 2px solid rgba(0, 0, 0, 0.06);  /* divisória vertical */
+}
+
+/* Remove borda da última coluna no corpo */
+.atividades-table tbody td:last-child {
+    border-right: none;
+}
+
+/* Coluna dos checkboxes */
+.col-checkbox {
+    width: 50px;
+}
+
+
+/* =========================================================
+   3) FORMULÁRIOS (NOVO REGISTRO / NOVO CUSTO)
+   - Usado em: novo-registro.ejs, novo-custo.ejs
+   ========================================================= */
+
+.form-registro {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Linha com 2 colunas lado a lado */
+.form-row,
+.form-group-horizontal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+}
+
+/* Campo que deve ocupar a linha toda */
+.form-field.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Bloco de campo individual */
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.field-title {
+    font-size: 22px;
+    color: var(--color-primary-dark);
+    font-weight: 900;
+    margin-bottom: 4px;
+}
+
+.field-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 12px;
+}
+
+/* Inputs e textareas genéricos das telas de formulário e filtro */
+.input-field,
+.textarea-field {
+    width: 100%;
+    padding: 14px 18px;
+    border: 3px solid rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    font-size: 16px;
+    font-family: inherit;
+    background: white;
+    transition: border-color 0.3s;
+}
+
+.input-field:focus,
+.textarea-field:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.textarea-field {
+    resize: vertical;
+    min-height: 120px;
+}
+
+
+
+/* =========================================================
+   4) RESPONSIVIDADE
+   ========================================================= */
+
+@media (max-width: 900px) {
+    .form-row,
+    .form-group-horizontal {
+        grid-template-columns: 1fr; /* formulário em uma coluna só no mobile */
+    }
+
+    .filtros-fields {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
