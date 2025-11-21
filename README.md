@@ -15,7 +15,7 @@
 
 - [Equipe](#-equipe)
 - [Visão Geral](#-visão-geral-do-projeto)
-- [MVP](#-mvp-funcionalidades-principais)
+- [MVP](#-MVP:_Funcionalidades_Principais)
 - [Arquitetura](#-arquitetura-técnica)
 - [Estrutura do Repositório](#-estrutura-do-repositório)
 - [Modelos de Dados](#-modelos-das-coleções-mongodb)
@@ -74,10 +74,35 @@ Oferecer uma interface **simples e acessível** para usuários com baixo confort
 ## 🏗️ Arquitetura Técnica
 
 ```
-┌─────────────┐         ┌──────────────┐         ┌─────────────┐
-│   Cliente   │ ◄─────► │ Servidor     │ ◄─────► │  MongoDB    │
-│    Java     │  Socket │   Java 17+   │  Driver │   Atlas     │
-└─────────────┘         └──────────────┘         └─────────────┘
+┌─────────────────┐
+│   Navegador     │
+│  (HTML/CSS/JS)  │
+└────────┬────────┘
+         │ HTTP (Express.js)
+         ▼
+┌─────────────────────────────┐
+│   Node.js (Frontend)        │
+│  - EJS Templates            │
+│  - Routes (Express)         │
+│  - Controllers              │
+└────────┬────────────────────┘
+         │ Socket/REST
+         ▼
+┌─────────────────────────────┐
+│   Servidor Java             │
+│  - Validação de dados       │
+│  - Regras de negócio        │
+│  - Conexão MongoDB          │
+└────────┬────────────────────┘
+         │ Driver MongoDB
+         ▼
+┌─────────────────────────────┐
+│   MongoDB Atlas             │
+│  - users                    │
+│  - atividades               │
+│  - custos                   │
+└─────────────────────────────┘
+
 ```
 
 ### Componentes
@@ -94,7 +119,8 @@ Oferecer uma interface **simples e acessível** para usuários com baixo confort
 
 ```
 PI_IV_ES_TIME-10-Karpos/
-├── 📁 servidor/
+│
+├── 📁 servidor/                           # Backend Java (autenticação, cadastro, regras de negócio)
 │   ├── Main.java
 │   ├── ServerSemBanco.java
 │   ├── TratadoraDePedidos.java
@@ -105,13 +131,54 @@ PI_IV_ES_TIME-10-Karpos/
 │       ├── mongodb-driver-sync-5.6.1.jar
 │       ├── mongodb-driver-core-5.6.1.jar
 │       └── bson-5.6.1.jar
-├── 📁 comum/
-│   └── [Classes compartilhadas]
-├── 📁 cliente/
+├── 📁 cliente/                            # Cliente Java (terminal - possível extensão futura)
 │   └── ClienteTeste.java
-├── 📁 pages/
-│   └── [Protótipos/telas]
-└── 📄 README.md
+|
+├── 📁 comum/                              # Classes compartilhadas entre servidor e cliente
+│   └── [Entidades/DTOs]
+|
+└── 📁 node/                               # Frontend Web (Node.js + Express + EJS)
+    ├── server.js                          # Ponto de entrada do servidor Express
+    ├── routes.js                          # Definição das rotas HTTP
+    ├── package.json                       # Dependências do projeto
+    ├── package-lock.json
+    ├── .gitignore                         # Exclui node_modules do Git
+    │
+    └── src/
+        ├── controllers/                   # Camada de controle (lógica por rota)
+        │   ├── indexController.js        # Página inicial (usuário não logado)
+        │   ├── loginController.js        # Tela de login
+        │   ├── registerController.js     # Tela de cadastro
+        │   ├── dadosController.js        # Tela de dados do usuário/propriedade
+        │   ├── dashboardController.js    # Dashboard principal
+        │   ├── cadernoCampoController.js # Funções do Caderno de Campo
+        │   └── custosController.js       # Funções de Custo
+        │  
+        │
+        ├── middlewares/                  # Autenticação e fluxo
+        │   ├── verificarSeLogado.js     # Bloqueia acesso sem autenticação
+        │   └── redirecionarSeLogado.js  # Redireciona logado para dashboard
+        │
+        ├── views/                        # Templates EJS (HTML dinâmico)
+        │   ├── includes/                 # Componentes reutilizáveis
+        │   │   └── head.ejs             # <head> comum com CSS dinâmico
+        │   ├── index.ejs                # Landing page
+        │   ├── login.ejs                # Tela de login
+        │   ├── register.ejs             # Tela de cadastro
+        │   ├── dashboard.ejs            # Dashboard do produtor
+        │   ├── caderno-campo.ejs        # Histórico de atividades
+        │   ├── novo-registro.ejs        # Formulário de nova atividade
+        │   ├── custos-registrados.ejs   # Histórico de custos
+        │   └── novo-custo.ejs           # Formulário de novo custo
+        │
+        └── public/                       # Arquivos estáticos
+            ├── css/
+            │   ├── dashboard.css        # Layout base (sidebar, topbar, cards)
+            │   └── caderno-campo.css    # Tabelas, filtros, formulários (reutilizável)
+            │
+            └── img/
+                 └── ...        # todas as imagens usada no projeto
+                     
 ```
 
 ---
