@@ -6,7 +6,7 @@ const {middleware} = require('./src/middlewares/middleware');
 const { spawn } = require('child_process');
 
 /*
-const processoJava = spawn('java', ['Retorno.java']);
+const processoJava = spawn('java', ['Retorno.java'] {});
 
 let dadosRetornados = '';
 
@@ -67,6 +67,8 @@ app.use(routes);
 
 
 // Ligando o servidor e sua porta
+
+
 app.listen(3300, () => {
   console.log('Servidor rodando na porta:  127.0.0.1:3300');
 });

@@ -181,15 +181,15 @@ public class Cliente {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("{\"loginPermitido\": \"true\", \"usuario\": {");
-        sb.append("\"nomeCompleto\": \"").append(escapar(cli.getNomeCompleto())).append("\", ");
-        sb.append("\"email\": \"").append(escapar(cli.getEmail())).append("\", ");
-        sb.append("\"telefone\": \"").append(escapar(cli.getTelefone())).append("\", ");
-        sb.append("\"documento\": \"").append(escapar(cli.getDocumento())).append("\", ");
-        sb.append("\"nomeEmpresa\": \"").append(escapar(cli.getNomeEmpresa())).append("\", ");
-        sb.append("\"endereco\": \"").append(escapar(cli.getEndereco())).append("\", ");
-        sb.append("\"tamanhoHectares\": ").append(cli.getTamanhoHectares()).append(", ");
-        sb.append("\"cultura\": \"").append(escapar(cli.getCultura())).append("\"");
+        sb.append("{\\\"loginPermitido\\\": \\\"true\\\", \\\"usuario\\\": {");
+        sb.append("\\\"nomeCompleto\\\": \\\"").append(escapar(cli.getNomeCompleto())).append("\\\", ");
+        sb.append("\\\"email\\\": \\\"").append(escapar(cli.getEmail())).append("\\\", ");
+        sb.append("\\\"telefone\\\": \\\"").append(escapar(cli.getTelefone())).append("\\\", ");
+        sb.append("\\\"documento\\\": \\\"").append(escapar(cli.getDocumento())).append("\\\", ");
+        sb.append("\\\"nomeEmpresa\\\": \\\"").append(escapar(cli.getNomeEmpresa())).append("\\\", ");
+        sb.append("\\\"endereco\\\": \\\"").append(escapar(cli.getEndereco())).append("\\\", ");
+        sb.append("\\\"tamanhoHectares\\\": ").append(cli.getTamanhoHectares()).append(", ");
+        sb.append("\\\"cultura\\\": \\\"").append(escapar(cli.getCultura())).append("\\\"");
         sb.append("}}");
 
         System.out.println(sb.toString());

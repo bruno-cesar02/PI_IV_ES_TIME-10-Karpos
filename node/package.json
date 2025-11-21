@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "listdependencies": "npm list --depth=0",
-    "start": "nodemon server.js",
-    "dev": "webpack --watch"
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",

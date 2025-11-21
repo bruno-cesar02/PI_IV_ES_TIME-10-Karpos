@@ -1,3 +1,6 @@
+const { spawn } = require('child_process');
+const path = require('path');
+
 exports.login = (req, res) => {
   res.render('login', {
     css: 'login.css',
@@ -7,16 +10,47 @@ exports.login = (req, res) => {
 }
 
 exports.loginForm = (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
-  // enviar para o servidor do java os dados
+  const processoJava = spawn('java', ['cliente.Cliente', 'login', email, password], {cwd: path.resolve(__dirname, '..', '..', '..')});
 
-  //receber true ou false se permitir ou nao o login junto com todos os dados do usuario
-  
-  //const dados = return do servidor java
+  let dadosRetornados = '"';
+
+  processoJava.stdout.on('data', (data) => {
+  dadosRetornados += data.toString();
+  });
+
+  processoJava.stderr.on('data', (data) => {
+  console.error(`Erro do processo Java: ${data}`);
+  });
+
+  processoJava.on('close', (code) => {
+  console.log(`Processo Java finalizado com código ${code}`);
+  dadosRetornados = dadosRetornados.trim() + '"';
+  dadosRetornados = JSON.parse(dadosRetornados);
+  dadosRetornados = JSON.parse(dadosRetornados);
+  console.log('Dados retornados do Java:', dadosRetornados);
+  if (dadosRetornados.loginPermitido){
+    req.session.user = { 
+    user: dadosRetornados.usuario.nomeCompleto,
+    email: dadosRetornados.usuario.email,
+    telefone: dadosRetornados.usuario.telefone,
+    documento: dadosRetornados.usuario.documento,
+    nomeEmpresa: dadosRetornados.usuario.nomeEmpresa,
+    endereco: dadosRetornados.usuario.endereco,
+    tamanhoHectares: dadosRetornados.usuario.tamanhoHectares,
+    categoria: dadosRetornados.usuario.cultura
+  };
+    req.session.msg = '';
+    res.redirect('/dashboard');
+  } else {
+    req.session.msg = dadosRetornados.msg;
+    res.redirect('/login');
+  }
+  });
 
   /*
-  if (dados.loginPermitido){
+  if (dadosRetornados.loginPermitido){
     req.session.user = { 
     user: dados.usuario.nome,
     email: dados.usuario.email,
@@ -32,10 +66,6 @@ exports.loginForm = (req, res) => {
   } else {
     req.session.msg = 'Usuário ou senha inválidos.';
     res.redirect('/login');
-  }
-
-    */
-
-  res.redirect('/dashboard');
+  }*/
 
 };
