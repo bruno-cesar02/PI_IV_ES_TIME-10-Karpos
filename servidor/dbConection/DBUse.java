@@ -86,4 +86,60 @@ public class DBUse {
         }
         return  null;
     }
+    public static List<Document> buscarPorData(String nomeColecao, String dataBusca) {
+        MongoCollection<Document> collection = DBUse.makeCollection(nomeColecao, "Karpos-BD");
+
+        Document filtroBusca = new Document("data", dataBusca);
+
+        FindIterable<Document> resultados = collection.find(filtroBusca);
+
+        List<Document> documentosEncontrados = new ArrayList<>();
+        for (Document documento : resultados) {
+            documentosEncontrados.add(documento);
+        }
+
+        if (documentosEncontrados.isEmpty()) {
+            System.out.println("Nenhum documento encontrado na coleção '" + nomeColecao + "' com a data: " + dataBusca);
+            return null;
+        } else {
+            System.out.println(documentosEncontrados.size() + " documento(s) encontrado(s) na coleção '" + nomeColecao + "' para a data: " + dataBusca);
+            return documentosEncontrados;
+        }
+    }
+    public static void inserirAtividade (String data, String tipoAtividade, String texto){
+
+        MongoCollection<Document> collection = DBUse.makeCollection("field-metrics" , "Karpos-BD");
+        Document document = new Document("data",data).append("tipoAtividade",tipoAtividade).append("texto",texto);
+
+        Document filtroBusca = new Document("data", data).append("tipoAtividade", tipoAtividade);
+
+        Document atividadeExistente = collection.find(filtroBusca).first();
+
+        if (usuarioExistente == null ){
+
+            collection.insertOne(document);
+            System.out.println("atividade " + tipoAtividade + " inserido com sucesso na coleção.");
+            return;
+        }
+        System.out.println("Atividade já cadastrado, não pode cadastrar dois");
+    }
+    public static void inserirCusto (String data, String categoria, String atividade, String descricao , double custo){
+
+        MongoCollection<Document> collection = DBUse.makeCollection("field-costs" , "Karpos-BD");
+        Document document = new Document("data",data)
+                .append("categoria",categoria)
+                .append("atividade",atividade)
+                .append("descricao", descricao)
+                .append("custo", custo);
+
+        Document atividadeExistente = collection.find(document).first();
+
+        if (usuarioExistente == null ){
+
+            collection.insertOne(document);
+            System.out.println("custo de categoria " + categoria + "com valor de RS" + custo +  " inserido com sucesso na coleção.");
+            return;
+        }
+        System.out.println("Custo já cadastrado, não pode cadastrar dois");
+    }
 }
