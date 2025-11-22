@@ -24,7 +24,7 @@ public class DBUse {
 
         System.out.println("[DBUse] inserirUsuario chamado para: " + email);
 
-        MongoCollection<Document> collection = DBUse.makeCollection("usuario" , "Karpos-PI");
+        MongoCollection<Document> collection = DBUse.makeCollection("user-date" , "Karpos-BD");
 
         Document document = new Document("nome",nome)
                 .append("email",email)
@@ -51,7 +51,7 @@ public class DBUse {
 
 
     public static Document loginUsuario (String email, String senha){
-        MongoCollection<Document> collection = DBUse.makeCollection("usuario" ,  "Karpos-PI");
+        MongoCollection<Document> collection = DBUse.makeCollection("user-data" ,  "Karpos-BD");
 
 
         Document filtroBusca = new Document("email", email);
