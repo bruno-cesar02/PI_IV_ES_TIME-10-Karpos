@@ -8,8 +8,8 @@ public class LoginService {
     private final RepositorioClientes repo;
     public LoginService(servidor.RepositorioClientes repo){ this.repo = repo; }
 
-    public Cliente autenticar(String email, String senha, String cpfCnpj) {
-        Document b = DBUse.loginUsuario(email, senha, cpfCnpj);
+    public Cliente autenticar(String email, String senha) {
+        Document b = DBUse.loginUsuario(email, senha);
         if (b == null) throw new IllegalArgumentException("Usuário não encontrado");
         Cliente c = new Cliente(b.getString("nome"),
                                 b.getString("email"),

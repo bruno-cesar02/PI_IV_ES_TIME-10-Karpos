@@ -1,8 +1,13 @@
 package servidor;
 
 import comum.*;
+<<<<<<< HEAD
 
 import java.io.EOFException;
+=======
+import java.util.*;
+import org.bson.Document;
+>>>>>>> c6ef55e (fiz a parte de busca por data)
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -11,14 +16,24 @@ public class TratadoraDePedidos implements Runnable {
     private final ObjectOutputStream out;
     private final CadastroService cadastro;
     private final LoginService login;
+<<<<<<< HEAD
     private final CadernoDeCampoService caderno;
+=======
+    private final CadernoDeCampoServise caderno;
+    private final BuscaPorDataAtividadeServise buscaPorDataAtividade;
+>>>>>>> c6ef55e (fiz a parte de busca por data)
 
     public TratadoraDePedidos(ObjectInputStream in, ObjectOutputStream out, RepositorioClientes repo) {
         this.in = in;
         this.out = out;
         this.cadastro = new CadastroService(repo);
         this.login = new LoginService(repo);
+<<<<<<< HEAD
         this.caderno = new CadernoDeCampoService();
+=======
+        this.caderno = new CadernoDeCampoServise();
+        this.buscaPorDataAtividade = new BuscaPorDataAtividadeServise();
+>>>>>>> c6ef55e (fiz a parte de busca por data)
     }
 
     @Override
@@ -44,6 +59,8 @@ public class TratadoraDePedidos implements Runnable {
                     tratarLogin(pl);
                 } else if (msg instanceof PedidoCadastroCadernoCampo pccd){
                     tratarCaderno(pccd);
+                }else if (msg instanceof PedidoBuscaDataAtividade pbd){
+                    tratarBuscaPorDataAtividade(pbd);
                 }
                 else {
                     System.out.println("[Tratadora] Comando não reconhecido: " + msg.getClass().getName());
@@ -103,7 +120,7 @@ private void tratarCadastro(PedidoDeCadastro pc) {
     private void tratarLogin(PedidoDeLogin pl) {
         try {
             System.out.println("[Tratadora] Iniciando login para: " + pl.email);
-            var cli = login.autenticar(pl.email, pl.senha, pl.cpfCnpj);
+            var cli = login.autenticar(pl.email, pl.senha);
 
             System.out.println("[Tratadora] Login bem-sucedido: " + cli.getEmail());
             out.writeObject(new ClienteLogado(cli));
@@ -121,10 +138,41 @@ private void tratarCadastro(PedidoDeCadastro pc) {
     }
     private void tratarCaderno(PedidoCadastroCadernoCampo pccd) {
         try{
-            System.out.println("[Tratadora] Iniciando login para: " + pccd.getUsuarioEmail());
+            System.out.println("[Tratadora] Iniciando cadastro de caderno de campo para: " + pccd.getUsuarioEmail());
             caderno.addAtividade(pccd.getData(), pccd.getTipoAtividade(), pccd.getTexto(), pccd.getUsuarioEmail());
+
+            out.writeObject(new RespostaOk("Cadastrado arividade: " + pccd.getUsuarioEmail()));
+            out.flush();
         }
         catch (Exception e){
+            System.err.println("[Tratadora] Erro ao cadastar atividade do caderno de campo " + e.getMessage());
+            e.printStackTrace();
+            try {
+                out.writeObject(new RespostaErro(e.getMessage()));
+                out.flush();
+            } catch (Exception ex) {
+                System.err.println("[Tratadora] Falha ao enviar RespostaErro ao cliente:");
+                ex.printStackTrace();
+            }
+        }
+    }
+    private void tratarBuscaPorDataAtividade (PedidoBuscaDataAtividade pbd){
+        try{
+            System.out.println("[Tratadora] Iniciando cadastro de caderno de campo para: " + pbd.getEmail());
+
+            List<Document> lista = buscaPorDataAtividade.buscarPorDataAtividadeServise(pbd.getEmail(), pbd.getData(), "field-metrics");
+
+            List<String> listaDeJsons = new ArrayList<>();
+
+            if (lista == null){
+                throw new Exception("Nenhum registro encontrado");
+            }
+            for (Document doc : lista) {
+                listaDeJsons.add(doc.toJson());
+            }
+            out.writeObject(new BuscaDataAtividade(listaDeJsons));
+            out.flush();
+        } catch (Exception e) {
             System.err.println("[Tratadora] Erro ao cadastar atividade do caderno de campo " + e.getMessage());
             e.printStackTrace();
             try {

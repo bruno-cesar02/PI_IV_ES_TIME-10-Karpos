@@ -4,6 +4,7 @@ import comum.*;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.*;
 
 public class ClienteTeste {
     public static void main(String[] args) throws Exception {
@@ -34,6 +35,14 @@ public class ClienteTeste {
             ));
             out.flush();
             Object resp2 = in.readObject();
+
+
+            // 4) Pedido de busca por data de atividade
+            out.writeObject(new PedidoBuscaDataAtividade(
+                    "12/12/2025", "mariateste@karpos.com"
+            ));
+            out.flush();
+            Object resp3 = in.readObject();
 
         }
     }

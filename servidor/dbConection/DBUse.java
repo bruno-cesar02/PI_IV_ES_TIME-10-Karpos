@@ -50,12 +50,11 @@ public class DBUse {
     }
 
 
-    public static Document loginUsuario (String email, String senha, String cpfCnpj){
+    public static Document loginUsuario (String email, String senha){
         MongoCollection<Document> collection = DBUse.makeCollection("user-data" ,  "Karpos-BD");
 
 
-        Document filtroBusca = new Document("email", email).append("documento", cpfCnpj);
-
+        Document filtroBusca = new Document("email", email);
         Document usuarioExistente = collection.find(filtroBusca).first();
 
         if (usuarioExistente != null){
@@ -92,23 +91,34 @@ public class DBUse {
     }
     public static List<Document> buscarPorData(String nomeColecao, String dataBusca, String userEmail) {
         MongoCollection<Document> collection = DBUse.makeCollection(nomeColecao, "Karpos-BD");
+        MongoCollection<Document> userCollection = DBUse.makeCollection("user-data" , "Karpos-BD");
 
         Document filtroBusca = new Document("data", dataBusca);
+        Document filtroUser = new Document("email", userEmail);
 
-        FindIterable<Document> resultados = collection.find(filtroBusca);
+        Document usuárioExistente = userCollection.find(filtroUser).first();
 
-        List<Document> documentosEncontrados = new ArrayList<>();
-        for (Document documento : resultados) {
-            documentosEncontrados.add(documento);
+        if (usuárioExistente != null){
+
+            filtroBusca.append("userID", usuárioExistente.getLong("userID"));
+
+            FindIterable<Document> resultados = collection.find(filtroBusca);
+
+            List<Document> documentosEncontrados = new ArrayList<>();
+            for (Document documento : resultados) {
+                documentosEncontrados.add(documento);
+            }
+
+            if (documentosEncontrados.isEmpty()) {
+                System.out.println("Nenhum documento encontrado na coleção '" + nomeColecao + "' com a data: " + dataBusca);
+                return documentosEncontrados;
+            } else {
+                System.out.println(documentosEncontrados.size() + " documento(s) encontrado(s) na coleção '" + nomeColecao + "' para a data: " + dataBusca);
+                return documentosEncontrados;
+            }
         }
-
-        if (documentosEncontrados.isEmpty()) {
-            System.out.println("Nenhum documento encontrado na coleção '" + nomeColecao + "' com a data: " + dataBusca);
-            return null;
-        } else {
-            System.out.println(documentosEncontrados.size() + " documento(s) encontrado(s) na coleção '" + nomeColecao + "' para a data: " + dataBusca);
-            return documentosEncontrados;
-        }
+        System.out.println("Usuário não encontrado");
+        return null;
     }
     public static boolean inserirAtividade (String data, String tipoAtividade, String texto, String usuarioEmail){
 
