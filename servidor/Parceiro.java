@@ -2,7 +2,7 @@ package servidor;
 
 import comum.*;
 
-import com.sun.jdi.event.ExceptionEvent;
+import servidor.dbConection.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -66,4 +66,16 @@ public class Parceiro {
             throw new Exception("Erro de transmissao");
         }
     }
+
+    public void adeus () throws Exception{
+        try{
+            this.transmissor.close();
+            this.receptor.close();
+            this.conexao.close();
+        }
+        catch (Exception erro){
+            throw new Exception("Erro de desconexao");
+        }
+    }
 }
+

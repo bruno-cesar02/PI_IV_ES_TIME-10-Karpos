@@ -2,8 +2,8 @@ package servidor;
 
 import servidor.dbConection.DBUse;
 
-public class CadernoDeCampoServise {
-    public CadernoDeCampoServise() {};
+public class CadernoDeCampoService {
+    public CadernoDeCampoService() {};
     public boolean addAtividade(String data, String tipoAtividade, String texto, String usuarioEmail)throws Exception{
         try {
             Boolean cadastrar = DBUse.inserirAtividade(data, tipoAtividade, texto, usuarioEmail);

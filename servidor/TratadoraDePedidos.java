@@ -2,6 +2,7 @@ package servidor;
 
 import comum.*;
 
+import java.io.EOFException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -10,14 +11,14 @@ public class TratadoraDePedidos implements Runnable {
     private final ObjectOutputStream out;
     private final CadastroService cadastro;
     private final LoginService login;
-    private final CadernoDeCampoServise caderno;
+    private final CadernoDeCampoService caderno;
 
     public TratadoraDePedidos(ObjectInputStream in, ObjectOutputStream out, RepositorioClientes repo) {
         this.in = in;
         this.out = out;
         this.cadastro = new CadastroService(repo);
         this.login = new LoginService(repo);
-        this.caderno = new CadernoDeCampoServise();
+        this.caderno = new CadernoDeCampoService();
     }
 
     @Override
@@ -26,7 +27,15 @@ public class TratadoraDePedidos implements Runnable {
         try {
             while (true) {
                 System.out.println("[Tratadora] Aguardando objeto do cliente...");
-                Object msg = in.readObject();
+                Object msg;
+
+                try {
+                    msg = in.readObject();   // <- aqui dava EOFException
+                } catch (EOFException eof) {
+                    System.out.println("[Tratadora] Cliente desconectou (EOF). Encerrando thread.");
+                    break; // sai do while e encerra a tratadora
+                }
+
                 System.out.println("[Tratadora] Objeto recebido: " + msg.getClass().getName());
 
                 if (msg instanceof PedidoDeCadastro pc) {
@@ -43,13 +52,19 @@ public class TratadoraDePedidos implements Runnable {
                 }
             }
         } catch (Exception e) {
-            System.err.println("[Tratadora] Erro na conexão/pedido:");
+            System.err.println("[Tratadora] Erro na conexão/pedido (não-EOF):");
             e.printStackTrace();
-            // aqui não relança, só encerra a thread da conexão
+        } finally {
+            // se quiser, pode fechar aqui (clientes que já morreram não receberiam desligamento mesmo)
+            try { in.close(); }  catch (Exception ignore) {}
+            try { out.close(); } catch (Exception ignore) {}
+            System.out.println("[Tratadora] Encerrada.");
         }
     }
 
-    private void tratarCadastro(PedidoDeCadastro pc) {
+
+
+private void tratarCadastro(PedidoDeCadastro pc) {
         try {
             System.out.println("[Tratadora] Iniciando cadastro para: " + pc.getEmail());
             cadastro.cadastrar(

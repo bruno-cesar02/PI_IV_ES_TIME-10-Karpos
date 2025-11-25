@@ -1,6 +1,7 @@
 package cliente;
 
 import comum.*;
+import servidor.Parceiro;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,17 +18,33 @@ public class Cliente {
 
         String acao = args[0].toLowerCase();
 
-        try (Socket s = new Socket("127.0.0.1", 5050);
-             ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-             ObjectInputStream in = new ObjectInputStream(s.getInputStream())) {
+        Socket conexao = null;
+        ObjectOutputStream transmissor = null;
+        ObjectInputStream receptor = null;
+        Parceiro servidor = null;
+
+        try {
+            conexao = new Socket("127.0.0.1", 5050);
+
+            // Ordem correta para evitar deadlock: primeiro ObjectOutputStream, depois ObjectInputStream
+            transmissor = new ObjectOutputStream(conexao.getOutputStream());
+            receptor    = new ObjectInputStream(conexao.getInputStream());
+
+            servidor = new Parceiro(conexao, receptor, transmissor);
+
+            // Sobe a thread que fica vigiando ComunicadoDeDesligamento
+            TratadoraDeComunicadoDeDesligamento tratadora =
+                    new TratadoraDeComunicadoDeDesligamento(servidor);
+            tratadora.setDaemon(true);
+            tratadora.start();
 
             switch (acao) {
                 case "inserir":
-                    processarInsercao(args, out, in);
+                    processarInsercao(args, servidor);
                     break;
 
                 case "login":
-                    processarLogin(args, out, in);
+                    processarLogin(args, servidor);
                     break;
 
                 default:
@@ -35,29 +52,22 @@ public class Cliente {
             }
 
         } catch (Exception e) {
-            // JSON de erro genérico se der pau na conexão
-            printJsonErro("erro_conexao_servidor: " + e.getMessage());
+            printJsonErro("erro_conexao_servidor: " + escapar(String.valueOf(e.getMessage())));
+        } finally {
+            if (servidor != null) {
+                try { servidor.adeus(); } catch (Exception ignore) {}
+            } else {
+                try { if (receptor    != null) receptor.close();    } catch (Exception ignore) {}
+                try { if (transmissor != null) transmissor.close(); } catch (Exception ignore) {}
+                try { if (conexao     != null) conexao.close();     } catch (Exception ignore) {}
+            }
         }
     }
 
     // ================== AÇÕES ==================
 
-    /**
-     * Espera:
-     * args[0] = "inserir"
-     * args[1] = nomeCompleto
-     * args[2] = email
-     * args[3] = senha
-     * args[4] = telefone
-     * args[5] = documento (CPF/CNPJ)
-     * args[6] = nomeEmpresa
-     * args[7] = endereco
-     * args[8] = tamanhoHectares (double)
-     * args[9] = cultura
-     */
     private static void processarInsercao(String[] args,
-                                          ObjectOutputStream out,
-                                          ObjectInputStream in) throws Exception {
+                                          Parceiro servidor) throws Exception {
         if (args.length < 10) {
             printJsonErro("parametros_insuficientes_para_inserir");
             return;
@@ -77,9 +87,8 @@ public class Cliente {
             printJsonErro("tamanhoHectares_invalido");
             return;
         }
-        String cultura        = args[9];
+        String cultura = args[9];
 
-        // Validações locais simples (opcional — regra forte fica no servidor)
         if (senha == null || senha.length() < 6) {
             printJsonErro("senha_muito_curta");
             return;
@@ -98,38 +107,29 @@ public class Cliente {
                 tamanhoHectares
         );
 
-        out.writeObject(pedido);
-        out.flush();
+        servidor.receba(pedido);
 
-        Object resposta = in.readObject();
+        Comunicado resposta = servidor.envie();
 
         if (resposta instanceof RespostaErro) {
             RespostaErro erro = (RespostaErro) resposta;
-            printJsonErro(erro.erro); // campo public final String erro;
+            printJsonErro(erro.erro);
         } else if (resposta instanceof RespostaOk) {
-            // Cadastro ok. Monta JSON de sucesso com os dados enviados
             printJsonSucessoCadastro(
                     nomeCompleto, email, telefone, documento,
                     nomeEmpresa, endereco, tamanhoHectares, cultura
             );
         } else if (resposta instanceof ClienteLogado) {
             ClienteLogado logado = (ClienteLogado) resposta;
-            comum.Cliente cli = logado.cliente; // campo public final Cliente cliente;
+            comum.Cliente cli = logado.cliente;
             printJsonSucessoCliente(cli);
         } else {
             printJsonErro("resposta_desconhecida_do_servidor");
         }
     }
 
-    /**
-     * Espera:
-     * args[0] = "login"
-     * args[1] = email
-     * args[2] = senha
-     */
     private static void processarLogin(String[] args,
-                                       ObjectOutputStream out,
-                                       ObjectInputStream in) throws Exception {
+                                       Parceiro servidor) throws Exception {
         if (args.length < 3) {
             printJsonErro("parametros_insuficientes_para_login");
             return;
@@ -139,11 +139,10 @@ public class Cliente {
         String senha = args[2];
         String cpfCnpj = args[3];
 
-        PedidoDeLogin pedido = new PedidoDeLogin(email, senha, cpfCnpj);
-        out.writeObject(pedido);
-        out.flush();
+        PedidoDeLogin pedido = new PedidoDeLogin(email, senha);
+        servidor.receba(pedido);
 
-        Object resposta = in.readObject();
+        Comunicado resposta = servidor.envie();
 
         if (resposta instanceof RespostaErro) {
             RespostaErro erro = (RespostaErro) resposta;
@@ -153,7 +152,6 @@ public class Cliente {
             comum.Cliente cli = logado.cliente;
             printJsonSucessoCliente(cli);
         } else if (resposta instanceof RespostaOk) {
-            // Caso o servidor use RespostaOk pra login bem-sucedido sem devolver o Cliente
             printJsonSucessoLoginSimples(email);
         } else {
             printJsonErro("resposta_desconhecida_do_servidor");
@@ -162,8 +160,6 @@ public class Cliente {
 
     // ================== HELPERS JSON ==================
 
-    // Erro:
-    // {"loginPermitido": "false", "msg": "email inválido"}
     private static void printJsonErro(String msg) {
         System.out.println(
                 "{\\\"loginPermitido\\\": \\\"false\\\", " +
@@ -171,7 +167,6 @@ public class Cliente {
         );
     }
 
-    // Sucesso com objeto Cliente completo (do servidor)
     private static void printJsonSucessoCliente(comum.Cliente cli) {
         if (cli == null) {
             printJsonErro("cliente_nulo_na_resposta");
@@ -188,9 +183,13 @@ public class Cliente {
         sb.append("}}");
 
         System.out.println(sb.toString());
+        try{
+            Thread.sleep(500);
+        } catch (InterruptedException e){
+
+        }
     }
 
-    // Sucesso de cadastro usando os dados enviados (se o servidor só devolve RespostaOk)
     private static void printJsonSucessoCadastro(String nomeCompleto,
                                                  String email,
                                                  String telefone,
@@ -212,9 +211,13 @@ public class Cliente {
         sb.append("}}");
 
         System.out.println(sb.toString());
+        try{
+            Thread.sleep(500);
+        } catch (InterruptedException e){
+
+        }
     }
 
-    // Sucesso simples de login, se só tiver o email
     private static void printJsonSucessoLoginSimples(String email) {
         StringBuilder sb = new StringBuilder();
         sb.append("{\\\"loginPermitido\\\": \\\"true\\\", \\\"usuario\\\": {");
@@ -222,9 +225,13 @@ public class Cliente {
         sb.append("}}");
 
         System.out.println(sb.toString());
+        try{
+            Thread.sleep(500);
+        } catch (InterruptedException e){
+
+        }
     }
 
-    // Escape bem simples pra não quebrar o JSON
     private static String escapar(String texto) {
         if (texto == null) return "";
         return texto

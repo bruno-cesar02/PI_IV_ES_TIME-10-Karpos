@@ -23,6 +23,17 @@ public class SupervisoraDeConexao extends Thread
         this.conexao  = conexao;
         this.usuarios = usuarios;
     }
+    public static void avisarClientesDesligamento(ArrayList<Parceiro> usuarios){
+        synchronized (usuarios){
+            for (Parceiro p : usuarios){
+                try{
+                    p.receba(new comum.ComunicarDesligamento());
+                } catch (Exception e){
+
+                }
+            }
+        }
+    }
 
     @Override
     public void run() {

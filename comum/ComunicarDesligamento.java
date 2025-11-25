@@ -1,5 +1,3 @@
-package servidor;
-
-import comum.*;
+package comum;
 
 public class ComunicarDesligamento extends Comunicado {}
