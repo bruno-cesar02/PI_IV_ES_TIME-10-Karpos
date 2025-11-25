@@ -29,13 +29,17 @@ route.get('/login', redirecionarSeLogado, loginController.login);
 
 route.post('/login', loginController.loginForm);
 
+// Rota de Logout
+
+route.get('/logout', verificarSeLogado, loginController.logout);
+
 
 // Rota de dados
-route.get('/dados',verificarSeLogado, dadosController.dados);
+route.get('/dados',/*verificarSeLogado,*/ dadosController.dados);
 
 
 // Rota do dashboard
-route.get('/dashboard',/*verificarSeLogado,*/ dashboardController.dashboard);
+route.get('/dashboard',verificarSeLogado, dashboardController.dashboard);
 
 // ========= CADERNO DE CAMPO =========
 route.get('/caderno-campo',/*verificarSeLogado,*/cadernoCampoController.mostrarCadernoCampo);

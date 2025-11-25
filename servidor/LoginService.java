@@ -19,8 +19,7 @@ public class LoginService {
                                 b.getString("nomeEmpresa"),
                                 b.getString("endereco"),
                                 b.getDouble("tamanhoHectares"),
-                                b.getString("cultura")
-                                );
+                                b.getString("cultura"));
         if (!HashSenha.confere(senha, c.getHashSenha())) throw new IllegalArgumentException("Senha inválida");
         return c;
     }

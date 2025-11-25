@@ -30,7 +30,7 @@ exports.loginForm = (req, res) => {
   dadosRetornados = JSON.parse(dadosRetornados);
   dadosRetornados = JSON.parse(dadosRetornados);
   console.log('Dados retornados do Java:', dadosRetornados);
-  if (dadosRetornados.loginPermitido){
+  if (dadosRetornados.loginPermitido == 'true'){
     req.session.user = { 
     user: dadosRetornados.usuario.nomeCompleto,
     email: dadosRetornados.usuario.email,
@@ -68,4 +68,13 @@ exports.loginForm = (req, res) => {
     res.redirect('/login');
   }*/
 
+};
+
+exports.logout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Erro ao destruir a sessão:', err);
+    }
+    res.redirect('/login');
+  });
 };

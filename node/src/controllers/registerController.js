@@ -37,21 +37,11 @@ exports.registerForm = (req, res) => {
     dadosRetornados = JSON.parse(dadosRetornados);
     console.log('Dados retornados do Java:', dadosRetornados);
     if (dadosRetornados.loginPermitido){
-      req.session.user = { 
-      user: dadosRetornados.usuario.nomeCompleto,
-      email: dadosRetornados.usuario.email,
-      telefone: dadosRetornados.usuario.telefone,
-      documento: dadosRetornados.usuario.documento,
-      nomeEmpresa: dadosRetornados.usuario.nomeEmpresa,
-      endereco: dadosRetornados.usuario.endereco,
-      tamanhoHectares: dadosRetornados.usuario.tamanhoHectares,
-      categoria: dadosRetornados.usuario.cultura
-    };
-      req.session.msg = '';
-      res.redirect('/dashboard');
+      req.session.msg = 'cadastro realizado com sucesso';
+      res.redirect('/login');
     } else {
       req.session.msg = dadosRetornados.msg;
-      res.redirect('/login');
+      res.redirect('/register');
     }
     });
   
