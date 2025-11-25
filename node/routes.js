@@ -35,21 +35,21 @@ route.get('/logout', verificarSeLogado, loginController.logout);
 
 
 // Rota de dados
-route.get('/dados',/*verificarSeLogado,*/ dadosController.dados);
+route.get('/dados',verificarSeLogado, dadosController.dados);
 
 
 // Rota do dashboard
 route.get('/dashboard',verificarSeLogado, dashboardController.dashboard);
 
 // ========= CADERNO DE CAMPO =========
-route.get('/caderno-campo',/*verificarSeLogado,*/cadernoCampoController.mostrarCadernoCampo);
+route.get('/caderno-campo',verificarSeLogado,cadernoCampoController.mostrarCadernoCampo);
 
-route.get('/novo-registro',/*verificarSeLogado,*/cadernoCampoController.mostrarNovoRegistro);
+route.get('/novo-registro',verificarSeLogado,cadernoCampoController.mostrarNovoRegistro);
 
 // ========= CUSTOS =========
-route.get('/custos-registrados',/*verificarSeLogado,*/custosController.mostrarCustosRegistrados);
+route.get('/custos-registrados',verificarSeLogado,custosController.mostrarCustosRegistrados);
 
-route.get('/novo-custo',/*verificarSeLogado,*/custosController.mostrarNovoCusto);
+route.get('/novo-custo',verificarSeLogado,custosController.mostrarNovoCusto);
 
 
 

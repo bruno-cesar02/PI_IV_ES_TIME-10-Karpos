@@ -7,18 +7,7 @@
         <!-- MAIN CONTENT -->
         <main class="main-content">
             <!-- TOPBAR arredondada -->
-            <div class="topbar">
-                <div class="header-profile">
-                    <div class="profile-avatar">
-                        <img src="/img/usuario.png" alt="Carlos Pereira">
-                    </div>
-                    <div class="profile-info">
-                        <h3>Carlos Pereira</h3>
-                        <p>Fazenda Sta Cândida</p>
-                    </div>
-                </div>
-                <div class="notification-icon">🔔</div>
-            </div>
+            <%- include('includes/topbar')%>
 
             <!-- PAINEL PRINCIPAL arredondado -->
             <section class="dashboard-panel">
@@ -29,8 +18,8 @@
                     </div>
 
                     <div class="panel-actions">
-                        <button class="btn btn-primary">Novo Registro</button>
-                        <button class="btn btn-outline">Novos Custos</button>
+                        <button type="link" onclick="window.location.href='/novo-registro'" class="btn btn-primary">Novo Registro</button>
+                        <button type="link" onclick="window.location.href='/novo-custo'" class="btn btn-outline">Novos Custos</button>
                     </div>
                 </div>
 
@@ -39,18 +28,13 @@
                         <div class="registros-card rounded-card">
                             <div class="registros-header">
                                 <h2 class="registros-title">Últimos<br>Registros</h2>
-                                <button class="nav-button">‹</button>
+                                <button type="link" onclick="window.location.href='/custos-registrados'" class="nav-button">‹</button>
                             </div>
                             <ol class="registros-list">
-                                <li>Preparação do Solo</li>
-                                <li>Plantio e Sementeira</li>
-                                <li>Manejo e Tratos Culturais</li>
-                                <li>Monitoramento e Colheita</li>
                             </ol>
-                            <button class="btn-details">Detalhes</button>
+                            <button type="link" onclick="window.location.href='/custos-registrados'" class="btn-details">Detalhes</button>
                         </div>
                     </div>
-
                     <div class="right-col">
                         <div class="metric-card total">
                             <div class="metric-left">

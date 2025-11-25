@@ -1,3 +1,5 @@
+
+
 // src/controllers/cadernoCampoController.js
 
 // GET /caderno-campo
@@ -10,6 +12,8 @@ exports.mostrarCadernoCampo = (req, res) => {
     title: 'Meu Caderno de Campo',
     css: 'dashboard.css',
     cssExtra: 'caderno-campo.css',
+    msg: req.session.msg || '',
+    dados: req.session.user,
     //active: 'historico', se optar por fazer as barras ficarem em negrito atraves do controller e nao do html
     // TODO: passar aqui a lista real de atividades vinda do backend
     atividades: [] // placeholder
@@ -22,10 +26,13 @@ exports.mostrarCadernoCampo = (req, res) => {
 // - No futuro, pode precisar carregar listas auxiliares do backend
 //   (ex.: tipos de atividade, talhões, culturas) para preencher selects.
 exports.mostrarNovoRegistro = (req, res) => {
+
   res.render('novo-registro', {
     title: 'Novo Registro',
     css: 'dashboard.css',
     cssExtra: 'caderno-campo.css',
+    msg: req.session.msg || '',
+    dados: req.session.user
     //active: 'historico' se optar por fazer as barras ficarem em negrito atraves do controller e nao do html
     // TODO: passar dados auxiliares (tipos de atividade, etc.), se o backend fornecer
   });

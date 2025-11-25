@@ -10,6 +10,8 @@ exports.mostrarCustosRegistrados = (req, res) => {
     title: 'Custos Registrados',
     css: 'dashboard.css',
     cssExtra: 'caderno-campo.css',
+    dados: req.session.user,
+    msg: req.session.msg || '',
     //active: 'historico', se optar por fazer as barras ficarem em negrito atraves do controller e nao do html
     // TODO: passar aqui a lista real de custos vinda do backend
     custos: [] // placeholder
@@ -26,6 +28,8 @@ exports.mostrarNovoCusto = (req, res) => {
     title: 'Novo Custo',
     css: 'dashboard.css',
     cssExtra: 'caderno-campo.css',
+    dados: req.session.user,
+    msg: req.session.msg || ''
     //active: 'historico'se optar por fazer as barras ficarem em negrito atraves do controller e nao do html
     // TODO: passar categorias, atividades associáveis, etc., se o backend fornecer.
   });

@@ -36,10 +36,7 @@ exports.loginForm = (req, res) => {
     email: dadosRetornados.usuario.email,
     telefone: dadosRetornados.usuario.telefone,
     documento: dadosRetornados.usuario.documento,
-    nomeEmpresa: dadosRetornados.usuario.nomeEmpresa,
-    endereco: dadosRetornados.usuario.endereco,
-    tamanhoHectares: dadosRetornados.usuario.tamanhoHectares,
-    categoria: dadosRetornados.usuario.cultura
+    tamanhoHectares: dadosRetornados.usuario.tamanhoHectares
   };
     req.session.msg = '';
     res.redirect('/dashboard');

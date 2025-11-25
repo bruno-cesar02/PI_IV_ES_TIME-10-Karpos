@@ -11,6 +11,13 @@ body {
     background-color: #e5fae2;
 }
 
+.msg-error{
+    color: #ff4d4d;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
 .container {
     display: flex;
     height: 100vh;
