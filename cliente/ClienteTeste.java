@@ -25,6 +25,16 @@ public class ClienteTeste {
             out.flush();
             Object resp = in.readObject();
             System.out.println(resp); // ClienteLogado ou RespostaErro
+
+            // 3) Pedido Cadastro atividade Caderno de Campo
+            out.writeObject(new PedidoCadastroCadernoCampo(
+                    "12/12/2025", "Plantio",
+                    "Usando maquinário pesado e mão de obra para fazer o plntio de soja na fazenda",
+                    "mariateste@karpos.com"
+            ));
+            out.flush();
+            Object resp2 = in.readObject();
+
         }
     }
 }

@@ -10,12 +10,14 @@ public class TratadoraDePedidos implements Runnable {
     private final ObjectOutputStream out;
     private final CadastroService cadastro;
     private final LoginService login;
+    private final CadernoDeCampoServise caderno;
 
     public TratadoraDePedidos(ObjectInputStream in, ObjectOutputStream out, RepositorioClientes repo) {
         this.in = in;
         this.out = out;
         this.cadastro = new CadastroService(repo);
         this.login = new LoginService(repo);
+        this.caderno = new CadernoDeCampoServise();
     }
 
     @Override
@@ -31,7 +33,10 @@ public class TratadoraDePedidos implements Runnable {
                     tratarCadastro(pc);
                 } else if (msg instanceof PedidoDeLogin pl) {
                     tratarLogin(pl);
-                } else {
+                } else if (msg instanceof PedidoCadastroCadernoCampo pccd){
+                    tratarCaderno(pccd);
+                }
+                else {
                     System.out.println("[Tratadora] Comando não reconhecido: " + msg.getClass().getName());
                     out.writeObject(new RespostaErro("Comando não reconhecido"));
                     out.flush();
@@ -101,6 +106,23 @@ public class TratadoraDePedidos implements Runnable {
                 out.flush();
             } catch (Exception ex) {
                 System.err.println("[Tratadora] Falha ao enviar RespostaErro de login ao cliente:");
+                ex.printStackTrace();
+            }
+        }
+    }
+    private void tratarCaderno(PedidoCadastroCadernoCampo pccd) {
+        try{
+            System.out.println("[Tratadora] Iniciando login para: " + pccd.getUsuarioEmail());
+            caderno.addAtividade(pccd.getData(), pccd.getTipoAtividade(), pccd.getTexto(), pccd.getUsuarioEmail());
+        }
+        catch (Exception e){
+            System.err.println("[Tratadora] Erro ao cadastar atividade do caderno de campo " + e.getMessage());
+            e.printStackTrace();
+            try {
+                out.writeObject(new RespostaErro(e.getMessage()));
+                out.flush();
+            } catch (Exception ex) {
+                System.err.println("[Tratadora] Falha ao enviar RespostaErro ao cliente:");
                 ex.printStackTrace();
             }
         }

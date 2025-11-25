@@ -1,8 +1,9 @@
 package servidor.dbConection;
 
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import org.bson.Document;
+import java.util.List;
+import java.util.ArrayList;
 
 public class DBUse {
     public static MongoCollection<Document> makeCollection(String collectionName , String dataBaseName) {
@@ -24,7 +25,9 @@ public class DBUse {
 
         System.out.println("[DBUse] inserirUsuario chamado para: " + email);
 
-        MongoCollection<Document> collection = DBUse.makeCollection("user-date" , "Karpos-BD");
+        MongoCollection<Document> collection = DBUse.makeCollection("user-data" , "Karpos-BD");
+
+        long qtd = collection.countDocuments();
 
         Document document = new Document("nome",nome)
                 .append("email",email)
@@ -34,7 +37,8 @@ public class DBUse {
                 .append("nomeEmpresa",nomeEmpresa)
                 .append("endereco",endereco)
                 .append("tamanhoHectares",tamanhoHectares)
-                .append("cultura",categoria);
+                .append("cultura",categoria)
+                .append("userID", qtd+1);
 
         Document filtroBusca = new Document("email", email);
 
@@ -68,14 +72,24 @@ public class DBUse {
             String nomeEmpresaBD = usuarioExistente.getString("nomeEmpresa");
             String enderecoBD = usuarioExistente.getString("endereco");
             double tamanhoHectaresBD = usuarioExistente.getDouble("tamanhoHectares");
-            String categoriaBD = usuarioExistente.getString("categoria");
+            String culturaBD = usuarioExistente.getString("cultura");
+            long userIDBD = usuarioExistente.getLong("userID");
 
 
             if (emailBD.equals(email)){
 
                 System.out.println("usuário encontrado no Banco de Dados");
 
-                return new Document("nome",nome).append("email",emailBD).append("senha",senhaBD).append("telefone",telefoneBD).append("documento",documentoBD).append("nomeEmpresa",nomeEmpresaBD).append("endereco",enderecoBD).append("tamanhoHectares",tamanhoHectaresBD).append("categoria",categoriaBD);
+                return new Document("nome",nome)
+                        .append("email",emailBD)
+                        .append("senha",senhaBD)
+                        .append("telefone",telefoneBD)
+                        .append("documento",documentoBD)
+                        .append("nomeEmpresa",nomeEmpresaBD)
+                        .append("endereco",enderecoBD)
+                        .append("tamanhoHectares",tamanhoHectaresBD)
+                        .append("cultura",culturaBD)
+                        .append("userID", userIDBD);
             }
             else {
 
@@ -86,7 +100,7 @@ public class DBUse {
         }
         return  null;
     }
-    public static List<Document> buscarPorData(String nomeColecao, String dataBusca) {
+    public static List<Document> buscarPorData(String nomeColecao, String dataBusca, String userEmail) {
         MongoCollection<Document> collection = DBUse.makeCollection(nomeColecao, "Karpos-BD");
 
         Document filtroBusca = new Document("data", dataBusca);
@@ -106,22 +120,38 @@ public class DBUse {
             return documentosEncontrados;
         }
     }
-    public static void inserirAtividade (String data, String tipoAtividade, String texto){
+    public static boolean inserirAtividade (String data, String tipoAtividade, String texto, String usuarioEmail){
 
         MongoCollection<Document> collection = DBUse.makeCollection("field-metrics" , "Karpos-BD");
+        MongoCollection<Document> userCollection = DBUse.makeCollection("user-data" , "Karpos-BD");
+
         Document document = new Document("data",data).append("tipoAtividade",tipoAtividade).append("texto",texto);
+        Document filtroUser = new Document("email", usuarioEmail);
 
-        Document filtroBusca = new Document("data", data).append("tipoAtividade", tipoAtividade);
+        Document usuarioExistente = userCollection.find(filtroUser).first();
 
-        Document atividadeExistente = collection.find(filtroBusca).first();
+        if (usuarioExistente != null){
+            long userIDBD = usuarioExistente.getLong("userID");
+            System.out.println(userIDBD);
 
-        if (usuarioExistente == null ){
+            Document filtroBusca = new Document("data", data).append("tipoAtividade", tipoAtividade).append("userID", userIDBD);
 
-            collection.insertOne(document);
-            System.out.println("atividade " + tipoAtividade + " inserido com sucesso na coleção.");
-            return;
+            document.append("userID", userIDBD);
+
+            Document atividadeExistente = collection.find(filtroBusca).first();
+
+            if (atividadeExistente == null ){
+
+                collection.insertOne(document);
+                System.out.println("atividade " + tipoAtividade + " inserido com sucesso na coleção.");
+                return true;
+            }
+            System.out.println("Atividade já cadastrado, não pode cadastrar dois");
+            return false;
         }
-        System.out.println("Atividade já cadastrado, não pode cadastrar dois");
+        System.out.println("Usuário não encontrado");
+        return false;
+
     }
     public static void inserirCusto (String data, String categoria, String atividade, String descricao , double custo){
 
@@ -134,7 +164,7 @@ public class DBUse {
 
         Document atividadeExistente = collection.find(document).first();
 
-        if (usuarioExistente == null ){
+        if (atividadeExistente == null ){
 
             collection.insertOne(document);
             System.out.println("custo de categoria " + categoria + "com valor de RS" + custo +  " inserido com sucesso na coleção.");
