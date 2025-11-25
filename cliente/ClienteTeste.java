@@ -15,7 +15,7 @@ public class ClienteTeste {
             out.writeObject(new PedidoDeCadastro(
                     "Maria Silva", "mariateste@karpos.com", "Secreta#123",
                     "(19) 99999-0000", "123.456.789-09",
-                    "Sítio Alecrim", "Estrada Rural, 100", 12.5, "Café"
+                    12.5
             ));
             out.flush();
             System.out.println(in.readObject()); // RespostaOk ou RespostaErro

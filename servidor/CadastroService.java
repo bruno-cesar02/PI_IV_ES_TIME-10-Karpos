@@ -16,10 +16,7 @@ public class CadastroService {
             String senhaPura,
             String telefone,
             String cpfCnpj,
-            String nomeEmpresa,
-            String endereco,
-            double hectares,
-            String cultura
+            double hectares
     ) throws Exception {
 
         System.out.println("[CadastroService] Iniciando cadastrar() para: " + email);
@@ -56,10 +53,7 @@ public class CadastroService {
                 hash,
                 telefone,
                 cpfCnpj,
-                nomeEmpresa,
-                endereco,
-                hectares,
-                cultura
+                hectares
         );
         System.out.println("[CadastroService] Cliente criado: " + cliente.getEmail());
 
@@ -77,10 +71,7 @@ public class CadastroService {
                     cliente.getHashSenha(),
                     cliente.getTelefone(),
                     cliente.getDocumento(),
-                    cliente.getNomeEmpresa(),
-                    cliente.getEndereco(),
-                    cliente.getTamanhoHectares(),
-                    cliente.getCultura()
+                    cliente.getTamanhoHectares()
             );
             System.out.println(">>> Cadastro salvo no MongoDB para: " + cliente.getEmail());
         } catch (Exception e) {

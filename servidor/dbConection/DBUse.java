@@ -20,8 +20,7 @@ public class DBUse {
     }
     public static void inserirUsuario (String nome, String email, String senha,
                                        String telefone , String cpfCnpj,
-                                       String nomeEmpresa, String endereco,
-                                       double tamanhoHectares, String categoria){
+                                       double tamanhoHectares){
 
         System.out.println("[DBUse] inserirUsuario chamado para: " + email);
 
@@ -34,10 +33,7 @@ public class DBUse {
                 .append("senha",senha)
                 .append("telefone",telefone)
                 .append("documento",cpfCnpj)
-                .append("nomeEmpresa",nomeEmpresa)
-                .append("endereco",endereco)
                 .append("tamanhoHectares",tamanhoHectares)
-                .append("cultura",categoria)
                 .append("userID", qtd+1);
 
         Document filtroBusca = new Document("email", email);
@@ -69,10 +65,7 @@ public class DBUse {
             String senhaBD = usuarioExistente.getString("senha");
             String telefoneBD = usuarioExistente.getString("telefone");
             String documentoBD = usuarioExistente.getString("documento");
-            String nomeEmpresaBD = usuarioExistente.getString("nomeEmpresa");
-            String enderecoBD = usuarioExistente.getString("endereco");
             double tamanhoHectaresBD = usuarioExistente.getDouble("tamanhoHectares");
-            String culturaBD = usuarioExistente.getString("cultura");
             long userIDBD = usuarioExistente.getLong("userID");
 
 
@@ -85,10 +78,7 @@ public class DBUse {
                         .append("senha",senhaBD)
                         .append("telefone",telefoneBD)
                         .append("documento",documentoBD)
-                        .append("nomeEmpresa",nomeEmpresaBD)
-                        .append("endereco",enderecoBD)
                         .append("tamanhoHectares",tamanhoHectaresBD)
-                        .append("cultura",culturaBD)
                         .append("userID", userIDBD);
             }
             else {

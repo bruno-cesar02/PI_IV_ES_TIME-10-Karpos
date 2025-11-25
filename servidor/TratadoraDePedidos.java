@@ -58,10 +58,7 @@ public class TratadoraDePedidos implements Runnable {
                     pc.senha,
                     pc.telefone,
                     pc.cpfCnpj,
-                    pc.nomeEmpresa,
-                    pc.endereco,
-                    pc.hectares,
-                    pc.cultura
+                    pc.hectares
             );
 
             // LOG bonito
@@ -70,10 +67,7 @@ public class TratadoraDePedidos implements Runnable {
             System.out.println("E-mail: " + pc.getEmail());
             System.out.println("Telefone: " + pc.getTelefone());
             System.out.println("CPF/CNPJ: " + pc.getCpfCnpj());
-            System.out.println("Empresa/Propriedade: " + pc.getNomeEmpresa());
-            System.out.println("Endereço: " + pc.getEndereco());
             System.out.println("Tamanho (ha): " + pc.getHectares());
-            System.out.println("Cultura: " + pc.getCultura());
             System.out.println("================================\n");
 
             out.writeObject(new RespostaOk("Cadastro ok: " + pc.getEmail()));
