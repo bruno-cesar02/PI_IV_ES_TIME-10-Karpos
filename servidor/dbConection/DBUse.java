@@ -36,7 +36,7 @@ public class DBUse {
                 .append("tamanhoHectares",tamanhoHectares)
                 .append("userID", qtd+1);
 
-        Document filtroBusca = new Document("email", email);
+        Document filtroBusca = new Document("email", email).append("documento", cpfCnpj);
 
         Document usuarioExistente = collection.find(filtroBusca).first();
 
@@ -50,11 +50,11 @@ public class DBUse {
     }
 
 
-    public static Document loginUsuario (String email, String senha){
+    public static Document loginUsuario (String email, String senha, String cpfCnpj){
         MongoCollection<Document> collection = DBUse.makeCollection("user-data" ,  "Karpos-BD");
 
 
-        Document filtroBusca = new Document("email", email);
+        Document filtroBusca = new Document("email", email).append("documento", cpfCnpj);
 
         Document usuarioExistente = collection.find(filtroBusca).first();
 

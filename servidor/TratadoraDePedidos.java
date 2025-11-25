@@ -88,7 +88,7 @@ public class TratadoraDePedidos implements Runnable {
     private void tratarLogin(PedidoDeLogin pl) {
         try {
             System.out.println("[Tratadora] Iniciando login para: " + pl.email);
-            var cli = login.autenticar(pl.email, pl.senha);
+            var cli = login.autenticar(pl.email, pl.senha, pl.cpfCnpj);
 
             System.out.println("[Tratadora] Login bem-sucedido: " + cli.getEmail());
             out.writeObject(new ClienteLogado(cli));
