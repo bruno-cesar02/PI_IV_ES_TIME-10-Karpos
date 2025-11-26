@@ -1,3 +1,12 @@
+@font-face
+{
+    font-family: 'Rooftop';
+    src: url('../fonts/RooftopRegular.woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
 * {
     margin: 0;
     padding: 0;
@@ -21,7 +30,7 @@ header
 
     background-color: rgba(255, 255, 255, 0.1);
     backdrop-filter:  blur(10px);
-    -webkit-backdrop-filter: bluer(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 
     display: flex;
@@ -171,4 +180,73 @@ footer
 footer p
 {
     font-size: 12px;
+}
+
+
+@media (max-width: 768px)
+{
+    main
+    {
+        padding-left: 0;
+        align-items: center;
+    }
+
+
+    main h1
+    {
+        font-size: 28px;
+        text-align: center;
+        padding: 0 15px;  
+        margin-bottom: 15px;      
+    }
+
+
+    .botao
+    {
+        display: block;
+        margin: 0 auto;
+        width: 90%;
+        text-align: center;
+        max-width: 300px;
+    
+    }
+
+
+    footer
+    {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+        height: auto;
+    }
+
+    .footer-item
+    {
+        justify-content: center;
+        
+    }
+
+
+    header
+    {
+        height: 60px;
+    }
+
+
+    .logo img {
+        height: 35px;
+    }
+
+    .texto-info .titulo
+    {
+        font-size: 13px;
+    }
+
+
+    .texto-info .email
+    {
+        font-size: 11px;
+    }
+
+
 }
