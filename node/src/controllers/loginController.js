@@ -27,6 +27,7 @@ exports.loginForm = (req, res) => {
   processoJava.on('close', (code) => {
   console.log(`Processo Java finalizado com código ${code}`);
   dadosRetornados = dadosRetornados.trim() + '"';
+  console.log(dadosRetornados);
   dadosRetornados = JSON.parse(dadosRetornados);
   dadosRetornados = JSON.parse(dadosRetornados);
   console.log('Dados retornados do Java:', dadosRetornados);

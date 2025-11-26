@@ -83,10 +83,7 @@ public class Cliente {
                 senha,
                 telefone,
                 documento,
-                nomeEmpresa,
-                endereco,
-                tamanhoHectares,
-                cultura
+                tamanhoHectares
         );
 
         // ENVIA PEDIDO DIRETO PELO OUT
@@ -100,8 +97,7 @@ public class Cliente {
             printJsonErro(erro.erro);
         } else if (resposta instanceof RespostaOk) {
             printJsonSucessoCadastro(
-                    nomeCompleto, email, telefone, documento,
-                    nomeEmpresa, endereco, tamanhoHectares, cultura
+                    nomeCompleto, email, telefone, documento, tamanhoHectares
             );
         } else if (resposta instanceof ClienteLogado logado) {
             comum.Cliente cli = logado.cliente;
@@ -147,8 +143,8 @@ public class Cliente {
 
     private static void printJsonErro(String msg) {
         System.out.println(
-                "{\"loginPermitido\": \"false\", " +
-                        "\"msg\": \"" + escapar(msg) + "\"}"
+                "{\\\"loginPermitido\\\": \\\"false\\\", " +
+                        "\\\"msg\\\": \\\"" + escapar(msg) + "\\\"}"
         );
     }
 
@@ -159,15 +155,12 @@ public class Cliente {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("{\"loginPermitido\": \"true\", \"usuario\": {");
-        sb.append("\"nomeCompleto\": \"").append(escapar(cli.getNomeCompleto())).append("\", ");
-        sb.append("\"email\": \"").append(escapar(cli.getEmail())).append("\", ");
-        sb.append("\"telefone\": \"").append(escapar(cli.getTelefone())).append("\", ");
-        sb.append("\"documento\": \"").append(escapar(cli.getDocumento())).append("\", ");
-        sb.append("\"nomeEmpresa\": \"").append(escapar(cli.getNomeEmpresa())).append("\", ");
-        sb.append("\"endereco\": \"").append(escapar(cli.getEndereco())).append("\", ");
-        sb.append("\"tamanhoHectares\": ").append(cli.getTamanhoHectares()).append(", ");
-        sb.append("\"cultura\": \"").append(escapar(cli.getCultura())).append("\"");
+        sb.append("{\\\"loginPermitido\\\": \\\"true\\\", \\\"usuario\\\": {");
+        sb.append("\\\"nomeCompleto\\\": \\\"").append(escapar(cli.getNomeCompleto())).append("\\\", ");
+        sb.append("\\\"email\\\": \\\"").append(escapar(cli.getEmail())).append("\\\", ");
+        sb.append("\\\"telefone\\\": \\\"").append(escapar(cli.getTelefone())).append("\\\", ");
+        sb.append("\\\"documento\\\": \\\"").append(escapar(cli.getDocumento())).append("\\\", ");
+        sb.append("\\\"tamanhoHectares\\\": ").append(cli.getTamanhoHectares());
         sb.append("}}");
 
         System.out.println(sb.toString());
@@ -177,20 +170,14 @@ public class Cliente {
                                                  String email,
                                                  String telefone,
                                                  String documento,
-                                                 String nomeEmpresa,
-                                                 String endereco,
-                                                 double tamanhoHectares,
-                                                 String cultura) {
+                                                 double tamanhoHectares) {
         StringBuilder sb = new StringBuilder();
-        sb.append("{\"loginPermitido\": \"true\", \"usuario\": {");
-        sb.append("\"nomeCompleto\": \"").append(escapar(nomeCompleto)).append("\", ");
-        sb.append("\"email\": \"").append(escapar(email)).append("\", ");
-        sb.append("\"telefone\": \"").append(escapar(telefone)).append("\", ");
-        sb.append("\"documento\": \"").append(escapar(documento)).append("\", ");
-        sb.append("\"nomeEmpresa\": \"").append(escapar(nomeEmpresa)).append("\", ");
-        sb.append("\"endereco\": \"").append(escapar(endereco)).append("\", ");
-        sb.append("\"tamanhoHectares\": ").append(tamanhoHectares).append(", ");
-        sb.append("\"cultura\": \"").append(escapar(cultura)).append("\"");
+        sb.append("{\\\"loginPermitido\\\": \\\"true\\\", \\\"usuario\\\": {");
+        sb.append("\\\"nomeCompleto\\\": \\\"").append(escapar(nomeCompleto)).append("\\\", ");
+        sb.append("\\\"email\\\": \\\"").append(escapar(email)).append("\\\", ");
+        sb.append("\\\"telefone\\\": \\\"").append(escapar(telefone)).append("\\\", ");
+        sb.append("\\\"documento\\\": \\\"").append(escapar(documento)).append("\\\", ");
+        sb.append("\\\"tamanhoHectares\\\": ").append(tamanhoHectares);
         sb.append("}}");
 
         System.out.println(sb.toString());
@@ -201,8 +188,8 @@ public class Cliente {
 
     private static void printJsonSucessoLoginSimples(String email) {
         StringBuilder sb = new StringBuilder();
-        sb.append("{\"loginPermitido\": \"true\", \"usuario\": {");
-        sb.append("\"email\": \"").append(escapar(email)).append("\"");
+        sb.append("{\\\"loginPermitido\\\": \\\"true\\\", \\\"usuario\\\": {");
+        sb.append("\\\"email\\\": \\\"").append(escapar(email)).append("\\\"");
         sb.append("}}");
 
         System.out.println(sb.toString());
