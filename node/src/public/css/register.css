@@ -128,6 +128,16 @@ input:focus {
     object-fit: cover;
 }
 
+
+.form-section::-webkit-scrollbar {
+    display: none;
+}
+
+.form-section {
+    -ms-overflow-style: none;  /* IE e Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
 /* Responsivo */
 @media (max-width: 1024px) {
     .container {
@@ -145,16 +155,54 @@ input:focus {
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 480px) {
+    /* Remove a trava do scroll do body na vertical */
+    body {
+        height: auto;
+        overflow-y: auto;
+    }
+
+    .container {
+        height: auto;
+        min-height: 100vh;
+        flex-direction: column;
+    }
+
+    .form-section {
+        padding: 1rem 1.5rem; /* Reduz padding lateral */
+        width: 100%;
+        height: auto;
+        overflow-y: visible; /* Remove scroll interno, deixa a página rolar */
+    }
+
+
     .title {
-        font-size: 2.5rem;
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .logo {
+        display: block;
+        margin: 0 auto 1.5rem auto;
     }
 
     .form-row {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
 
-    .form-section {
-        padding: 1.5rem;
+    .submit-btn {
+        width: 100%;
+        margin-top: 1.5rem;
+        padding: 1rem;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+    
+    .form-wrapper {
+        padding-bottom: 2rem; /* Espaço extra no final para não colar na borda */
     }
 }

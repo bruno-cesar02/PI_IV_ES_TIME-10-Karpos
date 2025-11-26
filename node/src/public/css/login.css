@@ -11,13 +11,6 @@ body {
     background-color: #e5fae2;
 }
 
-.msg-error{
-    color: #ff4d4d;
-    margin-bottom: 15px;
-    font-weight: bold;
-    text-align: center;
-}
-
 .container {
     display: flex;
     height: 100vh;
@@ -32,6 +25,15 @@ body {
     justify-content: center;
     padding: 2rem;
     overflow-y: auto;
+}
+
+.form-section::-webkit-scrollbar {
+    display: none;
+}
+
+.form-section {
+    -ms-overflow-style: none;  /* IE e Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
 .form-wrapper {
