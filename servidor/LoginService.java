@@ -13,10 +13,10 @@ public class LoginService {
         if (b == null) throw new IllegalArgumentException("Usuário não encontrado");
         Cliente c = new Cliente(b.getString("nome"),
                                 b.getString("email"),
+                                b.getString("data"),
                                 b.getString("senha"),
                                 b.getString("telefone"),
                                 b.getString("documento"),
-                                b.getString("data"),
                                 b.getDouble("tamanhoHectares") );
         if (!HashSenha.confere(senha, c.getHashSenha())) throw new IllegalArgumentException("Senha inválida");
         return c;

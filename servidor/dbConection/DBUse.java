@@ -64,6 +64,7 @@ public class DBUse {
             String emailBD = usuarioExistente.getString("email");
             String senhaBD = usuarioExistente.getString("senha");
             String telefoneBD = usuarioExistente.getString("telefone");
+            String data = usuarioExistente.getString("data");
             String documentoBD = usuarioExistente.getString("documento");
             double tamanhoHectaresBD = usuarioExistente.getDouble("tamanhoHectares");
             long userIDBD = usuarioExistente.getLong("userID");
@@ -77,6 +78,7 @@ public class DBUse {
                         .append("email",emailBD)
                         .append("senha",senhaBD)
                         .append("telefone",telefoneBD)
+                        .append("data",data)
                         .append("documento",documentoBD)
                         .append("tamanhoHectares",tamanhoHectaresBD)
                         .append("userID", userIDBD);
