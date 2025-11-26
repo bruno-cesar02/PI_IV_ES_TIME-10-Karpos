@@ -44,12 +44,23 @@ public class ClienteTeste {
             out.flush();
             Object resp3 = in.readObject();
 
-            // 5) Pedido de busca por data de custo
+            double num = 232312313;
+            // 5) Add custo
+            out.writeObject(new PedidoCadastroCusto(
+                    "12/12/2025", "imposto",
+                    "Custo essencial",
+                    "mariateste@karpos.com",
+                    num
+            ));
+            out.flush();
+            Object resp5 = in.readObject();
+
+            // 6) Pedido de busca por data de custo
             out.writeObject(new PedidoBuscaDataCusto(
                     "12/12/2025", "mariateste@karpos.com"
             ));
             out.flush();
-            Object resp4 = in.readObject();
+            Object resp6 = in.readObject();
 
         }
     }

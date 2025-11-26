@@ -153,23 +153,22 @@ public class DBUse {
         return false;
 
     }
-    public static void inserirCusto (String data, String categoria, String atividade, String descricao , double custo){
+    public static Boolean inserirCusto (String data, String categoria, String descricao, String email , double custo){
 
         MongoCollection<Document> collection = DBUse.makeCollection("field-costs" , "Karpos-BD");
         Document document = new Document("data",data)
                 .append("categoria",categoria)
-                .append("atividade",atividade)
                 .append("descricao", descricao)
                 .append("custo", custo);
 
         Document atividadeExistente = collection.find(document).first();
 
         if (atividadeExistente == null ){
-
             collection.insertOne(document);
             System.out.println("custo de categoria " + categoria + "com valor de RS" + custo +  " inserido com sucesso na coleção.");
-            return;
+            return false;
         }
         System.out.println("Custo já cadastrado, não pode cadastrar dois");
+        return false;
     }
 }

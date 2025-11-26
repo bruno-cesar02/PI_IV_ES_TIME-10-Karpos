@@ -16,6 +16,7 @@ public class TratadoraDePedidos implements Runnable {
     private final CadernoDeCampoService caderno;
     private final BuscaPorDataAtividadeService buscaPorDataAtividade;
     private final BuscaPorDataCustoService buscaDataCusto;
+    private final CadastroCustoServise custo;
 
     public TratadoraDePedidos(ObjectInputStream in, ObjectOutputStream out, RepositorioClientes repo) {
         this.in = in;
@@ -25,6 +26,7 @@ public class TratadoraDePedidos implements Runnable {
         this.caderno = new CadernoDeCampoService();
         this.buscaPorDataAtividade = new BuscaPorDataAtividadeService();
         this.buscaDataCusto = new BuscaPorDataCustoService();
+        this.custo = new CadastroCustoServise();
     }
 
     @Override
@@ -54,6 +56,8 @@ public class TratadoraDePedidos implements Runnable {
                     tratarBuscaPorDataAtividade(pbd);
                 }else if (msg instanceof PedidoBuscaDataCusto pbdc){
                     tratarBuscaPorDataCusto(pbdc);
+                }else if (msg instanceof PedidoCadastroCusto pcd){
+                    tratarCadastroCusto(pcd);
                 }
                 else {
                     System.out.println("[Tratadora] Comando não reconhecido: " + msg.getClass().getName());
@@ -194,6 +198,26 @@ private void tratarCadastro(PedidoDeCadastro pc) {
             out.writeObject(new BuscaDataAtividade(listaDeJsons));
             out.flush();
         } catch (Exception e) {
+            System.err.println("[Tratadora] Erro ao cadastar atividade do caderno de campo " + e.getMessage());
+            e.printStackTrace();
+            try {
+                out.writeObject(new RespostaErro(e.getMessage()));
+                out.flush();
+            } catch (Exception ex) {
+                System.err.println("[Tratadora] Falha ao enviar RespostaErro ao cliente:");
+                ex.printStackTrace();
+            }
+        }
+    }
+    public void tratarCadastroCusto(PedidoCadastroCusto pdc){
+        try{
+            System.out.println("[Tratadora] Iniciando cadastro de caderno de campo para: " + pdc.getUsuarioEmail());
+            custo.addCusto(pdc.getData(), pdc.getTipoAtividade(), pdc.getTexto(), pdc.getUsuarioEmail(), pdc.getValor());
+
+            out.writeObject(new RespostaOk("Cadastrado arividade: " + pdc.getUsuarioEmail()));
+            out.flush();
+        }
+        catch (Exception e){
             System.err.println("[Tratadora] Erro ao cadastar atividade do caderno de campo " + e.getMessage());
             e.printStackTrace();
             try {
