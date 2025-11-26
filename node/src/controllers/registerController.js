@@ -10,7 +10,7 @@ exports.register = (req, res) => {
 }
 
 exports.registerForm = (req, res) => {
-  const { fullName, email, birthDate, phone, cpf, password, confirmPassword } = req.body;
+  const { fullName, email, birthDate, phone, cpf, password, confirmPassword, hectares } = req.body;
 
     if (password !== confirmPassword) {
       req.session.msg = 'As senhas não coincidem.';
@@ -18,7 +18,7 @@ exports.registerForm = (req, res) => {
       return res.redirect('/register');
     }
   
-    const processoJava = spawn('java', ['cliente.Cliente', 'inserir', fullName, email, password, phone, cpf, birthDate ,"nenhum", 0 ,"nenhum"], {cwd: path.resolve(__dirname, '..', '..', '..')});
+    const processoJava = spawn('java', ['cliente.Cliente', 'inserir', fullName, email, password, phone, cpf, birthDate ,"nenhum", hectares ,"nenhum"], {cwd: path.resolve(__dirname, '..', '..', '..')});
   
     let dadosRetornados = '"';
   

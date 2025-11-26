@@ -31,24 +31,14 @@
                     <div class="filtros-fields">
                         <div class="filtro-field">
             <label for="filtro-data">Data</label>
-            <input type="date" id="filtro-data" class="input-field">
-        </div>
-
-        <div class="filtro-field">
-            <label for="filtro-tipo">Tipo de Atividade</label>
-            <select id="filtro-tipo" class="input-field">
-                <option value="">Todos</option>
-                <option value="Aplicação de Fertilizantes">Aplicação de Fertilizantes</option>
-                <option value="Irrigação de Lavoura">Irrigação de Lavoura</option>
-                <!-- depois você completa com os tipos reais -->
-            </select>
+            <input type="date" name="data" id="filtro-data" class="input-field" value="<%= dataFiltro || '' %>">
         </div>
 
         <button type="submit" id="btn-filtrar" class="btn btn-primary">
             Aplicar filtro
         </button>
         <button type="submit" id="btn-filtrar" class="btn btn-primary">
-            Apagar filtro
+            <a style="color:inherit; text-decoration:none;" href="/caderno-campo">Limpar filtro</a>
         </button>
     </div>
 </form>

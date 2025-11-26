@@ -20,12 +20,20 @@ exports.mostrarCustosRegistrados = (req, res) => {
 
 // GET /novo-custo
 exports.mostrarNovoCusto = (req, res) => {
+  // Se vierem parâmetros na query (ex: redirecionamento de /novo-registro), repassá-los para a view
+  const { dataAtividade, tipoAtividade, notas, valor } = req.query || {};
+
   res.render('novo-custo', {
     title: 'Novo Custo',
     css: 'dashboard.css',
     cssExtra: 'caderno-campo.css',
     dados: req.session.user,
-      msg: req.session.msg || ''
+    msg: req.session.msg || '',
+    // parâmetros opcionais para pré-preenchimento
+    dataAtividade: dataAtividade || '',
+    tipoAtividade: tipoAtividade || '',
+    notas: notas || '',
+    valorPrefill: valor || ''
 
       // TODO: passar categorias, atividades associáveis, etc., se o backend fornecer.
     });

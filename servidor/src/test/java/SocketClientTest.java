@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 /*import org.junit.jupiter.api.Assertions;
+=======
+package servidor.src.test.java;
+
+import org.junit.jupiter.api.Assertions;
+>>>>>>> 82ac2b2 (organizado caderno campo e custos)
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
