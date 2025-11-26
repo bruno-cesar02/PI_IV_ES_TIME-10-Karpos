@@ -17,6 +17,7 @@ public class TratadoraDePedidos implements Runnable {
     private final BuscaPorDataAtividadeService buscaPorDataAtividade;
     private final BuscaPorDataCustoService buscaDataCusto;
     private final CadastroCustoServise custo;
+    private final BuscaSemFiltroService busca;
 
     public TratadoraDePedidos(ObjectInputStream in, ObjectOutputStream out, RepositorioClientes repo) {
         this.in = in;
@@ -27,6 +28,7 @@ public class TratadoraDePedidos implements Runnable {
         this.buscaPorDataAtividade = new BuscaPorDataAtividadeService();
         this.buscaDataCusto = new BuscaPorDataCustoService();
         this.custo = new CadastroCustoServise();
+        this.busca = new BuscaSemFiltroService();
     }
 
     @Override
@@ -58,6 +60,8 @@ public class TratadoraDePedidos implements Runnable {
                     tratarBuscaPorDataCusto(pbdc);
                 }else if (msg instanceof PedidoCadastroCusto pcd){
                     tratarCadastroCusto(pcd);
+                }else if (msg instanceof PedidoBuscaSemFiltro pbsf){
+                    tratarBuscaSemFiltro(pbsf);
                 }
                 else {
                     System.out.println("[Tratadora] Comando não reconhecido: " + msg.getClass().getName());
@@ -219,6 +223,34 @@ private void tratarCadastro(PedidoDeCadastro pc) {
             out.flush();
         }
         catch (Exception e){
+            System.err.println("[Tratadora] Erro ao cadastar atividade do caderno de campo " + e.getMessage());
+            e.printStackTrace();
+            try {
+                out.writeObject(new RespostaErro(e.getMessage()));
+                out.flush();
+            } catch (Exception ex) {
+                System.err.println("[Tratadora] Falha ao enviar RespostaErro ao cliente:");
+                ex.printStackTrace();
+            }
+        }
+    }
+    private void tratarBuscaSemFiltro(PedidoBuscaSemFiltro pbsf){
+        try{
+            System.out.println("[Tratadora] Iniciando cadastro de caderno de campo para: " + pbsf.getEmail());
+
+            List<Document> lista = busca.buscaSemFiltro(pbsf.getEmail(), pbsf.getColecao());
+
+            List<String> listaDeJsons = new ArrayList<>();
+
+            if (lista == null){
+                throw new Exception("Nenhum registro encontrado");
+            }
+            for (Document doc : lista) {
+                listaDeJsons.add(doc.toJson());
+            }
+            out.writeObject(new BuscaSemFiltro(listaDeJsons));
+            out.flush();
+        } catch (Exception e) {
             System.err.println("[Tratadora] Erro ao cadastar atividade do caderno de campo " + e.getMessage());
             e.printStackTrace();
             try {

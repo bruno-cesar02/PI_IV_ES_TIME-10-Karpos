@@ -62,6 +62,13 @@ public class ClienteTeste {
             out.flush();
             Object resp6 = in.readObject();
 
+            out.writeObject(new PedidoBuscaSemFiltro(
+                     "mariateste@karpos.com", "field-metrics"
+            ));
+            out.flush();
+            Object resp7 = in.readObject();
+            System.out.println(resp7);
+
         }
     }
 }

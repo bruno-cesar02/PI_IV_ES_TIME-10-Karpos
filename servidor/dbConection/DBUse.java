@@ -128,7 +128,7 @@ public class DBUse {
         MongoCollection<Document> collection = DBUse.makeCollection("field-metrics" , "Karpos-BD");
         MongoCollection<Document> userCollection = DBUse.makeCollection("user-data" , "Karpos-BD");
 
-        Document document = new Document("data",data).append("tipoAtividade",tipoAtividade).append("texto",texto);
+        Document document = new Document("data",data).append("atividade",tipoAtividade).append("texto",texto);
         Document filtroUser = new Document("email", usuarioEmail);
 
         Document usuarioExistente = userCollection.find(filtroUser).first();
@@ -137,7 +137,7 @@ public class DBUse {
             long userIDBD = usuarioExistente.getLong("userID");
             System.out.println(userIDBD);
 
-            Document filtroBusca = new Document("data", data).append("tipoAtividade", tipoAtividade).append("userID", userIDBD);
+            Document filtroBusca = new Document("data", data).append("atividade", tipoAtividade).append("userID", userIDBD);
 
             document.append("userID", userIDBD);
 
@@ -199,6 +199,35 @@ public class DBUse {
                 return documentosEncontrados;
             } else {
                 System.out.println(documentosEncontrados.size() + " documento(s) encontrado(s) na coleção '" + nomeColecao + "' para a data: " + atividadeBusca);
+                return documentosEncontrados;
+            }
+        }
+        System.out.println("Usuário não encontrado");
+        return null;
+    }
+    public static List<Document> buscarSemFiltro(String nomeColecao,String userEmail) {
+        MongoCollection<Document> collection = DBUse.makeCollection(nomeColecao, "Karpos-BD");
+        MongoCollection<Document> userCollection = DBUse.makeCollection("user-data" , "Karpos-BD");
+
+        Document filtroUser = new Document("email", userEmail);
+        Document usuarioExistente = userCollection.find(filtroUser).first();
+
+        if (usuarioExistente != null){
+
+            Document filtroBusca = new Document("userID", usuarioExistente.getLong("userID"));
+
+            FindIterable<Document> resultados = collection.find(filtroBusca);
+
+            List<Document> documentosEncontrados = new ArrayList<>();
+            for (Document documento : resultados) {
+                documentosEncontrados.add(documento);
+            }
+
+            if (documentosEncontrados.isEmpty()) {
+                System.out.println("Nenhum documento encontrado na coleção '" + nomeColecao + "' com a data: " );
+                return documentosEncontrados;
+            } else {
+                System.out.println(documentosEncontrados.size() + " documento(s) encontrado(s) na coleção '" + nomeColecao + "' para a data: ");
                 return documentosEncontrados;
             }
         }

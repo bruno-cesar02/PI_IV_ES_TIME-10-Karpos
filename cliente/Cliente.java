@@ -2,10 +2,10 @@ package cliente;
 
 import comum.*;
 import servidor.*; // só se precisar de tipos comuns, mas NÃO de Parceiro
-
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.*;
 
 public class Cliente {
 
@@ -35,6 +35,8 @@ public class Cliente {
                     processarAddAtividade(args, out, in);
                     break;
 
+                case "listaSemFiltro":
+                    processarBuscaSemFiltro(args, out, in);
                 default:
                     printJsonErro("acao_invalida");
             }
@@ -46,6 +48,36 @@ public class Cliente {
     }
 
     // ================== AÇÕES ==================
+
+    private static void processarBuscaSemFiltro(String[] args,
+                                              ObjectOutputStream out,
+                                              ObjectInputStream in) throws Exception {
+
+        if (args.length < 2) {
+            printJsonErro("parametros_insuficientes_para_busca");
+            return;
+        }
+
+        String email = args[1];
+        String colecao = args[2];
+
+        PedidoBuscaSemFiltro pedido = new PedidoBuscaSemFiltro(email, colecao);
+
+        // ENVIA PEDIDO
+        out.writeObject(pedido);
+        out.flush();
+
+        // LÊ RESPOSTA
+        Object resposta = in.readObject();
+
+        if (resposta instanceof RespostaErro erro) {
+            printJsonErro(erro.erro);
+        } else if (resposta instanceof BuscaSemFiltro buscaSemFiltro) {
+            printJsonBuscaSemFiltro(buscaSemFiltro.getResultado());
+        }else {
+            printJsonErro("resposta_desconhecida_do_servidor");
+        }
+    }
 
     private static void processarInsercao(String[] args,
                                           ObjectOutputStream out,
@@ -218,6 +250,20 @@ public class Cliente {
 
         System.out.println(sb.toString());
 
+        // se quiser manter esse "delay" pode deixar, mas não é obrigatório:
+        try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+    }
+    private static void printJsonBuscaSemFiltro(List<String> listaDeJsons) {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        while (!listaDeJsons.isEmpty()) {
+            String json = listaDeJsons.get(i);
+            System.out.println(json);
+            sb.append("{\\\"BuscExecutada\\\": \\\"true\\\", \\\"busca\\\": \\\"" + json + "\\\" ");
+            sb.append("}");
+            i ++;
+        }
+        System.out.println(sb.toString());
         // se quiser manter esse "delay" pode deixar, mas não é obrigatório:
         try { Thread.sleep(100); } catch (InterruptedException ignored) {}
     }
