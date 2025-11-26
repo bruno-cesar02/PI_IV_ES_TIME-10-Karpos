@@ -50,6 +50,7 @@ route.get('/novo-registro',verificarSeLogado,cadernoCampoController.mostrarNovoR
 route.get('/custos-registrados',verificarSeLogado,custosController.mostrarCustosRegistrados);
 
 route.get('/novo-custo',verificarSeLogado,custosController.mostrarNovoCusto);
+route.post('/novo-custo',verificarSeLogado,custosController.salvarNovoCusto);
 
 
 

@@ -22,29 +22,30 @@
                         <button class="btn btn-outline">Excluir</button>
                     </div>
                 </div>
+            
 
                 <!-- Formulário -->
-                <form class="form-registro">
+                <form action="/novo-custo" method="POST" class="form-registro">
                     <!-- Linha 1: Data e Valor -->
                     <div class="form-group-horizontal">
                         <div class="form-field">
-                            <h3 class="field-title">Data da Custo</h3>
+                            <h3 class="field-title">Data do Custo</h3>
                             <p class="field-subtitle">DD/MM/AAAA</p>
-                            <input type="date" class="input-field" id="dataCusto">
+                            <input type="date" name="data" class="input-field" required>
                         </div>
 
                         <div class="form-field">
                             <h3 class="field-title">Valor</h3>
                             <p class="field-subtitle">R$1.234,56</p>
-                            <input type="text" class="input-field" id="valor" placeholder="R$ 0,00">
+                            <input type="number" name="valor" class="input-field" step="0.01" placeholder="R$ 0,00" required>
                         </div>
                     </div>
 
                     <!-- Descrição -->
                     <div class="form-field full-width">
                         <h3 class="field-title">Descrição</h3>
-                        <p class="field-subtitle">Detalhe à que este custo se refere.</p>
-                        <textarea class="textarea-field" id="descricao" rows="4" placeholder="Digite a descrição..."></textarea>
+                        <p class="field-subtitle">Detalhe a que este custo se refere.</p>
+                        <textarea name="descricao" class="textarea-field" rows="4" placeholder="Digite a descrição..." required></textarea>
                     </div>
 
                     <!-- Linha 2: Categoria e Atividade de Campo -->
@@ -52,7 +53,7 @@
                         <div class="form-field">
                             <h3 class="field-title">Categoria</h3>
                             <p class="field-subtitle">Selecione a Categoria</p>
-                            <select class="input-field" id="categoria">
+                            <select name="categoria" class="input-field" required>
                                 <option value="">Selecione a Categoria</option>
                                 <option value="Insumos">Insumos</option>
                                 <option value="Maquinário">Maquinário</option>
@@ -63,13 +64,16 @@
                         </div>
 
                         <div class="form-field">
-                            <h3 class="field-title">Atividade de Campo</h3>
+                            <h3 class="field-title">Atividade de Campo (Opcional)</h3>
                             <p class="field-subtitle">Associado/Não Associado</p>
-                            <select class="input-field" id="atividadeCampo">
-                                <option value="">Não Associado</option>
-                                <option value="associado">Associar a uma atividade</option>
-                            </select>
+                            <input type="text" name="atividadeAssociada" class="input-field" placeholder="Ex: Plantio de Milho">
                         </div>
+                    </div>
+
+                    <!-- Botões de ação -->
+                    <div class="panel-actions" style="margin-top: 32px;">
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <a href="/custos-registrados" class="btn btn-outline">Cancelar</a>
                     </div>
                 </form>
             </section>
