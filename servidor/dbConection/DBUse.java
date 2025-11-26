@@ -19,7 +19,7 @@ public class DBUse {
         return collection;
     }
     public static void inserirUsuario (String nome, String email, String senha,
-                                       String telefone , String cpfCnpj,
+                                       String telefone , String cpfCnpj, String data,
                                        double tamanhoHectares){
 
         System.out.println("[DBUse] inserirUsuario chamado para: " + email);
@@ -30,6 +30,7 @@ public class DBUse {
 
         Document document = new Document("nome",nome)
                 .append("email",email)
+                .append("data", data)
                 .append("senha",senha)
                 .append("telefone",telefone)
                 .append("documento",cpfCnpj)
@@ -157,7 +158,7 @@ public class DBUse {
 
         MongoCollection<Document> collection = DBUse.makeCollection("field-costs" , "Karpos-BD");
         Document document = new Document("data",data)
-                .append("categoria",categoria)
+                .append("atividade",categoria)
                 .append("descricao", descricao)
                 .append("custo", custo);
 
@@ -170,5 +171,36 @@ public class DBUse {
         }
         System.out.println("Custo já cadastrado, não pode cadastrar dois");
         return false;
+    }
+    public static List<Document> buscarPorAtividade(String nomeColecao, String atividadeBusca, String userEmail) {
+        MongoCollection<Document> collection = DBUse.makeCollection(nomeColecao, "Karpos-BD");
+        MongoCollection<Document> userCollection = DBUse.makeCollection("user-data" , "Karpos-BD");
+
+        Document filtroBusca = new Document("atividade", atividadeBusca);
+        Document filtroUser = new Document("email", userEmail);
+
+        Document usuárioExistente = userCollection.find(filtroUser).first();
+
+        if (usuárioExistente != null){
+
+            filtroBusca.append("userID", usuárioExistente.getLong("userID"));
+
+            FindIterable<Document> resultados = collection.find(filtroBusca);
+
+            List<Document> documentosEncontrados = new ArrayList<>();
+            for (Document documento : resultados) {
+                documentosEncontrados.add(documento);
+            }
+
+            if (documentosEncontrados.isEmpty()) {
+                System.out.println("Nenhum documento encontrado na coleção '" + nomeColecao + "' com a data: " + atividadeBusca);
+                return documentosEncontrados;
+            } else {
+                System.out.println(documentosEncontrados.size() + " documento(s) encontrado(s) na coleção '" + nomeColecao + "' para a data: " + atividadeBusca);
+                return documentosEncontrados;
+            }
+        }
+        System.out.println("Usuário não encontrado");
+        return null;
     }
 }

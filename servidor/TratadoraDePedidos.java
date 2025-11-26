@@ -87,6 +87,7 @@ private void tratarCadastro(PedidoDeCadastro pc) {
                     pc.senha,
                     pc.telefone,
                     pc.cpfCnpj,
+                    pc.data,
                     pc.hectares
             );
 

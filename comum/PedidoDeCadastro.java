@@ -5,12 +5,13 @@ public class PedidoDeCadastro extends Comunicado {
 
     public final String nomeCompleto;
     public final String email;
+    public final String data;
     public final String senha;
     public final String telefone;
     public final String cpfCnpj;
     public final double hectares;
 
-    public PedidoDeCadastro(String nomeCompleto, String email, String senha, String telefone, String cpfCnpj,
+    public PedidoDeCadastro(String nomeCompleto, String email, String senha, String telefone, String cpfCnpj, String data,
                             double hectares) {
         this.nomeCompleto = nomeCompleto;
         this.email = email;
@@ -18,6 +19,7 @@ public class PedidoDeCadastro extends Comunicado {
         this.telefone = telefone;
         this.cpfCnpj = cpfCnpj;
         this.hectares = hectares;
+        this.data = data;
     }
     public String getNomeCompleto() {
         return nomeCompleto;

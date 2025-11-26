@@ -56,8 +56,7 @@ public class Cliente {
         String senha          = args[3];
         String telefone       = args[4];
         String documento      = args[5];
-        String nomeEmpresa    = args[6];
-        String endereco       = args[7];
+        String data = args[6];
         double tamanhoHectares;
         try {
             tamanhoHectares = Double.parseDouble(args[8]);
@@ -83,6 +82,7 @@ public class Cliente {
                 senha,
                 telefone,
                 documento,
+                data,
                 tamanhoHectares
         );
 

@@ -16,7 +16,7 @@ public class ClienteTeste {
             out.writeObject(new PedidoDeCadastro(
                     "Maria Silva", "mariateste@karpos.com", "Secreta#123",
                     "(19) 99999-0000", "123.456.789-09",
-                    12.5
+                    "12/12/2025" , 12.5
             ));
             out.flush();
             System.out.println(in.readObject()); // RespostaOk ou RespostaErro
@@ -29,7 +29,7 @@ public class ClienteTeste {
 
             // 3) Pedido Cadastro atividade Caderno de Campo
             out.writeObject(new PedidoCadastroCadernoCampo(
-                    "12/12/2025", "Plantio",
+                    "2025-12-12", "Plantio",
                     "Usando maquinário pesado e mão de obra para fazer o plntio de soja na fazenda",
                     "mariateste@karpos.com"
             ));

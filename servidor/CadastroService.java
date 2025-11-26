@@ -2,6 +2,7 @@ package servidor;
 
 import comum.Cliente;
 import servidor.dbConection.DBUse;
+import org.bson.Document;
 
 public class CadastroService {
     private final RepositorioClientes repo;
@@ -16,6 +17,7 @@ public class CadastroService {
             String senhaPura,
             String telefone,
             String cpfCnpj,
+            String data,
             double hectares
     ) throws Exception {
 
@@ -33,11 +35,9 @@ public class CadastroService {
 
         System.out.println("[CadastroService] Passou validações básicas");
 
-        // Checa se já existe
-        boolean jaExiste = repo.existePorEmail(email);
-        System.out.println("[CadastroService] repo.existePorEmail(" + email + ") = " + jaExiste);
+        Document jaExiste = DBUse.loginUsuario(email, senhaPura);
 
-        if (jaExiste)
+        if (jaExiste != null)
             throw new Exception("Email já cadastrado");
 
         // Gera hash
@@ -50,6 +50,7 @@ public class CadastroService {
         Cliente cliente = new Cliente(
                 nomeCompleto,
                 email,
+                data,
                 hash,
                 telefone,
                 cpfCnpj,
@@ -71,6 +72,7 @@ public class CadastroService {
                     cliente.getHashSenha(),
                     cliente.getTelefone(),
                     cliente.getDocumento(),
+                    cliente.getData(),
                     cliente.getTamanhoHectares()
             );
             System.out.println(">>> Cadastro salvo no MongoDB para: " + cliente.getEmail());

@@ -8,6 +8,7 @@ public class Cliente implements Serializable {
 
     private final String nomeCompleto;
     private final String email;
+    private final String data;
     private final String hashSenha;   // senha com hash (PBKDF2)
     private final String telefone;
     private final String documento;   // CPF/CNPJ somentes dígitos
@@ -16,6 +17,7 @@ public class Cliente implements Serializable {
     public Cliente(
             String nomeCompleto,
             String email,
+            String data,
             String hashSenha,
             String telefone,
             String documento,
@@ -27,6 +29,7 @@ public class Cliente implements Serializable {
         this.telefone = Objects.requireNonNull(telefone, "telefone");
         this.documento = Objects.requireNonNull(documento, "documento");
         this.tamanhoHectares = tamanhoHectares;
+        this.data = Objects.requireNonNull(data, "data");
     }
 
 
@@ -36,4 +39,8 @@ public class Cliente implements Serializable {
     public String getTelefone() { return telefone; }
     public String getDocumento() { return documento; }
     public double getTamanhoHectares() { return tamanhoHectares; }
-}
+
+    public String getData() {
+        return data;
+    }
+    }

@@ -16,6 +16,7 @@ public class LoginService {
                                 b.getString("senha"),
                                 b.getString("telefone"),
                                 b.getString("documento"),
+                                b.getString("data"),
                                 b.getDouble("tamanhoHectares") );
         if (!HashSenha.confere(senha, c.getHashSenha())) throw new IllegalArgumentException("Senha inválida");
         return c;
