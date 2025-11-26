@@ -137,7 +137,6 @@ public class Cliente {
 
         String email = args[1];
         String senha = args[2];
-        String cpfCnpj = args[3];
 
         PedidoDeLogin pedido = new PedidoDeLogin(email, senha);
         servidor.receba(pedido);

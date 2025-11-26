@@ -1,13 +1,10 @@
 package servidor;
 
 import comum.*;
-<<<<<<< HEAD
 
 import java.io.EOFException;
-=======
 import java.util.*;
 import org.bson.Document;
->>>>>>> c6ef55e (fiz a parte de busca por data)
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -16,24 +13,16 @@ public class TratadoraDePedidos implements Runnable {
     private final ObjectOutputStream out;
     private final CadastroService cadastro;
     private final LoginService login;
-<<<<<<< HEAD
     private final CadernoDeCampoService caderno;
-=======
-    private final CadernoDeCampoServise caderno;
-    private final BuscaPorDataAtividadeServise buscaPorDataAtividade;
->>>>>>> c6ef55e (fiz a parte de busca por data)
+    private final BuscaPorDataAtividadeService buscaPorDataAtividade;
 
     public TratadoraDePedidos(ObjectInputStream in, ObjectOutputStream out, RepositorioClientes repo) {
         this.in = in;
         this.out = out;
         this.cadastro = new CadastroService(repo);
         this.login = new LoginService(repo);
-<<<<<<< HEAD
         this.caderno = new CadernoDeCampoService();
-=======
-        this.caderno = new CadernoDeCampoServise();
-        this.buscaPorDataAtividade = new BuscaPorDataAtividadeServise();
->>>>>>> c6ef55e (fiz a parte de busca por data)
+        this.buscaPorDataAtividade = new BuscaPorDataAtividadeService();
     }
 
     @Override

@@ -22,7 +22,7 @@ public class ClienteTeste {
             System.out.println(in.readObject()); // RespostaOk ou RespostaErro
 
             // 2) Login
-            out.writeObject(new PedidoDeLogin("mariateste@karpos.com", "Secreta#123", "123.456.789-09"));
+            out.writeObject(new PedidoDeLogin("mariateste@karpos.com", "Secreta#123"));
             out.flush();
             Object resp = in.readObject();
             System.out.println(resp); // ClienteLogado ou RespostaErro

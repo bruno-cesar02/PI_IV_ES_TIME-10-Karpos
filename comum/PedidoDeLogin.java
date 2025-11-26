@@ -5,11 +5,8 @@ public class PedidoDeLogin extends Comunicado {
 
     public final String email;
     public final String senha;
-    public final String cpfCnpj;
-
-    public PedidoDeLogin(String email, String senha,  String cpfCnpj) {
+    public PedidoDeLogin(String email, String senha) {
         this.email = email;
         this.senha = senha;
-        this.cpfCnpj = cpfCnpj;
     }
 }

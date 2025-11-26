@@ -4,7 +4,7 @@ import java.util.List;
 import org.bson.Document;
 import servidor.dbConection.*;
 
-public class BuscaPorDataAtividadeServise {
+public class BuscaPorDataAtividadeService {
     public  List<Document> buscarPorDataAtividadeServise(
             String email,
             String data,
