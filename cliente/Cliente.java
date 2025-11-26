@@ -1,7 +1,7 @@
 package cliente;
 
 import comum.*;
-import servidor.Parceiro;
+import servidor.*; // só se precisar de tipos comuns, mas NÃO de Parceiro
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -18,33 +18,17 @@ public class Cliente {
 
         String acao = args[0].toLowerCase();
 
-        Socket conexao = null;
-        ObjectOutputStream transmissor = null;
-        ObjectInputStream receptor = null;
-        Parceiro servidor = null;
-
-        try {
-            conexao = new Socket("127.0.0.1", 5050);
-
-            // Ordem correta para evitar deadlock: primeiro ObjectOutputStream, depois ObjectInputStream
-            transmissor = new ObjectOutputStream(conexao.getOutputStream());
-            receptor    = new ObjectInputStream(conexao.getInputStream());
-
-            servidor = new Parceiro(conexao, receptor, transmissor);
-
-            // Sobe a thread que fica vigiando ComunicadoDeDesligamento
-            TratadoraDeComunicadoDeDesligamento tratadora =
-                    new TratadoraDeComunicadoDeDesligamento(servidor);
-            tratadora.setDaemon(true);
-            tratadora.start();
+        try (Socket s = new Socket("127.0.0.1", 5050);
+             ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
+             ObjectInputStream  in  = new ObjectInputStream(s.getInputStream())) {
 
             switch (acao) {
                 case "inserir":
-                    processarInsercao(args, servidor);
+                    processarInsercao(args, out, in);
                     break;
 
                 case "login":
-                    processarLogin(args, servidor);
+                    processarLogin(args, out, in);
                     break;
 
                 default:
@@ -52,22 +36,16 @@ public class Cliente {
             }
 
         } catch (Exception e) {
+            // JSON de erro genérico se der pau na conexão
             printJsonErro("erro_conexao_servidor: " + escapar(String.valueOf(e.getMessage())));
-        } finally {
-            if (servidor != null) {
-                try { servidor.adeus(); } catch (Exception ignore) {}
-            } else {
-                try { if (receptor    != null) receptor.close();    } catch (Exception ignore) {}
-                try { if (transmissor != null) transmissor.close(); } catch (Exception ignore) {}
-                try { if (conexao     != null) conexao.close();     } catch (Exception ignore) {}
-            }
         }
     }
 
     // ================== AÇÕES ==================
 
     private static void processarInsercao(String[] args,
-                                          Parceiro servidor) throws Exception {
+                                          ObjectOutputStream out,
+                                          ObjectInputStream in) throws Exception {
         if (args.length < 10) {
             printJsonErro("parametros_insuficientes_para_inserir");
             return;
@@ -87,8 +65,9 @@ public class Cliente {
             printJsonErro("tamanhoHectares_invalido");
             return;
         }
-        String cultura = args[9];
+        String cultura        = args[9];
 
+        // Validações locais simples
         if (senha == null || senha.length() < 6) {
             printJsonErro("senha_muito_curta");
             return;
@@ -104,23 +83,27 @@ public class Cliente {
                 senha,
                 telefone,
                 documento,
-                tamanhoHectares
+                nomeEmpresa,
+                endereco,
+                tamanhoHectares,
+                cultura
         );
 
-        servidor.receba(pedido);
+        // ENVIA PEDIDO DIRETO PELO OUT
+        out.writeObject(pedido);
+        out.flush();
 
-        Comunicado resposta = servidor.envie();
+        // LÊ RESPOSTA DIRETO DO IN
+        Object resposta = in.readObject();
 
-        if (resposta instanceof RespostaErro) {
-            RespostaErro erro = (RespostaErro) resposta;
+        if (resposta instanceof RespostaErro erro) {
             printJsonErro(erro.erro);
         } else if (resposta instanceof RespostaOk) {
             printJsonSucessoCadastro(
                     nomeCompleto, email, telefone, documento,
                     nomeEmpresa, endereco, tamanhoHectares, cultura
             );
-        } else if (resposta instanceof ClienteLogado) {
-            ClienteLogado logado = (ClienteLogado) resposta;
+        } else if (resposta instanceof ClienteLogado logado) {
             comum.Cliente cli = logado.cliente;
             printJsonSucessoCliente(cli);
         } else {
@@ -129,7 +112,8 @@ public class Cliente {
     }
 
     private static void processarLogin(String[] args,
-                                       Parceiro servidor) throws Exception {
+                                       ObjectOutputStream out,
+                                       ObjectInputStream in) throws Exception {
         if (args.length < 3) {
             printJsonErro("parametros_insuficientes_para_login");
             return;
@@ -139,15 +123,17 @@ public class Cliente {
         String senha = args[2];
 
         PedidoDeLogin pedido = new PedidoDeLogin(email, senha);
-        servidor.receba(pedido);
 
-        Comunicado resposta = servidor.envie();
+        // ENVIA PEDIDO
+        out.writeObject(pedido);
+        out.flush();
 
-        if (resposta instanceof RespostaErro) {
-            RespostaErro erro = (RespostaErro) resposta;
+        // LÊ RESPOSTA
+        Object resposta = in.readObject();
+
+        if (resposta instanceof RespostaErro erro) {
             printJsonErro(erro.erro);
-        } else if (resposta instanceof ClienteLogado) {
-            ClienteLogado logado = (ClienteLogado) resposta;
+        } else if (resposta instanceof ClienteLogado logado) {
             comum.Cliente cli = logado.cliente;
             printJsonSucessoCliente(cli);
         } else if (resposta instanceof RespostaOk) {
@@ -161,8 +147,8 @@ public class Cliente {
 
     private static void printJsonErro(String msg) {
         System.out.println(
-                "{\\\"loginPermitido\\\": \\\"false\\\", " +
-                        "\\\"msg\\\": \\\"" + escapar(msg) + "\\\"}"
+                "{\"loginPermitido\": \"false\", " +
+                        "\"msg\": \"" + escapar(msg) + "\"}"
         );
     }
 
@@ -173,20 +159,18 @@ public class Cliente {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("{\\\"loginPermitido\\\": \\\"true\\\", \\\"usuario\\\": {");
-        sb.append("\\\"nomeCompleto\\\": \\\"").append(escapar(cli.getNomeCompleto())).append("\\\", ");
-        sb.append("\\\"email\\\": \\\"").append(escapar(cli.getEmail())).append("\\\", ");
-        sb.append("\\\"telefone\\\": \\\"").append(escapar(cli.getTelefone())).append("\\\", ");
-        sb.append("\\\"documento\\\": \\\"").append(escapar(cli.getDocumento())).append("\\\", ");
-        sb.append("\\\"tamanhoHectares\\\": ").append(cli.getTamanhoHectares()).append(", ");
+        sb.append("{\"loginPermitido\": \"true\", \"usuario\": {");
+        sb.append("\"nomeCompleto\": \"").append(escapar(cli.getNomeCompleto())).append("\", ");
+        sb.append("\"email\": \"").append(escapar(cli.getEmail())).append("\", ");
+        sb.append("\"telefone\": \"").append(escapar(cli.getTelefone())).append("\", ");
+        sb.append("\"documento\": \"").append(escapar(cli.getDocumento())).append("\", ");
+        sb.append("\"nomeEmpresa\": \"").append(escapar(cli.getNomeEmpresa())).append("\", ");
+        sb.append("\"endereco\": \"").append(escapar(cli.getEndereco())).append("\", ");
+        sb.append("\"tamanhoHectares\": ").append(cli.getTamanhoHectares()).append(", ");
+        sb.append("\"cultura\": \"").append(escapar(cli.getCultura())).append("\"");
         sb.append("}}");
 
         System.out.println(sb.toString());
-        try{
-            Thread.sleep(500);
-        } catch (InterruptedException e){
-
-        }
     }
 
     private static void printJsonSucessoCadastro(String nomeCompleto,
@@ -198,37 +182,30 @@ public class Cliente {
                                                  double tamanhoHectares,
                                                  String cultura) {
         StringBuilder sb = new StringBuilder();
-        sb.append("{\\\"loginPermitido\\\": \\\"true\\\", \\\"usuario\\\": {");
-        sb.append("\\\"nomeCompleto\\\": \\\"").append(escapar(nomeCompleto)).append("\\\", ");
-        sb.append("\\\"email\\\": \\\"").append(escapar(email)).append("\\\", ");
-        sb.append("\\\"telefone\\\": \\\"").append(escapar(telefone)).append("\\\", ");
-        sb.append("\\\"documento\\\": \\\"").append(escapar(documento)).append("\\\", ");
-        sb.append("\\\"nomeEmpresa\\\": \\\"").append(escapar(nomeEmpresa)).append("\\\", ");
-        sb.append("\\\"endereco\\\": \\\"").append(escapar(endereco)).append("\\\", ");
-        sb.append("\\\"tamanhoHectares\\\": ").append(tamanhoHectares).append(", ");
-        sb.append("\\\"cultura\\\": \\\"").append(escapar(cultura)).append("\\\"");
+        sb.append("{\"loginPermitido\": \"true\", \"usuario\": {");
+        sb.append("\"nomeCompleto\": \"").append(escapar(nomeCompleto)).append("\", ");
+        sb.append("\"email\": \"").append(escapar(email)).append("\", ");
+        sb.append("\"telefone\": \"").append(escapar(telefone)).append("\", ");
+        sb.append("\"documento\": \"").append(escapar(documento)).append("\", ");
+        sb.append("\"nomeEmpresa\": \"").append(escapar(nomeEmpresa)).append("\", ");
+        sb.append("\"endereco\": \"").append(escapar(endereco)).append("\", ");
+        sb.append("\"tamanhoHectares\": ").append(tamanhoHectares).append(", ");
+        sb.append("\"cultura\": \"").append(escapar(cultura)).append("\"");
         sb.append("}}");
 
         System.out.println(sb.toString());
-        try{
-            Thread.sleep(500);
-        } catch (InterruptedException e){
 
-        }
+        // se quiser manter esse "delay" pode deixar, mas não é obrigatório:
+        try { Thread.sleep(100); } catch (InterruptedException ignored) {}
     }
 
     private static void printJsonSucessoLoginSimples(String email) {
         StringBuilder sb = new StringBuilder();
-        sb.append("{\\\"loginPermitido\\\": \\\"true\\\", \\\"usuario\\\": {");
-        sb.append("\\\"email\\\": \\\"").append(escapar(email)).append("\\\"");
+        sb.append("{\"loginPermitido\": \"true\", \"usuario\": {");
+        sb.append("\"email\": \"").append(escapar(email)).append("\"");
         sb.append("}}");
 
         System.out.println(sb.toString());
-        try{
-            Thread.sleep(500);
-        } catch (InterruptedException e){
-
-        }
     }
 
     private static String escapar(String texto) {
