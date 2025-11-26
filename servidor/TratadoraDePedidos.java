@@ -15,6 +15,7 @@ public class TratadoraDePedidos implements Runnable {
     private final LoginService login;
     private final CadernoDeCampoService caderno;
     private final BuscaPorDataAtividadeService buscaPorDataAtividade;
+    private final BuscaPorDataCustoService buscaDataCusto;
 
     public TratadoraDePedidos(ObjectInputStream in, ObjectOutputStream out, RepositorioClientes repo) {
         this.in = in;
@@ -23,6 +24,7 @@ public class TratadoraDePedidos implements Runnable {
         this.login = new LoginService(repo);
         this.caderno = new CadernoDeCampoService();
         this.buscaPorDataAtividade = new BuscaPorDataAtividadeService();
+        this.buscaDataCusto = new BuscaPorDataCustoService();
     }
 
     @Override
@@ -50,6 +52,8 @@ public class TratadoraDePedidos implements Runnable {
                     tratarCaderno(pccd);
                 }else if (msg instanceof PedidoBuscaDataAtividade pbd){
                     tratarBuscaPorDataAtividade(pbd);
+                }else if (msg instanceof PedidoBuscaDataCusto pbdc){
+                    tratarBuscaPorDataCusto(pbdc);
                 }
                 else {
                     System.out.println("[Tratadora] Comando não reconhecido: " + msg.getClass().getName());
@@ -145,11 +149,39 @@ private void tratarCadastro(PedidoDeCadastro pc) {
             }
         }
     }
+    private void tratarBuscaPorDataCusto (PedidoBuscaDataCusto pbdc){
+        try{
+            System.out.println("[Tratadora] Iniciando cadastro de caderno de campo para: " + pbdc.getEmail());
+
+            List<Document> lista = buscaDataCusto.buscarPorDataCustoService(pbdc.getEmail(), pbdc.getData(), "field-costs");
+
+            List<String> listaDeJsons = new ArrayList<>();
+
+            if (lista == null){
+                throw new Exception("Nenhum registro encontrado");
+            }
+            for (Document doc : lista) {
+                listaDeJsons.add(doc.toJson());
+            }
+            out.writeObject(new BuscaDataCusto(listaDeJsons));
+            out.flush();
+        } catch (Exception e) {
+            System.err.println("[Tratadora] Erro ao cadastar atividade do caderno de campo " + e.getMessage());
+            e.printStackTrace();
+            try {
+                out.writeObject(new RespostaErro(e.getMessage()));
+                out.flush();
+            } catch (Exception ex) {
+                System.err.println("[Tratadora] Falha ao enviar RespostaErro ao cliente:");
+                ex.printStackTrace();
+            }
+        }
+    }
     private void tratarBuscaPorDataAtividade (PedidoBuscaDataAtividade pbd){
         try{
             System.out.println("[Tratadora] Iniciando cadastro de caderno de campo para: " + pbd.getEmail());
 
-            List<Document> lista = buscaPorDataAtividade.buscarPorDataAtividadeServise(pbd.getEmail(), pbd.getData(), "field-metrics");
+            List<Document> lista = buscaPorDataAtividade.buscarPorDataAtividadeService(pbd.getEmail(), pbd.getData(), "field-metrics");
 
             List<String> listaDeJsons = new ArrayList<>();
 

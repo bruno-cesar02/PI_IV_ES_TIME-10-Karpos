@@ -44,6 +44,13 @@ public class ClienteTeste {
             out.flush();
             Object resp3 = in.readObject();
 
+            // 5) Pedido de busca por data de custo
+            out.writeObject(new PedidoBuscaDataCusto(
+                    "12/12/2025", "mariateste@karpos.com"
+            ));
+            out.flush();
+            Object resp4 = in.readObject();
+
         }
     }
 }

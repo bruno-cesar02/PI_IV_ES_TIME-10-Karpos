@@ -1,11 +1,12 @@
 package servidor;
 
+
 import java.util.List;
 import org.bson.Document;
 import servidor.dbConection.*;
 
-public class BuscaPorDataAtividadeService {
-    public  List<Document> buscarPorDataAtividadeService(
+public class BuscaPorDataCustoService {
+    public  List<Document> buscarPorDataCustoService(
             String email,
             String data,
             String dbConnection
