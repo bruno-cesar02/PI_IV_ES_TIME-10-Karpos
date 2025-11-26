@@ -46,6 +46,8 @@ route.get('/caderno-campo',verificarSeLogado,cadernoCampoController.mostrarCader
 
 route.get('/novo-registro',verificarSeLogado,cadernoCampoController.mostrarNovoRegistro);
 
+route.post('/novo-registro',verificarSeLogado,cadernoCampoController.salvarNovoRegistro);
+
 // ========= CUSTOS =========
 route.get('/custos-registrados',verificarSeLogado,custosController.mostrarCustosRegistrados);
 

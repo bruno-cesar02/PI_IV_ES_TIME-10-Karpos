@@ -31,6 +31,10 @@ public class Cliente {
                     processarLogin(args, out, in);
                     break;
 
+                case "addatividade":
+                    processarAddAtividade(args, out, in);
+                    break;
+
                 default:
                     printJsonErro("acao_invalida");
             }
@@ -139,6 +143,38 @@ public class Cliente {
         }
     }
 
+    private static void processarAddAtividade(String[] args,
+                                              ObjectOutputStream out,
+                                              ObjectInputStream in) throws Exception {
+
+        if (args.length < 4) {
+            printJsonErro("parametros_insuficientes_para_login");
+            return;
+        }
+
+        String email = args[1];
+        String data = args[2];
+        String tipo =  args[3];
+        String texto = args[4];
+
+        PedidoCadastroCadernoCampo pedido = new PedidoCadastroCadernoCampo(data, tipo, texto, email);
+
+        // ENVIA PEDIDO
+        out.writeObject(pedido);
+        out.flush();
+
+        // LÊ RESPOSTA
+        Object resposta = in.readObject();
+
+        if (resposta instanceof RespostaErro erro) {
+            printJsonErro(erro.erro);
+        } else if (resposta instanceof RespostaOk) {
+            printJsonSucessoCadastroCaderno();
+        }else {
+            printJsonErro("resposta_desconhecida_do_servidor");
+        }
+    }
+
     // ================== HELPERS JSON ==================
 
     private static void printJsonErro(String msg) {
@@ -179,6 +215,15 @@ public class Cliente {
         sb.append("\\\"documento\\\": \\\"").append(escapar(documento)).append("\\\", ");
         sb.append("\\\"tamanhoHectares\\\": ").append(tamanhoHectares);
         sb.append("}}");
+
+        System.out.println(sb.toString());
+
+        // se quiser manter esse "delay" pode deixar, mas não é obrigatório:
+        try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+    }
+    private static void printJsonSucessoCadastroCaderno() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{\\\"cadernoPermitido\\\": \\\"true\\\"}");
 
         System.out.println(sb.toString());
 

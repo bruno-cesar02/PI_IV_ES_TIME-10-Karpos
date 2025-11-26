@@ -18,26 +18,27 @@
                     </div>
 
                     <div class="panel-actions">
-                        <button class="btn btn-primary">Salvar</button>
-                        <button class="btn btn-outline">Cancelar</button>
+                        <button onclick="document.querySelector('.form-registro').submit()" class="btn btn-primary">Salvar</button>
+                        <button onclick="window.location.href='/caderno-campo'" class="btn btn-outline">Cancelar</button>
                     </div>
                 </div>
 
                 <!-- Formulário -->
-                <form class="form-registro">
+                <form class="form-registro" method="POST" action="/novo-registro">
+                    <p class="msg-error"><%= msg %></p>
                     <!-- Data da Atividade -->
                     <div class="form-group-horizontal">
                         <div class="form-field">
                             <h3 class="field-title">Data da Atividade</h3>
                             <p class="field-subtitle">DD/MM/AAAA</p>
-                            <input type="date" class="input-field" id="dataAtividade">
+                            <input type="date" class="input-field" id="dataAtividade" name="dataAtividade">
                         </div>
 
                         <!-- Tipo de Atividade -->
                         <div class="form-field">
                             <h3 class="field-title">Tipo de Atividade</h3>
                             <p class="field-subtitle">Selecione o tipo</p>
-                            <select class="input-field" id="tipoAtividade">
+                            <select class="input-field" id="tipoAtividade" name="tipoAtividade">
                                 <option value="">Selecione o tipo</option>
                                 <option value="Plantio">Plantio</option>
                                 <option value="Colheita">Colheita</option>
@@ -52,7 +53,7 @@
                     <div class="form-field full-width">
                         <h3 class="field-title">Notas</h3>
                         <p class="field-subtitle">Descreva como aconteceu a execução da atividade.</p>
-                        <textarea class="textarea-field" id="notas" rows="6" placeholder="Digite as observações..."></textarea>
+                        <textarea class="textarea-field" id="notas" name="notas" rows="6" placeholder="Digite as observações..."></textarea>
                     </div>
                 </form>
             </section>

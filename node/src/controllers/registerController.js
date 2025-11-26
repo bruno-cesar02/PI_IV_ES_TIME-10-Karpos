@@ -18,7 +18,7 @@ exports.registerForm = (req, res) => {
       return res.redirect('/register');
     }
   
-    const processoJava = spawn('java', ['cliente.Cliente', 'inserir', fullName, email, password, phone, cpf, "nenhum", "nenhum", 0, "nenhum"], {cwd: path.resolve(__dirname, '..', '..', '..')});
+    const processoJava = spawn('java', ['cliente.Cliente', 'inserir', fullName, email, password, phone, cpf, birthDate ,"nenhum", 0 ,"nenhum"], {cwd: path.resolve(__dirname, '..', '..', '..')});
   
     let dadosRetornados = '"';
   
@@ -36,7 +36,7 @@ exports.registerForm = (req, res) => {
     dadosRetornados = JSON.parse(dadosRetornados);
     dadosRetornados = JSON.parse(dadosRetornados);
     console.log('Dados retornados do Java:', dadosRetornados);
-    if (dadosRetornados.loginPermitido){
+    if (dadosRetornados.loginPermitido == 'true'){
       req.session.msg = 'cadastro realizado com sucesso';
       res.redirect('/login');
     } else {

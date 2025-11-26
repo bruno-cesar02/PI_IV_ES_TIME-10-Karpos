@@ -24,7 +24,7 @@
                 </div>
 
                 <!-- Filtros -->
-                <form class="filtros-section" id="filtro-form">
+                <form method="get" action="/caderno-campo" class="filtros-section" id="filtro-form">
                     <h3 class="filtros-title">Filtrar por</h3>
                     <p class="filtros-subtitle">Data / Tipo de Atividade</p>
 
@@ -44,8 +44,11 @@
             </select>
         </div>
 
-        <button type="button" id="btn-filtrar" class="btn btn-primary">
+        <button type="submit" id="btn-filtrar" class="btn btn-primary">
             Aplicar filtro
+        </button>
+        <button type="submit" id="btn-filtrar" class="btn btn-primary">
+            Apagar filtro
         </button>
     </div>
 </form>
