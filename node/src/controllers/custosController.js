@@ -25,104 +25,80 @@ exports.mostrarNovoCusto = (req, res) => {
     css: 'dashboard.css',
     cssExtra: 'caderno-campo.css',
     dados: req.session.user,
-    msg: req.session.msg || ''
+      msg: req.session.msg || ''
 
-    // TODO: passar categorias, atividades associáveis, etc., se o backend fornecer.
-  });
-};
+      // TODO: passar categorias, atividades associáveis, etc., se o backend fornecer.
+    });
+  };
 
 
 
-// POST /novo-custo - IMPLEMENTAÇÃO COMPLETA
-exports.salvarNovoCusto = (req, res) => {
-  const { data, descricao, valor, categoria,} = req.body;
-  
-  // Pega email do usuário logado
-  const usuarioEmail = req.session.user?.email || '';
-
-  // Chama o Java via spawn
-  const processoJava = spawn('java', [
-    'cliente.Cliente',       // Classe principal
-    'novoCusto',             // args[0] - ação
-    usuarioEmail,            // args[1] - email do usuário
-    data,                    // args[2] - data do custo
-    descricao,               // args[3] - descrição
-    valor,                   // args[4] - valor
-    categoria,               // args[5] - categoria
-  
-  ], {
-    cwd: path.resolve(__dirname, '..', '..', '..'),
-    timeout: 8000
-  });
-
-  let dadosRetornados = '';
-
-  processoJava.stdout.on('data', (data) => {
-    dadosRetornados += data.toString();
-  });
-
-  processoJava.stderr.on('data', (data) => {
-    console.error(`Erro do processo Java: ${data}`);
-  });
-
-  processoJava.on('error', (err) => {
-    console.error('Erro ao spawnar Java:', err);
-    if (req.session) req.session.msg = 'Erro ao conectar com o servidor';
-    res.redirect('/novo-custo');
-  });
-
-  processoJava.on('close', (code) => {
-    console.log(`Processo Java finalizado com código ${code}`);
+  // POST /novo-custo - IMPLEMENTAÇÃO COMPLETA
+  exports.salvarNovoCusto = (req, res) => {
+    const { data, descricao, valor, categoria,} = req.body;
     
-    try {
-      dadosRetornados = dadosRetornados.trim();
+    // Pega email do usuário logado
+    const usuarioEmail = req.session.user?.email || '';
+
+    // Chama o Java via spawn
+    const processoJava = spawn('java', [
+      'cliente.Cliente',       // Classe principal
+      'novoCusto',             // args[0] - ação
+      usuarioEmail,            // args[1] - email do usuário
+      data,                    // args[2] - data do custo
+      descricao,               // args[3] - descrição
+      valor,                   // args[4] - valor
+      categoria,               // args[5] - categoria
+    
+    ], {
+      cwd: path.resolve(__dirname, '..', '..', '..'),
+      timeout: 8000
+    });
+
+    let dadosRetornados = '';
+
+    processoJava.stdout.on('data', (data) => {
+      dadosRetornados += data.toString();
+    });
+
+    processoJava.stderr.on('data', (data) => {
+      console.error(`Erro do processo Java: ${data}`);
+    });
+
+    processoJava.on('error', (err) => {
+      console.error('Erro ao spawnar Java:', err);
+      if (req.session) req.session.msg = 'Erro ao conectar com o servidor';
+      res.redirect('/novo-custo');
+    });
+
+    processoJava.on('close', (code) => {
+      console.log(`Processo Java finalizado com código ${code}`);
       
-      // Parse igual ao login do seu colega
-      let resposta = JSON.parse(dadosRetornados);
-      if (typeof resposta === 'string') {
-        resposta = JSON.parse(resposta);
-      }
-      
-      console.log('Resposta do Java:', resposta);
-      
-      if (resposta.sucesso) {
-        if (req.session) req.session.msg = 'Custo registrado com sucesso!';
-        res.redirect('/custos-registrados');
-      } else {
-        if (req.session) req.session.msg = resposta.msg || 'Erro ao salvar custo';
+      try {
+        dadosRetornados = dadosRetornados.trim();
+        
+        // Parse igual ao login do seu colega
+        let resposta = JSON.parse(dadosRetornados);
+        if (typeof resposta === 'string') {
+          resposta = JSON.parse(resposta);
+        }
+        
+        console.log('Resposta do Java:', resposta);
+        
+        if (resposta.sucesso) {
+          if (req.session) req.session.msg = 'Custo registrado com sucesso!';
+          res.redirect('/custos-registrados');
+        } else {
+          if (req.session) req.session.msg = resposta.msg || 'Erro ao salvar custo';
+          res.redirect('/novo-custo');
+        }
+      } catch (err) {
+        console.error('Erro ao parsear resposta:', err);
+        console.error('Dados recebidos:', dadosRetornados);
+        if (req.session) req.session.msg = 'Erro ao processar resposta do servidor';
         res.redirect('/novo-custo');
       }
-    } catch (err) {
-      console.error('Erro ao parsear resposta:', err);
-      console.error('Dados recebidos:', dadosRetornados);
-      if (req.session) req.session.msg = 'Erro ao processar resposta do servidor';
-      res.redirect('/novo-custo');
-    }
-  });
-}; 
+    });
+  }; 
 
 
-// GET /custos-registrados/editar/:id
-// - NÃO IMPLEMENTADO AINDA.
-// - Deve buscar um custo específico pelo ID e exibir o formulário preenchido
-//   para edição.
-exports.editarCustoForm = (req, res) => {
-  // TODO: buscar custo por ID no backend e renderizar tela de edição.
-};
-
-
-// POST /custos-registrados/editar/:id
-// - NÃO IMPLEMENTADO AINDA.
-// - Recebe os dados editados de um custo e envia atualização para o backend.
-exports.atualizarCusto = (req, res) => {
-  // TODO: implementar atualização de custo via backend.
-};
-
-
-// POST /custos-registrados/excluir
-// - NÃO IMPLEMENTADO AINDA.
-// - Vai receber IDs dos custos selecionados na tabela
-//   e solicitar ao backend a exclusão em lote.
-exports.excluirCustos = (req, res) => {
-  // TODO: implementar exclusão em lote de custos selecionados.
-};
