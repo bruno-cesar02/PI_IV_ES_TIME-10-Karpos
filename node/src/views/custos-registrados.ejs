@@ -15,41 +15,26 @@
                     <div class="page-title">
                         <h1>Custos<br>Registrados</h1>
                     </div>
-
-                    <div class="panel-actions">
-                        <button class="btn btn-primary">Salvar</button>
-                        <button class="btn btn-outline">Excluir</button>
-                    </div>
                 </div>
 
                 <!-- Filtros -->
-                <form class="filtros-section" id="filtro-custos-form">
+                <form action="/custos-registrados" method="get" class="filtros-section" id="filtro-custos-form">
                     <h3 class="filtros-title">Filtrar por</h3>
-                    <p class="filtros-subtitle">Data / Categoria</p>
-                
+                    <p class="filtros-subtitle">Data</p>
+
                     <div class="filtros-fields">
                         <div class="filtro-field">
-                            <label for="filtro-data-custo">Data</label>
-                            <input type="date" id="filtro-data-custo" class="input-field">
-                        </div>
-                
-                        <div class="filtro-field">
-                            <label for="filtro-categoria">Categoria</label>
-                            <select id="filtro-categoria" class="input-field">
-                                <option value="">Todas</option>
-                                <option value="Insumos">Insumos</option>
-                                <option value="Maquinário">Maquinário</option>
-                                <option value="Mão de Obra">Mão de Obra</option>
-                                <option value="Sementes">Sementes</option>
-                                <option value="Fertilizantes">Fertilizantes</option>
-                                <!-- depois você ajusta as categorias reais -->
-                            </select>
-                        </div>
-                
-                        <button type="button" id="btn-filtrar-custos" class="btn btn-primary">
-                            Aplicar filtro
-                        </button>
-                    </div>
+            <label for="filtro-data">Data</label>
+            <input type="date" name="data" id="filtro-data" class="input-field" value="<%= dataFiltro || '' %>">
+        </div>
+
+        <button type="submit" id="btn-filtrar" class="btn btn-primary">
+            Aplicar filtro
+        </button>
+        <button type="submit" id="btn-filtrar" class="btn btn-primary">
+            <a style="color:inherit; text-decoration:none;" href="/custos-registrados">Limpar filtro</a>
+        </button>
+    </div>
                 </form>
 
                 <!-- Tabela de Custos -->
@@ -57,9 +42,6 @@
                     <table class="atividades-table">
                         <thead>
                             <tr>
-                                <th class="col-checkbox">
-                                    <input type="checkbox" id="selectAll">
-                                </th>
                                 <th>Data</th>
                                 <th>Descrição</th>
                                 <th>Valor</th>
@@ -68,26 +50,15 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <% custos.forEach(custo => { %>
                             <tr>
-                                <td>
-                                    <input type="checkbox" class="row-checkbox">
-                                </td>
-                                <td>12/11/25</td>
-                                <td>Compra Fertilizantes</td>
-                                <td>R$1.560,00</td>
-                                <td>Insumos</td>
-                                <td>ap - 13/nov</td>
+                                <td><%= custo.data %></td>
+                                <td><%= custo.dados %></td>
+                                <td>R$ <%= custo.custo %></td>
+                                <td><%= custo.tipo %></td>
+                                <td><%= custo.atividadeAssociada || 'N/A' %></td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <input type="checkbox" class="row-checkbox">
-                                </td>
-                                <td>11/11/25</td>
-                                <td>Manutenção Maquinário</td>
-                                <td>R$357,90</td>
-                                <td>Maquinário</td>
-                                <td>ap - 14/nov</td>
-                            </tr>
+                            <% }) %>
                         </tbody>
                     </table>
                 </div>

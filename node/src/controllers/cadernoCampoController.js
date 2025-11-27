@@ -11,8 +11,35 @@ const path = require('path');
 exports.mostrarCadernoCampo = (req, res) => {
   const dataFiltro = req.query.data || '';
 
+  const processoJava = spawn('java', ['cliente.Cliente', 'listasemfiltro', req.session.user.email, "field-metrics"], {cwd: path.resolve(__dirname, '..', '..', '..')});
 
-  res.render('caderno-campo', {
+  let dadosRetornados = '';
+  
+  processoJava.stdout.on('data', (data) => {
+    dadosRetornados = dadosRetornados.trim() + data.toString();
+  });
+
+  processoJava.stderr.on('data', (data) => {
+    console.error(`Erro do processo Java: ${data}`);
+  });
+
+  processoJava.on('close', (code) => {
+    console.log(`Processo Java finalizado com código ${code}`);
+    try {
+      dadosRetornados = '"' + dadosRetornados.trim() + '"';
+
+      dadosRetornados = JSON.parse(dadosRetornados.trim());
+      dadosRetornados = JSON.parse(dadosRetornados.trim());
+      
+      console.log('Dados retornados do Java:', dadosRetornados);
+    } catch (e) {
+      console.error('\n\nErro ao parsear saída do Java:', e.message || e);
+      dadosRetornados = {};
+    }
+
+
+
+    res.render('caderno-campo', {
     title: 'Meu Caderno de Campo',
     css: 'dashboard.css',
     cssExtra: 'caderno-campo.css',
@@ -21,7 +48,8 @@ exports.mostrarCadernoCampo = (req, res) => {
     dataFiltro: dataFiltro,
     //active: 'historico', se optar por fazer as barras ficarem em negrito atraves do controller e nao do html
     // TODO: passar aqui a lista real de atividades vinda do backend
-    atividades: [] // placeholder
+    atividades: dadosRetornados.resultados || [] // placeholder
+  });
   });
 };
 

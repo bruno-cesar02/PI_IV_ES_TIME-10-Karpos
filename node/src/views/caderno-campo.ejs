@@ -16,17 +16,12 @@
                     <div class="page-title">
                         <h1>Meu Caderno<br>de Campo</h1>
                     </div>
-
-                    <div class="panel-actions">
-                        <button class="btn btn-primary">Salvar</button>
-                        <button class="btn btn-outline">Excluir</button>
-                    </div>
                 </div>
 
                 <!-- Filtros -->
                 <form method="get" action="/caderno-campo" class="filtros-section" id="filtro-form">
                     <h3 class="filtros-title">Filtrar por</h3>
-                    <p class="filtros-subtitle">Data / Tipo de Atividade</p>
+                    <p class="filtros-subtitle">Data</p>
 
                     <div class="filtros-fields">
                         <div class="filtro-field">
@@ -37,7 +32,7 @@
         <button type="submit" id="btn-filtrar" class="btn btn-primary">
             Aplicar filtro
         </button>
-        <button type="submit" id="btn-filtrar" class="btn btn-primary">
+        <button type="button" id="btn-filtrar" class="btn btn-primary">
             <a style="color:inherit; text-decoration:none;" href="/caderno-campo">Limpar filtro</a>
         </button>
     </div>
@@ -48,34 +43,19 @@
                     <table class="atividades-table">
                         <thead>
                             <tr>
-                                <th class="col-checkbox">
-                                    <input type="checkbox" id="selectAll">
-                                </th>
                                 <th>Data</th>
                                 <th>Tipo de Atividade</th>
                                 <th>Detalhe</th>
-                                <th>CA</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <% atividades.forEach(atividade => { %>
                             <tr>
-                                <td>
-                                    <input type="checkbox" class="row-checkbox">
-                                </td>
-                                <td>12/11/25</td>
-                                <td>Aplicação de Fertilizantes</td>
-                                <td>Fertilizante utilizado [...]</td>
-                                <td>R$985,57</td>
+                                <td><%= atividade.data %></td>
+                                <td><%= atividade.tipo %></td>
+                                <td><%= atividade.dados %></td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <input type="checkbox" class="row-checkbox">
-                                </td>
-                                <td>11/11/25</td>
-                                <td>Irrigação de Lavoura</td>
-                                <td>200l no talhão 4</td>
-                                <td>R$0</td>
-                            </tr>
+                            <% }) %>
                         </tbody>
                     </table>
                 </div>
