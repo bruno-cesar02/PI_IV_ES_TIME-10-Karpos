@@ -9,16 +9,22 @@ public class LoginService {
     public LoginService(servidor.RepositorioClientes repo){ this.repo = repo; }
 
     public Cliente autenticar(String email, String senha) {
-        Document b = DBUse.loginUsuario(email, senha);
-        if (b == null) throw new IllegalArgumentException("Usuário não encontrado");
-        Cliente c = new Cliente(b.getString("nome"),
-                                b.getString("email"),
-                                b.getString("data"),
-                                b.getString("senha"),
-                                b.getString("telefone"),
-                                b.getString("documento"),
-                                b.getDouble("tamanhoHectares") );
-        if (!HashSenha.confere(senha, c.getHashSenha())) throw new IllegalArgumentException("Senha inválida");
-        return c;
+        try{
+            Document b = DBUse.loginUsuario(email, senha);
+            if (b == null) throw new IllegalArgumentException("Usuário não encontrado");
+            Cliente c = new Cliente(b.getString("nome"),
+                    b.getString("email"),
+                    b.getString("data"),
+                    b.getString("senha"),
+                    b.getString("telefone"),
+                    b.getString("documento"),
+                    b.getDouble("tamanhoHectares") );
+            if (!HashSenha.confere(senha, c.getHashSenha())) throw new IllegalArgumentException("Senha inválida");
+            return c;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }

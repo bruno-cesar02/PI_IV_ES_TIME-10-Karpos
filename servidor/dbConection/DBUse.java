@@ -2,6 +2,8 @@ package servidor.dbConection;
 
 import com.mongodb.client.*;
 import org.bson.Document;
+import servidor.HashSenha;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -51,7 +53,7 @@ public class DBUse {
     }
 
 
-    public static Document loginUsuario (String email, String senha){
+    public static Document loginUsuario (String email, String senha) throws Exception{
         MongoCollection<Document> collection = DBUse.makeCollection("user-data" ,  "Karpos-BD");
 
 
@@ -69,6 +71,9 @@ public class DBUse {
             double tamanhoHectaresBD = usuarioExistente.getDouble("tamanhoHectares");
             long userIDBD = usuarioExistente.getLong("userID");
 
+            if (!HashSenha.confere(senha, senhaBD)){
+                throw new Exception("senha imcomparivel");
+            }
 
             if (emailBD.equals(email)){
 
