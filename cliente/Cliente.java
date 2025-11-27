@@ -35,8 +35,14 @@ public class Cliente {
                     processarAddAtividade(args, out, in);
                     break;
 
-                case "listaSemFiltro":
+                case "listasemiltro":
                     processarBuscaSemFiltro(args, out, in);
+                    break;
+
+                case "buscar":
+                    processarBuscaData(args, out, in);
+                    break;
+
                 default:
                     printJsonErro("acao_invalida");
             }

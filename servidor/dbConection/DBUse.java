@@ -156,22 +156,32 @@ public class DBUse {
         return false;
 
     }
-    public static Boolean inserirCusto (String data, String categoria, String descricao, String email , double custo){
-
-        MongoCollection<Document> collection = DBUse.makeCollection("field-costs" , "Karpos-BD");
-        Document document = new Document("data",data)
-                .append("atividade",categoria)
+    public static Boolean inserirCusto (String data, String categoria, String descricao, String email , double custo) {
+        MongoCollection<Document> usercollection = DBUse.makeCollection("user-data", "Karpos-BD");
+        MongoCollection<Document> collection = DBUse.makeCollection("field-costs", "Karpos-BD");
+        Document document = new Document("data", data)
+                .append("atividade", categoria)
                 .append("descricao", descricao)
                 .append("custo", custo);
 
-        Document atividadeExistente = collection.find(document).first();
+        Document filtroUser = new Document("email", email);
 
-        if (atividadeExistente == null ){
-            collection.insertOne(document);
-            System.out.println("custo de categoria " + categoria + "com valor de RS" + custo +  " inserido com sucesso na coleção.");
+        Document usuarioExistente = usercollection.find(filtroUser).first();
+
+        if (usuarioExistente != null) {
+
+            document.append("userID", usuarioExistente.getLong("userID"));
+            Document atividadeExistente = collection.find(document).first();
+
+            if (atividadeExistente == null) {
+                collection.insertOne(document);
+                System.out.println("custo de categoria " + categoria + "com valor de RS" + custo + " inserido com sucesso na coleção.");
+                return false;
+            }
+            System.out.println("Custo já cadastrado, não pode cadastrar dois");
             return false;
         }
-        System.out.println("Custo já cadastrado, não pode cadastrar dois");
+
         return false;
     }
     public static List<Document> buscarPorAtividade(String nomeColecao, String atividadeBusca, String userEmail) {
