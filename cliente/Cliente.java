@@ -39,9 +39,9 @@ public class Cliente {
                     processarBuscaSemFiltro(args, out, in);
                     break;
 
-                case "buscar":
+                /*case "buscar":
                     processarBuscaData(args, out, in);
-                    break;
+                    break;*/
 
                 default:
                     printJsonErro("acao_invalida");

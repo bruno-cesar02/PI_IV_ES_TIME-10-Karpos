@@ -1,5 +1,7 @@
 package servidor;
 
+import org.bson.Document;
+import servidor.dbConection.DBUse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -69,6 +71,68 @@ class CadastroServiceTest {
         assertTrue(e.getMessage().contains("Senha muito curta"));
     }
 
-    // NÃO USE esse cenário de "email já cadastrado" na prova a menos que o DBUse.loginUsuario
-    // esteja bem configurado com o Mongo e populado. Caso contrário, comente.
+    @Test
+    @DisplayName("VARIAÇÃO 3: não insere 2x o mesmo usuário no MongoDB (mesmo email + senha)")
+    void testVariacao3_NaoDuplicaUsuarioNoMongo() throws Exception {
+        // Dados fixos para o teste
+        String nome     = "Ivan";
+        String email    = "ivan.teste@teste.com"; // um email “de teste”
+        String senha    = "SenhaFort3#";
+        String telefone = "19999999999";
+        String cpfCnpj  = "12345678901";
+        String data     = "1997-11-16";
+        double hectares = 25.0;
+
+        // (1) GARANTIR que o usuário não existe antes do teste
+        Document antes = DBUse.loginUsuario(email, senha);
+        if (antes != null) {
+            // se já existir de testes anteriores, você pode opcionalmente apagar,
+            // ou só aceitar que já tem 1 e seguir o fluxo
+            // aqui vamos só informar:
+            System.out.println("Aviso: usuário de teste já existia no Mongo antes do teste.");
+        }
+
+        // (2) Primeiro cadastro: deve funcionar normalmente
+        cadastroService.cadastrar(
+                nome,
+                email,
+                senha,
+                telefone,
+                cpfCnpj,
+                data,
+                hectares
+        );
+
+        // Confere que agora o usuário EXISTE no Mongo
+        Document depoisPrimeiro = DBUse.loginUsuario(email, senha);
+        assertNotNull(depoisPrimeiro, "Usuário deveria existir no Mongo após o primeiro cadastro");
+
+        // (3) Segundo cadastro com MESMO email e MESMA senha:
+        //     CadastroService deve detectar e lançar "Email já cadastrado"
+        Exception e = assertThrows(Exception.class, () -> {
+            cadastroService.cadastrar(
+                    nome,
+                    email,
+                    senha,
+                    telefone,
+                    cpfCnpj,
+                    data,
+                    hectares
+            );
+        });
+        assertTrue(e.getMessage().contains("Email já cadastrado"),
+                "Mensagem de erro esperada não foi lançada");
+
+        // (4) Confirma que depois da segunda tentativa
+        //     o usuário continua EXISTINDO, mas NÃO foi criado outro.
+        // Como o DBUse.loginUsuario retorna só um Document,
+        // a melhor evidência é: ainda existe, e o teste não explodiu.
+        Document depoisSegundo = DBUse.loginUsuario(email, senha);
+        assertNotNull(depoisSegundo, "Usuário deveria continuar existindo após tentativa duplicada");
+
+        // Opcionalmente, se sua coleção tiver _id único, podemos checar que é o mesmo:
+        assertEquals(depoisPrimeiro.getObjectId("_id"), depoisSegundo.getObjectId("_id"),
+                "O mesmo documento deve representar o usuário (não pode ter duplicado)");
+    }
+
 }
