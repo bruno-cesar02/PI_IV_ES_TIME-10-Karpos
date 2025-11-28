@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*import org.junit.jupiter.api.Assertions;
 =======
 package servidor.src.test.java;

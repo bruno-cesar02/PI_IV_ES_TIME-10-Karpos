@@ -6,6 +6,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.*;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Cliente {
 
@@ -35,8 +38,10 @@ public class Cliente {
                     processarAddAtividade(args, out, in);
                     break;
 
-                case "listaSemFiltro":
+                case "listasemfiltro":
                     processarBuscaSemFiltro(args, out, in);
+                    break;
+
                 default:
                     printJsonErro("acao_invalida");
             }
@@ -73,7 +78,7 @@ public class Cliente {
         if (resposta instanceof RespostaErro erro) {
             printJsonErro(erro.erro);
         } else if (resposta instanceof BuscaSemFiltro buscaSemFiltro) {
-            printJsonBuscaSemFiltro(buscaSemFiltro.getResultado());
+            printJsonBuscaSemFiltro(buscaSemFiltro.getResultado(), args);
         }else {
             printJsonErro("resposta_desconhecida_do_servidor");
         }
@@ -253,19 +258,82 @@ public class Cliente {
         // se quiser manter esse "delay" pode deixar, mas não é obrigatório:
         try { Thread.sleep(100); } catch (InterruptedException ignored) {}
     }
-    private static void printJsonBuscaSemFiltro(List<String> listaDeJsons) {
+    private static void printJsonBuscaSemFiltro(List<String> listaDeJsons, String[] args) {
         StringBuilder sb = new StringBuilder();
+
+        // Cabeçalho (mantendo seu estilo original)
+        sb.append("{\\\"BuscExecutada\\\": \\\"true\\\", \\\"resultados\\\": [");
+
         int i = 0;
-        while (!listaDeJsons.isEmpty()) {
+        while (i < listaDeJsons.size()) {
             String json = listaDeJsons.get(i);
-            System.out.println(json);
-            sb.append("{\\\"BuscExecutada\\\": \\\"true\\\", \\\"busca\\\": \\\"" + json + "\\\" ");
-            sb.append("}");
-            i ++;
+
+
+            if (args[2].equalsIgnoreCase("field-metrics")) {
+                String data = extrairCampo(json, "data");
+                String tipo = extrairCampo(json, "atividade");
+                String texto = extrairCampo(json, "texto");
+
+                sb.append("{");
+                sb.append("\\\"data\\\": \\\"" + data + "\\\", ");
+                sb.append("\\\"tipo\\\": \\\"" + tipo + "\\\", ");
+                sb.append("\\\"dados\\\": \\\"" + texto + "\\\"");
+                sb.append("}");
+            } else{
+                String data = extrairCampo(json, "data");
+                String tipo = extrairCampo(json, "atividade");
+                String texto = extrairCampo(json, "descricao");
+                String custo = extrairCampo(json, "custo");
+
+
+                sb.append("{");
+                sb.append("\\\"data\\\": \\\"" + data + "\\\", ");
+                sb.append("\\\"tipo\\\": \\\"" + tipo + "\\\", ");
+                sb.append("\\\"dados\\\": \\\"" + texto + "\\\",");
+                sb.append("\\\"custo\\\": \\\"" + custo + "\\\"");
+                sb.append("}");
+            }
+
+            // Adiciona vírgula se não for o último item (para manter JSON válido)
+            if (i < listaDeJsons.size() - 1) {
+                sb.append(", ");
+            }
+
+            i++;
         }
+
+        sb.append("]}");
+
+        // Printa TUDO de uma vez no final, conforme solicitado
         System.out.println(sb.toString());
-        // se quiser manter esse "delay" pode deixar, mas não é obrigatório:
-        try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+    }
+
+    // Método auxiliar para não repetir o código do Regex 3 vezes
+    private static String extrairCampo(String json, String chave) {
+        // Regex explicada:
+        // Parte 1 (String): \"(.*?)\"  -> Pega conteúdo entre aspas
+        // OU (|)
+        // Parte 2 (Número): (-?\\d+(?:\\.\\d+)?)
+        //      -?          -> Sinal de negativo opcional
+        //      \\d+        -> Um ou mais dígitos
+        //      (?:\\.\\d+)? -> Grupo opcional: Um ponto seguido de mais dígitos (para double)
+
+        String regex = "\"" + chave + "\"\\s*:\\s*(?:\"(.*?)\"|(-?\\d+(?:\\.\\d+)?))";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(json);
+
+        if (matcher.find()) {
+            // Grupo 1: Achou String (estava entre aspas)
+            if (matcher.group(1) != null) {
+                return matcher.group(1);
+            }
+            // Grupo 2: Achou Número (Int ou Double válido)
+            if (matcher.group(2) != null) {
+                return matcher.group(2);
+            }
+        }
+        return ""; // Retorna vazio se não encontrar
     }
     private static void printJsonSucessoCadastroCaderno() {
         StringBuilder sb = new StringBuilder();
