@@ -4,7 +4,6 @@ const { spawn } = require('child_process');
 const path = require('path');
 
 // GET /custos-registrados
-// GET /custos-registrados
 exports.mostrarCustosRegistrados = (req, res) => {
     let dataFiltro = req.query.data || '';
 
