@@ -4,65 +4,87 @@ const { spawn } = require('child_process');
 const path = require('path');
 
 // GET /custos-registrados
+// GET /custos-registrados
 exports.mostrarCustosRegistrados = (req, res) => {
-  res.render('custos-registrados', {
-    title: 'Custos Registrados',
-    css: 'dashboard.css',
-    cssExtra: 'caderno-campo.css',
-    dados: req.session.user,
-    msg: req.session.msg || '',
-    
-    custos: [] // TODO: buscar do backend futuramente, passar os custos 
-  });
-  if (req.session) req.session.msg = '';
-};
+    let dataFiltro = req.query.data || '';
 
-exports.mostrarCustosRegistrados = (req, res) => {
-  const dataFiltro = req.query.data || '';
-
-  const processoJava = spawn('java', ['cliente.Cliente', 'listasemfiltro', req.session.user.email, "field-costs"], {cwd: path.resolve(__dirname, '..', '..', '..')});
-
-  let dadosRetornados = '';
-  
-  processoJava.stdout.on('data', (data) => {
-    dadosRetornados = dadosRetornados.trim() + data.toString();
-  });
-
-  processoJava.stderr.on('data', (data) => {
-    console.error(`Erro do processo Java: ${data}`);
-  });
-
-  processoJava.on('close', (code) => {
-    console.log(`Processo Java finalizado com código ${code}`);
-    try {
-      dadosRetornados = '"' + dadosRetornados.trim() + '"';
-
-      console.log(dadosRetornados);
-
-      dadosRetornados = JSON.parse(dadosRetornados.trim());
-      dadosRetornados = JSON.parse(dadosRetornados.trim());
-      
-      console.log('Dados retornados do Java:', dadosRetornados);
-    } catch (e) {
-      console.error('\n\nErro ao parsear saída do Java:', e.message || e);
-      dadosRetornados = {};
+    if (dataFiltro.includes('-')) {
+        const [ano, mes, dia] = dataFiltro.split('-');
+        dataFiltro = `${dia}/${mes}/${ano}`;
     }
 
+    let dadosRetornados = '';
+    let processoJava;
 
+    // decide qual comando Java rodar
+    if (dataFiltro) {
+        processoJava = spawn(
+            'java',
+            [
+                '-cp',
+                'out/production/PI_IV_ES_TIME-10-Karpos',
+                'cliente.Cliente',
+                'listacomfiltro',
+                req.session.user.email,
+                'field-costs',
+                dataFiltro
+            ],
+            { cwd: path.resolve(__dirname, '..', '..', '..') }
+        );
+    } else {
+        processoJava = spawn(
+            'java',
+            [
+                '-cp',
+                'out/production/PI_IV_ES_TIME-10-Karpos',
+                'cliente.Cliente',
+                'listasemfiltro',
+                req.session.user.email,
+                'field-costs'
+            ],
+            { cwd: path.resolve(__dirname, '..', '..', '..') }
+        );
+    }
 
-    res.render('custos-registrados', {
-    title: 'Custos Registrados',
-    css: 'dashboard.css',
-    cssExtra: 'caderno-campo.css',
-    msg: req.session.msg || '',
-    dados: req.session.user,
-    dataFiltro: dataFiltro,
-    //active: 'historico', se optar por fazer as barras ficarem em negrito atraves do controller e nao do html
-    // TODO: passar aqui a lista real de atividades vinda do backend
-    custos: dadosRetornados.resultados || [] // placeholder
-  });
-  });
+    processoJava.stdout.on('data', (data) => {
+        dadosRetornados = dadosRetornados.trim() + data.toString();
+    });
+
+    processoJava.stderr.on('data', (data) => {
+        console.error(`Erro do processo Java: ${data}`);
+    });
+
+    processoJava.on('close', (code) => {
+        console.log(`Processo Java finalizado com código ${code}`);
+
+        try {
+            dadosRetornados = '"' + dadosRetornados.trim() + '"';
+
+            console.log(dadosRetornados);
+
+            dadosRetornados = JSON.parse(dadosRetornados.trim());
+            dadosRetornados = JSON.parse(dadosRetornados.trim());
+
+            console.log('Dados retornados do Java:', dadosRetornados);
+        } catch (e) {
+            console.error('\n\nErro ao parsear saída do Java:', e.message || e);
+            dadosRetornados = {};
+        }
+
+        res.render('custos-registrados', {
+            title: 'Custos Registrados',
+            css: 'dashboard.css',
+            cssExtra: 'caderno-campo.css',
+            msg: req.session.msg || '',
+            dados: req.session.user,
+            dataFiltro: dataFiltro,
+            custos: dadosRetornados.resultados || []
+        });
+
+        if (req.session) req.session.msg = '';
+    });
 };
+
 
 
 // GET /novo-custo
@@ -90,70 +112,68 @@ exports.mostrarNovoCusto = (req, res) => {
 
   // POST /novo-custo - IMPLEMENTAÇÃO COMPLETA
   exports.salvarNovoCusto = (req, res) => {
-    const { data, descricao, valor, categoria,} = req.body;
-    
-    // Pega email do usuário logado
-    const usuarioEmail = req.session.user?.email || '';
+      const {data, descricao, valor, categoria,} = req.body;
 
-    // Chama o Java via spawn
-    const processoJava = spawn('java', [
-      'cliente.Cliente',       // Classe principal
-      'novoCusto',             // args[0] - ação
-      usuarioEmail,            // args[1] - email do usuário
-      data,                    // args[2] - data do custo
-      descricao,               // args[3] - descrição
-      valor,                   // args[4] - valor
-      categoria,               // args[5] - categoria
-    
-    ], {
-      cwd: path.resolve(__dirname, '..', '..', '..'),
-      timeout: 8000
-    });
+      // Pega email do usuário logado
+      const usuarioEmail = req.session.user?.email || '';
 
-    let dadosRetornados = '';
+      // Chama o Java via spawn
+      const processoJava = spawn('java', [
+          'cliente.Cliente',       // Classe principal
+          'novoCusto',             // args[0] - ação
+          usuarioEmail,            // args[1] - email do usuário
+          data,                    // args[2] - data do custo
+          descricao,               // args[3] - descrição
+          valor,                   // args[4] - valor
+          categoria,               // args[5] - categoria
 
-    processoJava.stdout.on('data', (data) => {
-      dadosRetornados += data.toString();
-    });
+      ], {
+          cwd: path.resolve(__dirname, '..', '..', '..'),
+          timeout: 8000
+      });
 
-    processoJava.stderr.on('data', (data) => {
-      console.error(`Erro do processo Java: ${data}`);
-    });
+      let dadosRetornados = '';
 
-    processoJava.on('error', (err) => {
-      console.error('Erro ao spawnar Java:', err);
-      if (req.session) req.session.msg = 'Erro ao conectar com o servidor';
-      res.redirect('/novo-custo');
-    });
+      processoJava.stdout.on('data', (data) => {
+          dadosRetornados += data.toString();
+      });
 
-    processoJava.on('close', (code) => {
-      console.log(`Processo Java finalizado com código ${code}`);
-      
-      try {
-        dadosRetornados = dadosRetornados.trim();
-        
-        // Parse igual ao login do seu colega
-        let resposta = JSON.parse(dadosRetornados);
-        if (typeof resposta === 'string') {
-          resposta = JSON.parse(resposta);
-        }
-        
-        console.log('Resposta do Java:', resposta);
-        
-        if (resposta.sucesso) {
-          if (req.session) req.session.msg = 'Custo registrado com sucesso!';
-          res.redirect('/custos-registrados');
-        } else {
-          if (req.session) req.session.msg = resposta.msg || 'Erro ao salvar custo';
+      processoJava.stderr.on('data', (data) => {
+          console.error(`Erro do processo Java: ${data}`);
+      });
+
+      processoJava.on('error', (err) => {
+          console.error('Erro ao spawnar Java:', err);
+          if (req.session) req.session.msg = 'Erro ao conectar com o servidor';
           res.redirect('/novo-custo');
-        }
-      } catch (err) {
-        console.error('Erro ao parsear resposta:', err);
-        console.error('Dados recebidos:', dadosRetornados);
-        if (req.session) req.session.msg = 'Erro ao processar resposta do servidor';
-        res.redirect('/novo-custo');
-      }
-    });
-  }; 
+      });
 
+      processoJava.on('close', (code) => {
+          console.log(`Processo Java finalizado com código ${code}`);
 
+          try {
+              dadosRetornados = dadosRetornados.trim();
+
+              // Parse igual ao login do seu colega
+              let resposta = JSON.parse(dadosRetornados);
+              if (typeof resposta === 'string') {
+                  resposta = JSON.parse(resposta);
+              }
+
+              console.log('Resposta do Java:', resposta);
+
+              if (resposta.sucesso) {
+                  if (req.session) req.session.msg = 'Custo registrado com sucesso!';
+                  res.redirect('/custos-registrados');
+              } else {
+                  if (req.session) req.session.msg = resposta.msg || 'Erro ao salvar custo';
+                  res.redirect('/novo-custo');
+              }
+          } catch (err) {
+              console.error('Erro ao parsear resposta:', err);
+              console.error('Dados recebidos:', dadosRetornados);
+              if (req.session) req.session.msg = 'Erro ao processar resposta do servidor';
+              res.redirect('/novo-custo');
+          }
+      });
+  };

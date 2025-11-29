@@ -1,7 +1,7 @@
 package cliente;
 
 import comum.*;
-import servidor.*; // só se precisar de tipos comuns, mas NÃO de Parceiro
+//import servidor.*; // só se precisar de tipos comuns, mas NÃO de Parceiro
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -41,7 +41,9 @@ public class Cliente {
                 case "listasemfiltro":
                     processarBuscaSemFiltro(args, out, in);
                     break;
-
+                case "listacomfiltro":
+                    processarBuscaComFiltro(args, out, in);
+                    break;
                 default:
                     printJsonErro("acao_invalida");
             }
@@ -83,6 +85,61 @@ public class Cliente {
             printJsonErro("resposta_desconhecida_do_servidor");
         }
     }
+
+    private static void processarBuscaComFiltro(String[] args,
+                                                ObjectOutputStream out,
+                                                ObjectInputStream in) throws Exception {
+
+        // args[0] = "listacomfiltro"
+        // args[1] = email
+        // args[2] = colecao ("field-metrics" ou "field-costs")
+        // args[3] = dataFiltro
+        if (args.length < 4) {
+            printJsonErro("parametros_insuficientes_para_busca_com_filtro");
+            return;
+        }
+
+        String email      = args[1];
+        String colecao    = args[2];
+        String dataFiltro = args[3];
+
+        // Monta o pedido correto de acordo com a coleção
+        Object pedido;
+
+        if (colecao.equalsIgnoreCase("field-metrics")) {
+            // busca atividades por data
+            pedido = new PedidoBuscaDataAtividade(dataFiltro, email);
+        } else if (colecao.equalsIgnoreCase("field-costs")) {
+            // busca custos por data
+            pedido = new PedidoBuscaDataCusto(dataFiltro, email);
+        } else {
+            printJsonErro("colecao_invalida_para_busca_com_filtro");
+            return;
+        }
+
+        // ENVIA PEDIDO
+        out.writeObject(pedido);
+        out.flush();
+
+        // LÊ RESPOSTA
+        Object resposta = in.readObject();
+
+        if (resposta instanceof RespostaErro erro) {
+            printJsonErro(erro.erro);
+        }
+        // resposta com atividades filtradas
+        else if (resposta instanceof BuscaDataAtividade buscaDataAtividade) {
+            printJsonBuscaSemFiltro(buscaDataAtividade.getResultado(), args);
+        }
+        // resposta com custos filtrados
+        else if (resposta instanceof BuscaDataCusto buscaDataCusto) {
+            printJsonBuscaSemFiltro(buscaDataCusto.getResultado(), args);
+        }
+        else {
+            printJsonErro("resposta_desconhecida_do_servidor");
+        }
+    }
+
 
     private static void processarInsercao(String[] args,
                                           ObjectOutputStream out,

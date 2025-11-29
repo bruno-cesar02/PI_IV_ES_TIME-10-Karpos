@@ -12,9 +12,21 @@ exports.login = (req, res) => {
 exports.loginForm = (req, res) => {
   const { email, password } = req.body;
 
-  const processoJava = spawn('java', ['cliente.Cliente', 'login', email, password], {cwd: path.resolve(__dirname, '..', '..', '..')});
+    const processoJava = spawn(
+        'java',
+        [
+            '-cp',
+            'out/production/PI_IV_ES_TIME-10-Karpos',
+            'cliente.Cliente',
+            'login',
+            email,
+            password
+        ],
+        { cwd: path.resolve(__dirname, '..', '..', '..') }
+    );
 
-  let dadosRetornados = '"';
+
+    let dadosRetornados = '"';
 
   processoJava.stdout.on('data', (data) => {
   dadosRetornados += data.toString();
