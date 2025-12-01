@@ -220,7 +220,6 @@ public class DBUse {
                 return documentosEncontrados;
             }
         }
-        System.out.println("Usuário não encontrado");
         return null;
     }
     public static List<Document> buscarSemFiltro(String nomeColecao,String userEmail) {
