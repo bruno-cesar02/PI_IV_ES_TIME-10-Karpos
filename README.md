@@ -43,6 +43,17 @@
 | Otávio Augusto Antunes Marquez | 24025832 |
 
 ---
+### Papéis e Responsabilidades
+
+| Membro | Papel Principal | Contribuições |
+|:-------|:---------------|:--------------|
+| Bruno César | skdo| wdkwmdk |
+| Felipe Lima | kasdj| sdkmkskd |
+| Henrique Soares | sdkaksd| skskdksd|
+| Juliano Perusso | sadkkjd| sdkskmdkmsd|
+| Nicolas Carvalho | dsdkmd | sdjskdksdk |
+| Otávio Augusto | sdksdk| sdksdksdmk |
+
 
 ## 🎯 Visão Geral do Projeto
 
@@ -183,9 +194,9 @@ PI_IV_ES_TIME-10-Karpos/
 
 ---
 
-## 💾 Modelos das Coleções MongoDB
+## 💾Coleções MongoDB
 
-### 👤 Collection: `users`
+### 👤 Collection: `user-data`
 
 Armazena dados dos usuários e suas propriedades rurais.
 
@@ -194,65 +205,35 @@ Armazena dados dos usuários e suas propriedades rurais.
   "_id": "ObjectId",
   "nome": "string",
   "email": "string",
-  "senha": "string (hash BCrypt)",
+  "senha": "string",
   "telefone": "string",
-  "cpfCnpj": "string",
-  "propriedade": {
-    "nome": "string",
-    "endereco": "string",
-    "tamanhoHectares": "double",
-    "cultura": "string"
-  },
-  "criadoEm": "Date",
-  "atualizadoEm": "Date"
+  "documento": "string",
+  "tamanhoHectares": "double",
+  "userID": "number",
+  "data": "string"
 }
 ```
 
-**Índices:** `email` (unique), `cpfCnpj` (unique)
-
 ---
 
-### 🌱 Collection: `atividades`
+### 🌱 Collection: `field-metrics`
 
 Registra atividades agrícolas realizadas na propriedade.
 
 ```
 {
   "_id": "ObjectId",
-  "usuarioId": "ObjectId (ref: users)",
-  "tipo": "string (ex: Plantio, Colheita, Aplicação)",
-  "descricao": "string",
-  "data": "Date",
-  "observacoes": "string",
-  "criadoEm": "Date",
-  "atualizadoEm": "Date"
+  "data": "string (formato: YYYY-MM-DD)",
+  "tipoAtividade": "string (Plantio, Colheita, Aplicação, etc.)",
+  "texto": "string (descrição detalhada)",
+  "userID": "number (ref: user-data.userID)"
 }
-```
 
-**Índices:** `usuarioId`, `data`
+```
 
 ---
 
-### 💰 Collection: `custos`
 
-Controla os custos e gastos da propriedade.
-
-```
-{
-  "_id": "ObjectId",
-  "usuarioId": "ObjectId (ref: users)",
-  "descricao": "string",
-  "valor": "number",
-  "data": "Date",
-  "atividadeId": "ObjectId (opcional, ref: atividades)",
-  "criadoEm": "Date",
-  "atualizadoEm": "Date"
-}
-```
-
-**Índices:** `usuarioId`, `data`
-
----
 
 ## 🔧 Decisões Técnicas
 
@@ -276,14 +257,73 @@ Controla os custos e gastos da propriedade.
 
 ## 🔄 Fluxos e Processos Implementados
 
-### Processo(s) escolhido(s) para MVP
+#### 1. Cadastro de Usuário e Propriedade
+**Objetivo:** Permitir que o produtor rural crie sua conta.
 
-> 📝 **[ESPAÇO RESERVADO]**
-> 
-> Descrição detalhada do(s) processo(s) implementado(s):
-> - Cadastro de usuário
-> - Registro de atividades
-> - Controle de custos
+**Passos:**
+1. Usuário acessa a tela de cadastro
+2. Preenche dados pessoais (nome, email, senha, telefone, CPF/CNPJ,)
+3. Sistema valida os dados (`ValidarCadastro.java`)
+4. Senha é criptografada com BCrypt (`HashSenha.java`)
+5. Dados são persistidos no MongoDB (`CadastroService.java`)
+6. Usuário é redirecionado para login
+
+**Classes Java Envolvidas:**
+- `CadastroService.java` - Lógica de negócio
+- `ValidarCadastro.java` - Validações (email único, CPF válido)
+- `HashSenha.java` - Criptografia de senha
+- `DBUse.java` - Persistência no MongoDB
+
+---
+
+#### 2. Login e Autenticação
+**Objetivo:** Validar credenciais e dar acesso ao sistema.
+
+**Passos:**
+1. Usuário insere email e senha
+2. Sistema busca usuário no banco (`LoginService.java`)
+3. Verifica hash da senha com BCrypt
+4. Se válido, cria sessão e redireciona para dashboard
+5. Se inválido, retorna erro
+
+**Classes Java Envolvidas:**
+- `LoginService.java` - Autenticação
+- `HashSenha.java` - Validação de senha
+
+---
+
+#### 3. Registro de Atividades (Caderno de Campo)
+**Objetivo:** Permitir que o produtor registre atividades agrícolas realizadas.
+
+**Passos:**
+1. Usuário logado acessa "Caderno de Campo"
+2. Clica em "Nova Atividade"
+3. Preenche: tipo (Plantio/Colheita/Aplicação), descrição, data, observações
+4. Sistema valida que todos os campos obrigatórios estão preenchidos
+5. Atividade é salva associada ao `usuarioId` (`CadernoDeCampoService.java`)
+6. Usuário pode consultar e excluir atividades
+
+**Classes Java Envolvidas:**
+- `CadernoDeCampoService.java` - inserir atividade
+- `BuscaPorDataAtividadeService.java` - Filtros por data 
+- `DBUse.java` - Operações no MongoDB
+
+---
+
+#### 4. Controle de Custos
+**Objetivo:** Registrar gastos da propriedade.
+
+**Passos:**
+1. Usuário acessa "Custos Registrados"
+2. Adiciona novo custo (descrição, valor, data)
+3. Pode vincular a uma atividade específica (opcional)
+4. Sistema persiste no MongoDB
+5. Usuário visualiza histórico de custos
+
+**Classes Java Envolvidas:**
+- `CadastroCustoService.java` - Registro de custos
+- `BuscaPorDataCustoService.java` - Filtros
+- `DBUse.java` - Persistência
 
 ---
 
@@ -333,13 +373,13 @@ Conexão MongoDB estabelecida com sucesso!
 #### Compilar
 
 ```
-javac -cp . cliente/ClienteTeste.java comum/*.java
+javac -cp . cliente/Cliente.java comum/*.java
 ```
 
 #### Executar
 
 ```
-java -cp . cliente.ClienteTeste
+java -cp . cliente.Cliente
 ```
 
 ---
