@@ -47,12 +47,12 @@
 
 | Membro | Papel Principal | Contribuições |
 |:-------|:---------------|:--------------|
-| Bruno César | skdo| wdkwmdk |
-| Felipe Lima | kasdj| sdkmkskd |
-| Henrique Soares | sdkaksd| skskdksd|
-| Juliano Perusso | sadkkjd| sdkskmdkmsd|
-| Nicolas Carvalho | dsdkmd | sdjskdksdk |
-| Otávio Augusto | sdksdk| sdksdksdmk |
+| Bruno César | Rotas e Project | Rotas get e post e front-end |
+| Felipe Lima | Telas | front-end |
+| Henrique Soares | Banco | Servidor java e Banco|
+| Juliano Perusso | Servidor | Servidor java e Banco|
+| Nicolas Carvalho | Canva, Telas | Fluxo de telas/design e front-end |
+| Otávio Augusto | Controller e node| Controllers e middleware |
 
 
 ## 🎯 Visão Geral do Projeto
@@ -410,8 +410,7 @@ java -cp . cliente.Cliente
 
 > 📝 **[ESPAÇO RESERVADO]**
 > 
-> - Screenshots da aplicação
-> - Link do Figma
+> - Link do Canva: https://www.canva.com/design/DAG6RKBvP0c/W-PDYRAD4F52ufEvTBAVFw/edit?utm_content=DAG6RKBvP0c&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton 
 > - Fluxos de tela
 
 ---
