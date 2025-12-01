@@ -11,6 +11,35 @@ body {
     background-color: #bbec55;
 }
 
+select {
+    /* Copiando estilos dos inputs */
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #1A3A1A;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+    color: #1A3A1A;
+    outline: none;
+    transition: border-color 0.3s ease;
+
+    /* Estilos específicos para remover a aparência nativa e alinhar */
+    -webkit-appearance: none; /* Remove a aparência nativa no Chrome/Safari */
+    -moz-appearance: none;    /* Remove a aparência nativa no Firefox */
+    appearance: none;         /* Remove a aparência nativa */
+    border-radius: 0;         /* Garante que não haja bordas arredondadas nativas */
+    width: 100%;              /* Garante que ocupe toda a largura */
+}
+
+/* Estilo para quando o select está em foco */
+select:focus {
+    border-bottom-color: rgba(26, 58, 26, 0.7);
+}
+
+select option {
+    background-color: #01d74f; 
+    color: #1A3A1A; 
+}
+
 .msg-error {
     color: red;
     margin-bottom: 1rem;
