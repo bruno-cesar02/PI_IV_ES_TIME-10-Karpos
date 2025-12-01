@@ -47,6 +47,7 @@
                     <table class="atividades-table">
                         <thead>
                             <tr>
+                                <th>Ações</th>
                                 <th>Data</th>
                                 <th>Descrição</th>
                                 <th>Valor</th>
@@ -57,11 +58,18 @@
                         <tbody>
                             <% custos.forEach(custo => { %>
                             <tr>
+                                <form method="post" action="/deletar-custo">
+                                <td>
+                                    <button type="submit" class="btn btn-primary">Deletar</button>
+                                </td>
                                 <td><%= custo.data %></td>
                                 <td><%= custo.dados %></td>
                                 <td>R$ <%= custo.custo %></td>
                                 <td><%= custo.tipo %></td>
                                 <td><%= custo.aa || 'N/A' %></td>
+                                <input type="hidden" name="data" value="<%= custo.data %>">
+                                <input type="hidden" name="tipo" value="<%= custo.tipo %>">
+                                </form>
                             </tr>
                             <% }) %>
                         </tbody>

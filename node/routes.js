@@ -44,12 +44,16 @@ route.get('/novo-registro',verificarSeLogado,cadernoCampoController.mostrarNovoR
 
 route.post('/novo-registro',cleanmsg,verificarSeLogado,cadernoCampoController.salvarNovoRegistro);
 
+route.post('/deletar-registro', cleanmsg,verificarSeLogado,cadernoCampoController.deletarRegistro);
+
 // ========= CUSTOS =========
 route.get('/custos-registrados',verificarSeLogado,custosController.mostrarCustosRegistrados);
 
 route.get('/novo-custo',verificarSeLogado,custosController.mostrarNovoCusto);
 
 route.post('/novo-custo',cleanmsg,verificarSeLogado,custosController.salvarNovoCusto);
+
+route.post('/deletar-custo',verificarSeLogado,custosController.deletarCusto);
 
 
 

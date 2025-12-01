@@ -31,11 +31,15 @@
                                 <button style="cursor:pointer" type="link" onclick="window.location.href='/custos-registrados'" class="nav-button">‹</button>
                             </div>
                             <ol class="registros-list">
+                                <%if (atividades.data){%>
                                 <li><%= atividades.data %></li>
                                 <li><%= atividades.dados %></>
                                 <li>R$ <%= atividades.custo %></li>
                                 <li><%= atividades.tipo %></li>
                                 <li><%= atividades.aa || 'N/A' %></li>
+                                <%} else {%>
+                                    <li>Nenhum dado</li>
+                                <%}%>
                             </ol>
                             <button style="cursor:pointer" type="link" onclick="window.location.href='/custos-registrados'" class="btn-details">Detalhes</button>
                         </div>

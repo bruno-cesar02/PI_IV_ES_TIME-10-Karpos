@@ -166,3 +166,40 @@ exports.mostrarNovoCusto = (req, res) => {
           }
       });
   };
+
+  exports.deletarCusto = (req, res) => {
+
+    let {data, tipo} = req.body;
+    
+      let dadosDelete;
+    
+      const processoJava = spawn('java', ['cliente.Cliente', 'deletar', req.session.user.email, data, tipo, "field-costs"], {cwd: path.resolve(__dirname, '..', '..', '..')});
+      
+      processoJava.stdout.on('data', (data) => {
+        dadosDelete += data.toString();
+      });
+    
+      processoJava.stderr.on('data', (data) => {
+        console.error(`Erro do processo Java: ${data}`);
+      });
+    
+      processoJava.on('close', (code) => {
+        console.log(`Processo Java finalizado com código ${code}`);
+        try {
+          dadosDelete = dadosDelete.trim();
+          console.log('Dados retornados do Java:', dadosDelete);
+        } catch (e) {
+          console.error('Erro ao parsear saída do Java:', e.message || e);
+          dadosDelete = "";
+        }
+    
+    
+        if (dadosDelete == 'true'){
+          req.session.msg = 'Atividade deletada com sucesso.';
+          res.redirect('/custos-registrados');
+        } else {
+          req.session.msg = 'Erro ao deletar atividade.';  
+          res.redirect('/custos-registrados');
+        }
+      });
+  }

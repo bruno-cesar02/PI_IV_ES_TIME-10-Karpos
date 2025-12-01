@@ -48,6 +48,7 @@
                     <table class="atividades-table">
                         <thead>
                             <tr>
+                                <th>Ações</th>
                                 <th>Data</th>
                                 <th>Tipo de Atividade</th>
                                 <th>Detalhe</th>
@@ -56,9 +57,16 @@
                         <tbody>
                             <% atividades.forEach(atividade => { %>
                             <tr>
+                                <form method="post" action="/deletar-registro">
+                                <td>
+                                    <button type="submit" class="btn btn-primary">Deletar</button>
+                                </td>
                                 <td><%= atividade.data %></td>
                                 <td><%= atividade.tipo %></td>
                                 <td><%= atividade.dados %></td>
+                                <input type="hidden" name="data" value="<%= atividade.data %>">
+                                <input type="hidden" name="tipo" value="<%= atividade.tipo %>">
+                                </form>
                             </tr>
                             <% }) %>
                         </tbody>

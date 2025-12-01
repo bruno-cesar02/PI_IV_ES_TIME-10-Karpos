@@ -55,8 +55,6 @@ exports.mostrarCadernoCampo = (req, res) => {
       dadosRetornados = {};
     }
 
-
-
     res.render('caderno-campo', {
     title: 'Meu Caderno de Campo',
     css: 'dashboard.css',
@@ -170,6 +168,43 @@ exports.salvarNovoRegistro = (req, res) => {
     } else {
       req.session.msg = dadosRetornados.msg || 'Erro ao adicionar atividade.';  
       res.redirect('/novo-registro');
+    }
+  });
+};
+
+exports.deletarRegistro = (req, res) => {
+
+  let {data, tipo} = req.body;
+
+  let dadosDelete;
+
+  const processoJava = spawn('java', ['cliente.Cliente', 'deletar', req.session.user.email, data, tipo, "field-metrics"], {cwd: path.resolve(__dirname, '..', '..', '..')});
+  
+  processoJava.stdout.on('data', (data) => {
+    dadosDelete += data.toString();
+  });
+
+  processoJava.stderr.on('data', (data) => {
+    console.error(`Erro do processo Java: ${data}`);
+  });
+
+  processoJava.on('close', (code) => {
+    console.log(`Processo Java finalizado com código ${code}`);
+    try {
+      dadosDelete = dadosDelete.trim();
+      console.log('Dados retornados do Java:', dadosDelete);
+    } catch (e) {
+      console.error('Erro ao parsear saída do Java:', e.message || e);
+      dadosDelete = "";
+    }
+
+
+    if (dadosDelete == 'true'){
+      req.session.msg = 'Atividade deletada com sucesso.';
+      res.redirect('/caderno-campo');
+    } else {
+      req.session.msg = 'Erro ao deletar atividade.';  
+      res.redirect('/caderno-campo');
     }
   });
 };
