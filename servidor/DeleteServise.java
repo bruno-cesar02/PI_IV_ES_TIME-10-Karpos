@@ -7,7 +7,7 @@ import servidor.dbConection.DBUse;
 public class DeleteServise {
     public DeleteServise(){}
 
-    public Boolean deletear(String data, String categoria, String atividade, String email) {
+    public Boolean deletear(String email, String categoria, String atividade, String data) {
         try{
             Boolean b = DBUse.deleteItem(data, categoria, atividade , email);
             if (b == false) throw new IllegalArgumentException("Usuário não encontrado");

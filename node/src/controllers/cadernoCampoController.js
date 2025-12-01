@@ -176,7 +176,7 @@ exports.deletarRegistro = (req, res) => {
 
   let {data, tipo} = req.body;
 
-  let dadosDelete;
+  let dadosDelete = '';
 
   const processoJava = spawn('java', ['cliente.Cliente', 'deletar', req.session.user.email, data, tipo, "field-metrics"], {cwd: path.resolve(__dirname, '..', '..', '..')});
   
