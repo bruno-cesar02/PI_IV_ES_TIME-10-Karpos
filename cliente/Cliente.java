@@ -50,6 +50,10 @@ public class Cliente {
                     processarBuscaComFiltro(args, out, in);
                     break;
 
+                case "deletar":
+                    processarDelete(args, out, in); // case, email, data , atividade, colecao;
+                    break;
+
                 default:
                     printJsonErro("acao_invalida");
             }
@@ -90,6 +94,27 @@ public class Cliente {
         }else {
             printJsonErro("resposta_desconhecida_do_servidor");
         }
+    }
+    private static void processarDelete(String[] args, ObjectOutputStream out, ObjectInputStream in) throws Exception {
+        if (args.length < 5) {
+            printJsonErro("parametros_insuficientes_para_busca");
+            return;
+        }
+        String email = args[1];
+        String data = args[2];
+        String atividade = args[3];
+        String colecao = args[4];
+
+        PedidoDelete pedido = new PedidoDelete(email, data, atividade, colecao);
+        out.writeObject(pedido);
+        out.flush();
+
+        Object resposta = in.readObject();
+        if (resposta instanceof RespostaErro) {
+            System.out.println("false");
+            return;
+        }
+        System.out.println("true");
     }
 
     private static void processarBuscaComFiltro(String[] args,
