@@ -70,6 +70,11 @@ public class ClienteTeste {
             Object resp7 = in.readObject();
             System.out.println(resp7);
 
+
+            out.writeObject(new PedidoDelete("12/12/2025", "mariateste@karpos.com",
+                    "imposto", "field-costs"));
+            out.flush();
+            Object rep8 = in.readObject();
         }
     }
 }

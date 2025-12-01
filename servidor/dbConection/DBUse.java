@@ -203,7 +203,7 @@ public class DBUse {
 
         if (usuárioExistente != null){
 
-            filtroBusca.append("userID", usuárioExistente.getLong("userID"));
+            filtroBusca.append("userID", usuárioExistente.getLong("userID")).append("data", data);
 
             FindIterable<Document> resultados = collection.find(filtroBusca);
 
@@ -254,20 +254,24 @@ public class DBUse {
     }
     public static boolean deleteItem(String data, String categoria, String atividade, String email ){
 
-        List<Document> documentosEncontrados = buscarPorAtividade(data, categoria, atividade, email);
+        List<Document> documentosEncontrados = buscarPorAtividade(categoria, atividade, email, data);
 
-        if (documentosEncontrados.isEmpty()){
+        if (documentosEncontrados == null){
+            System.out.println("erroDaprocuraListaAtividade");
             return false;
         }
+        System.out.println("busca da lista correta");
         MongoCollection<Document> userCollection = DBUse.makeCollection("user-data" ,  "Karpos-BD");
         Document filtroUser = new Document("email", email);
         Document usuárioExiste = userCollection.find(filtroUser).first();
 
         if (usuárioExiste == null){
+            System.out.println("erro Procura usuário");
             return false;
         }
+        System.out.println("busca de usuário correta");
         MongoCollection<Document> fieldCollection = DBUse.makeCollection(categoria ,  "Karpos-BD");
-        Document filtroDocument = new Document("data", data).append("atividade", atividade);
+        Document filtroDocument = new Document("data", data).append("atividade", atividade).append("userID", usuárioExiste.getLong("userID"));
         Document documentoExiste = fieldCollection.find(filtroDocument).first();
 
         if (documentoExiste == null){

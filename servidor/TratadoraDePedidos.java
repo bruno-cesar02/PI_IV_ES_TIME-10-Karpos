@@ -30,6 +30,7 @@ public class TratadoraDePedidos implements Runnable {
         this.buscaDataCusto = new BuscaPorDataCustoService();
         this.custo = new CadastroCustoServise();
         this.busca = new BuscaSemFiltroService();
+        this.delete = new DeleteServise();
     }
 
     @Override
