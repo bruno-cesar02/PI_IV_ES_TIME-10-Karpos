@@ -171,7 +171,7 @@ exports.mostrarNovoCusto = (req, res) => {
 
     let {data, tipo} = req.body;
     
-      let dadosDelete;
+      let dadosDelete = '';
     
       const processoJava = spawn('java', ['cliente.Cliente', 'deletar', req.session.user.email, data, tipo, "field-costs"], {cwd: path.resolve(__dirname, '..', '..', '..')});
       

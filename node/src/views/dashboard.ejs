@@ -28,20 +28,20 @@
                         <div class="registros-card rounded-card">
                             <div class="registros-header">
                                 <h2 class="registros-title">Último<br>Registro</h2>
-                                <button style="cursor:pointer" type="link" onclick="window.location.href='/custos-registrados'" class="nav-button">‹</button>
+                                <button style="cursor:pointer" type="link" onclick="window.location.href='/custos-registrados?data=<%= atividades.data %>'" class="nav-button">‹</button>
                             </div>
-                            <ol class="registros-list">
+                            <ul class="registros-list">
                                 <%if (atividades.data){%>
-                                <li><%= atividades.data %></li>
-                                <li><%= atividades.dados %></>
-                                <li>R$ <%= atividades.custo %></li>
-                                <li><%= atividades.tipo %></li>
-                                <li><%= atividades.aa || 'N/A' %></li>
+                                <li> Data:      <%= atividades.data %></li>
+                                <li> Descrição: <%= atividades.dados %></>
+                                <li> Custo:  R$ <%= atividades.custo %></li>
+                                <li> Categoria: <%= atividades.tipo %></li>
+                                <li> AA:        <%= atividades.aa || 'N/A' %></li>
                                 <%} else {%>
                                     <li>Nenhum dado</li>
                                 <%}%>
-                            </ol>
-                            <button style="cursor:pointer" type="link" onclick="window.location.href='/custos-registrados'" class="btn-details">Detalhes</button>
+                            </ul>
+                            <button style="cursor:pointer" type="link" onclick="window.location.href='/custos-registrados?data=<%= atividades.data %>'" class="btn-details">Detalhes</button>
                         </div>
                     </div>
                     <div class="right-col">

@@ -75,7 +75,7 @@ exports.dashboard = (req, res) => {
     title: 'Dashboard',
     dados: req.session.user,
     msg: msg || '',
-    atividades: dadosRetornados.resultados[0] || {},
+    atividades: dadosRetornados.resultados[dadosRetornados.resultados.length - 1] || {},
     despesas: despesas,
     receitas: receitas,
     porHectare: porHectare
