@@ -18,8 +18,8 @@
                     </div>
 
                     <div class="panel-actions">
-                        <button class="btn btn-primary">Salvar</button>
-                        <button class="btn btn-outline">Excluir</button>
+                        <button onclick="document.querySelector('.form-registro').submit()" class="btn btn-primary">Salvar</button>
+                        <button onclick="window.location.href='/caderno-campo'" class="btn btn-outline">Cancelar</button>
                     </div>
                 </div>
             
@@ -60,6 +60,7 @@
                                 <option value="Mão de Obra">Mão de Obra</option>
                                 <option value="Sementes">Sementes</option>
                                 <option value="Fertilizantes">Fertilizantes</option>
+                                <option value="Outro">Outro</option>
                             </select>
                         </div>
 
@@ -68,12 +69,6 @@
                             <p class="field-subtitle">Associado/Não Associado</p>
                             <input type="text" name="atividadeAssociada" class="input-field" placeholder="Ex: Plantio de Milho" value="<%= tipoAtividade || '' %>">
                         </div>
-                    </div>
-
-                    <!-- Botões de ação -->
-                    <div class="panel-actions" style="margin-top: 32px;">
-                        <button type="submit" class="btn btn-primary">Salvar</button>
-                        <a href="/custos-registrados" class="btn btn-outline">Cancelar</a>
                     </div>
                 </form>
             </section>

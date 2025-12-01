@@ -3,13 +3,13 @@ const route = express.Router();
 const indexController = require('./src/controllers/indexController');
 const loginController = require('./src/controllers/loginController');
 const registerController = require('./src/controllers/registerController');
-const dadosController = require('./src/controllers/dadosController');
 const dashboardController = require('./src/controllers/dashboardController');
 const cadernoCampoController = require('./src/controllers/cadernoCampoController');
 const custosController = require('./src/controllers/custosController');
 
 const { redirecionarSeLogado } = require('./src/middlewares/redirecionarSeLogado');
 const { verificarSeLogado } = require('./src/middlewares/verificarSeLogado');
+const { cleanmsg } = require('./src/middlewares/cleanmsg');
 
 
 
@@ -21,21 +21,17 @@ route.get('/', redirecionarSeLogado, indexController.index);
 //Rota de Registro
 route.get('/register', redirecionarSeLogado,registerController.register);
 
-route.post('/register',registerController.registerForm);
+route.post('/register', cleanmsg,registerController.registerForm);
 
 
 //  Rota de Login
 route.get('/login', redirecionarSeLogado, loginController.login);
 
-route.post('/login', loginController.loginForm);
+route.post('/login', cleanmsg, loginController.loginForm);
 
 // Rota de Logout
 
 route.get('/logout', verificarSeLogado, loginController.logout);
-
-
-// Rota de dados
-route.get('/dados',verificarSeLogado, dadosController.dados);
 
 
 // Rota do dashboard
@@ -46,13 +42,14 @@ route.get('/caderno-campo',verificarSeLogado,cadernoCampoController.mostrarCader
 
 route.get('/novo-registro',verificarSeLogado,cadernoCampoController.mostrarNovoRegistro);
 
-route.post('/novo-registro',verificarSeLogado,cadernoCampoController.salvarNovoRegistro);
+route.post('/novo-registro',cleanmsg,verificarSeLogado,cadernoCampoController.salvarNovoRegistro);
 
 // ========= CUSTOS =========
 route.get('/custos-registrados',verificarSeLogado,custosController.mostrarCustosRegistrados);
 
 route.get('/novo-custo',verificarSeLogado,custosController.mostrarNovoCusto);
-route.post('/novo-custo',verificarSeLogado,custosController.salvarNovoCusto);
+
+route.post('/novo-custo',cleanmsg,verificarSeLogado,custosController.salvarNovoCusto);
 
 
 

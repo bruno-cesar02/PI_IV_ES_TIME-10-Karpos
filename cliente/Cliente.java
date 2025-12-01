@@ -38,12 +38,18 @@ public class Cliente {
                     processarAddAtividade(args, out, in);
                     break;
 
+                case "addatividadecusto":
+                    processarAddAtividadeCusto(args,out,in);
+                    break;
+
                 case "listasemfiltro":
                     processarBuscaSemFiltro(args, out, in);
                     break;
+
                 case "listacomfiltro":
                     processarBuscaComFiltro(args, out, in);
                     break;
+
                 default:
                     printJsonErro("acao_invalida");
             }
@@ -89,11 +95,6 @@ public class Cliente {
     private static void processarBuscaComFiltro(String[] args,
                                                 ObjectOutputStream out,
                                                 ObjectInputStream in) throws Exception {
-
-        // args[0] = "listacomfiltro"
-        // args[1] = email
-        // args[2] = colecao ("field-metrics" ou "field-costs")
-        // args[3] = dataFiltro
         if (args.length < 4) {
             printJsonErro("parametros_insuficientes_para_busca_com_filtro");
             return;
@@ -103,7 +104,6 @@ public class Cliente {
         String colecao    = args[2];
         String dataFiltro = args[3];
 
-        // Monta o pedido correto de acordo com a coleção
         Object pedido;
 
         if (colecao.equalsIgnoreCase("field-metrics")) {
@@ -269,6 +269,40 @@ public class Cliente {
         }
     }
 
+    private static void processarAddAtividadeCusto(String[] args,
+                                              ObjectOutputStream out,
+                                              ObjectInputStream in) throws Exception {
+
+        if (args.length < 6) {
+            printJsonErro("parametros_insuficientes_para_login");
+            return;
+        }
+
+        String email = args[1];
+        String data = args[2];
+        String tipo =  args[3];
+        String texto = args[4];
+        double valor = Double.parseDouble(args[5]);
+        String atividade = args[6];
+
+        PedidoCadastroCusto pedido = new PedidoCadastroCusto(data, tipo, texto, email, valor, atividade);
+
+        // ENVIA PEDIDO
+        out.writeObject(pedido);
+        out.flush();
+
+        // LÊ RESPOSTA
+        Object resposta = in.readObject();
+
+        if (resposta instanceof RespostaErro erro) {
+            printJsonErro(erro.erro);
+        } else if (resposta instanceof RespostaOk) {
+            printJsonSucessoCadastroCaderno();
+        }else {
+            printJsonErro("resposta_desconhecida_do_servidor");
+        }
+    }
+
     // ================== HELPERS JSON ==================
 
     private static void printJsonErro(String msg) {
@@ -341,13 +375,15 @@ public class Cliente {
                 String tipo = extrairCampo(json, "atividade");
                 String texto = extrairCampo(json, "descricao");
                 String custo = extrairCampo(json, "custo");
+                String aa = extrairCampo(json, "aa");
 
 
                 sb.append("{");
                 sb.append("\\\"data\\\": \\\"" + data + "\\\", ");
                 sb.append("\\\"tipo\\\": \\\"" + tipo + "\\\", ");
                 sb.append("\\\"dados\\\": \\\"" + texto + "\\\",");
-                sb.append("\\\"custo\\\": \\\"" + custo + "\\\"");
+                sb.append("\\\"custo\\\": \\\"" + custo + "\\\",");
+                sb.append("\\\"aa\\\": \\\"" + aa + "\\\"");
                 sb.append("}");
             }
 

@@ -50,7 +50,8 @@ public class ClienteTeste {
                     "12/12/2025", "imposto",
                     "Custo essencial",
                     "mariateste@karpos.com",
-                    num
+                    num,
+                    "N/A"
             ));
             out.flush();
             Object resp5 = in.readObject();

@@ -6,13 +6,15 @@ public class PedidoCadastroCusto extends Comunicado{
     public final String texto;
     public final Double valor;
     public final String usuarioEmail;
+    public final String aa;
 
-    public PedidoCadastroCusto(String data, String tipoAtividade, String texto, String usuarioEmail ,  Double valor) {
+    public PedidoCadastroCusto(String data, String tipoAtividade, String texto, String usuarioEmail ,  Double valor, String atividade) {
         this.data = data;
         this.tipoAtividade = tipoAtividade;
         this.texto = texto;
         this.usuarioEmail = usuarioEmail;
         this.valor = valor;
+        this.aa = atividade;
     }
     public String getData() {
         return data;
@@ -29,4 +31,5 @@ public class PedidoCadastroCusto extends Comunicado{
     public Double getValor() {
         return valor;
     }
+    public String getAA(){return aa;}
 }

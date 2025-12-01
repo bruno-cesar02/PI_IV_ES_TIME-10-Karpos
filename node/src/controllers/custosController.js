@@ -7,6 +7,10 @@ const path = require('path');
 exports.mostrarCustosRegistrados = (req, res) => {
     let dataFiltro = req.query.data || '';
 
+    let msg = req.session.msg || '';
+
+    req.session.msg = '';
+
     if (dataFiltro.includes('-')) {
         const [ano, mes, dia] = dataFiltro.split('-');
         dataFiltro = `${dia}/${mes}/${ano}`;
@@ -17,32 +21,9 @@ exports.mostrarCustosRegistrados = (req, res) => {
 
     // decide qual comando Java rodar
     if (dataFiltro) {
-        processoJava = spawn(
-            'java',
-            [
-                '-cp',
-                'out/production/PI_IV_ES_TIME-10-Karpos',
-                'cliente.Cliente',
-                'listacomfiltro',
-                req.session.user.email,
-                'field-costs',
-                dataFiltro
-            ],
-            { cwd: path.resolve(__dirname, '..', '..', '..') }
-        );
+        processoJava = spawn('java',['cliente.Cliente','listacomfiltro',req.session.user.email,'field-costs',dataFiltro],{ cwd: path.resolve(__dirname, '..', '..', '..') });
     } else {
-        processoJava = spawn(
-            'java',
-            [
-                '-cp',
-                'out/production/PI_IV_ES_TIME-10-Karpos',
-                'cliente.Cliente',
-                'listasemfiltro',
-                req.session.user.email,
-                'field-costs'
-            ],
-            { cwd: path.resolve(__dirname, '..', '..', '..') }
-        );
+        processoJava = spawn('java',['cliente.Cliente','listasemfiltro',req.session.user.email,'field-costs'],{ cwd: path.resolve(__dirname, '..', '..', '..') });
     }
 
     processoJava.stdout.on('data', (data) => {
@@ -74,7 +55,7 @@ exports.mostrarCustosRegistrados = (req, res) => {
             title: 'Custos Registrados',
             css: 'dashboard.css',
             cssExtra: 'caderno-campo.css',
-            msg: req.session.msg || '',
+            msg: msg || '',
             dados: req.session.user,
             dataFiltro: dataFiltro,
             custos: dadosRetornados.resultados || []
@@ -89,14 +70,19 @@ exports.mostrarCustosRegistrados = (req, res) => {
 // GET /novo-custo
 exports.mostrarNovoCusto = (req, res) => {
   // Se vierem parâmetros na query (ex: redirecionamento de /novo-registro), repassá-los para a view
-  const { dataAtividade, tipoAtividade, notas, valor } = req.query || {};
+  let { dataAtividade, tipoAtividade, notas, valor } = req.query || {};
+
+  let msg = req.session.msg || '';
+
+  req.session.msg = '';
+
 
   res.render('novo-custo', {
     title: 'Novo Custo',
     css: 'dashboard.css',
     cssExtra: 'caderno-campo.css',
     dados: req.session.user,
-    msg: req.session.msg || '',
+    msg: msg || '',
     // parâmetros opcionais para pré-preenchimento
     dataAtividade: dataAtividade || '',
     tipoAtividade: tipoAtividade || '',
@@ -111,27 +97,33 @@ exports.mostrarNovoCusto = (req, res) => {
 
   // POST /novo-custo - IMPLEMENTAÇÃO COMPLETA
   exports.salvarNovoCusto = (req, res) => {
-      const {data, descricao, valor, categoria,} = req.body;
+      let {data, descricao, valor, categoria, atividadeAssociada} = req.body;
 
       // Pega email do usuário logado
       const usuarioEmail = req.session.user?.email || '';
 
+      if (data.includes('-')) {
+        const [ano, mes, dia] = data.split('-');
+        data = `${dia}/${mes}/${ano}`;
+    }
+
       // Chama o Java via spawn
       const processoJava = spawn('java', [
-          'cliente.Cliente',       // Classe principal
-          'novoCusto',             // args[0] - ação
-          usuarioEmail,            // args[1] - email do usuário
-          data,                    // args[2] - data do custo
-          descricao,               // args[3] - descrição
-          valor,                   // args[4] - valor
-          categoria,               // args[5] - categoria
+          'cliente.Cliente',       
+          'addatividadecusto',             
+          usuarioEmail,            
+          data,                    
+          categoria,               
+          descricao,                
+          valor,
+          atividadeAssociada         
 
       ], {
           cwd: path.resolve(__dirname, '..', '..', '..'),
           timeout: 8000
       });
 
-      let dadosRetornados = '';
+      let dadosRetornados = '"';
 
       processoJava.stdout.on('data', (data) => {
           dadosRetornados += data.toString();
@@ -151,17 +143,15 @@ exports.mostrarNovoCusto = (req, res) => {
           console.log(`Processo Java finalizado com código ${code}`);
 
           try {
-              dadosRetornados = dadosRetornados.trim();
+              dadosRetornados = dadosRetornados.trim() + '"';
 
               // Parse igual ao login do seu colega
               let resposta = JSON.parse(dadosRetornados);
-              if (typeof resposta === 'string') {
                   resposta = JSON.parse(resposta);
-              }
 
               console.log('Resposta do Java:', resposta);
 
-              if (resposta.sucesso) {
+              if (resposta.cadernoPermitido == 'true') {
                   if (req.session) req.session.msg = 'Custo registrado com sucesso!';
                   res.redirect('/custos-registrados');
               } else {

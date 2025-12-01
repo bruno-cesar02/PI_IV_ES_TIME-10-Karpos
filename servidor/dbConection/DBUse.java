@@ -39,17 +39,19 @@ public class DBUse {
                 .append("tamanhoHectares",tamanhoHectares)
                 .append("userID", qtd+1);
 
-        Document filtroBusca = new Document("email", email).append("documento", cpfCnpj);
+        Document filtroEmail = new Document("email", email);
+        Document filtroCpf = new Document("documento", cpfCnpj);
 
-        Document usuarioExistente = collection.find(filtroBusca).first();
+        Document usuarioExistente = collection.find(filtroEmail).first();
+        Document CpfExistente = collection.find(filtroCpf).first();
 
-        if (usuarioExistente == null ){
+        if (usuarioExistente == null && CpfExistente == null){
             collection.insertOne(document);
             System.out.println("[DBUse] Usuário " + nome + " inserido com sucesso na coleção.");
             return;
         }
 
-        System.out.println("[DBUse] Usuário já cadastrado, não pode cadastrar dois: " + email);
+        System.out.println("[DBUse] Usuário já cadastrado, não pode cadastrar dois: " + usuarioExistente == null ? email : cpfCnpj);
     }
 
 
@@ -161,13 +163,14 @@ public class DBUse {
         return false;
 
     }
-    public static Boolean inserirCusto (String data, String categoria, String descricao, String email , double custo) {
+    public static Boolean inserirCusto (String data, String categoria, String descricao, String email , double custo, String aa) {
         MongoCollection<Document> usercollection = DBUse.makeCollection("user-data", "Karpos-BD");
         MongoCollection<Document> collection = DBUse.makeCollection("field-costs", "Karpos-BD");
         Document document = new Document("data", data)
                 .append("atividade", categoria)
                 .append("descricao", descricao)
-                .append("custo", custo);
+                .append("custo", custo)
+                .append("aa", aa);
 
         Document filtroUser = new Document("email", email);
 

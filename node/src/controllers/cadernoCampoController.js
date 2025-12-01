@@ -9,9 +9,27 @@ const path = require('path');
 //   do usuário logado, possivelmente já aplicando filtros de data/tipo.
 // - Também deverá tratar paginação ou ordenação, se o time decidir usar.
 exports.mostrarCadernoCampo = (req, res) => {
-  const dataFiltro = req.query.data || '';
 
-  const processoJava = spawn('java', ['cliente.Cliente', 'listasemfiltro', req.session.user.email, "field-metrics"], {cwd: path.resolve(__dirname, '..', '..', '..')});
+  let msg = req.session.msg || '';
+
+  req.session.msg = '';
+
+  let dataFiltro = req.query.data || '';
+
+  if (dataFiltro.includes('-')) {
+        const [ano, mes, dia] = dataFiltro.split('-');
+        dataFiltro = `${dia}/${mes}/${ano}`;
+    }
+
+
+  let processoJava;
+
+  if (dataFiltro) {
+          processoJava = spawn('java',['cliente.Cliente','listacomfiltro',req.session.user.email,'field-metrics',dataFiltro],{ cwd: path.resolve(__dirname, '..', '..', '..') });
+      } else {
+          processoJava = spawn('java', ['cliente.Cliente', 'listasemfiltro', req.session.user.email, "field-metrics"], {cwd: path.resolve(__dirname, '..', '..', '..')});
+      }
+
 
   let dadosRetornados = '';
   
@@ -43,7 +61,7 @@ exports.mostrarCadernoCampo = (req, res) => {
     title: 'Meu Caderno de Campo',
     css: 'dashboard.css',
     cssExtra: 'caderno-campo.css',
-    msg: req.session.msg || '',
+    msg: msg || '',
     dados: req.session.user,
     dataFiltro: dataFiltro,
     //active: 'historico', se optar por fazer as barras ficarem em negrito atraves do controller e nao do html
@@ -59,12 +77,15 @@ exports.mostrarCadernoCampo = (req, res) => {
 // - No futuro, pode precisar carregar listas auxiliares do backend
 //   (ex.: tipos de atividade, talhões, culturas) para preencher selects.
 exports.mostrarNovoRegistro = (req, res) => {
+  let msg = req.session.msg || '';
+
+  req.session.msg = '';
 
   res.render('novo-registro', {
     title: 'Novo Registro',
     css: 'dashboard.css',
     cssExtra: 'caderno-campo.css',
-    msg: req.session.msg || '',
+    msg: msg || '',
     dados: req.session.user
     //active: 'historico' se optar por fazer as barras ficarem em negrito atraves do controller e nao do html
     // TODO: passar dados auxiliares (tipos de atividade, etc.), se o backend fornecer
@@ -85,11 +106,23 @@ exports.mostrarNovoRegistro = (req, res) => {
 //          - a mesma tela (/novo-registro) exibindo mensagens de erro.
 // - IMPORTANTE: a forma de chamada (socket, REST, etc.) será decidida pelo time.
 exports.salvarNovoRegistro = (req, res) => {
-  const { dataAtividade, tipoAtividade, notas, valor } = req.body;
+  let { dataAtividade, tipoAtividade, notas, valor } = req.body;
 
   if (!dataAtividade || !tipoAtividade) {
     req.session.msg = 'Por favor, preencha todos os campos obrigatórios.';
     return res.redirect('/novo-registro');
+  }
+
+  let dataatv = dataAtividade;
+
+  if (dataatv.includes('/')) {
+        const [dia,mes,ano] = dataatv.split('/');
+        dataatv = `${mes}-${dia}-${ano}`;
+  }
+
+  if (dataAtividade.includes('-')) {
+        const [ano, mes, dia] = dataAtividade.split('-');
+        dataAtividade = `${dia}/${mes}/${ano}`;
   }
 
   // Converter valor para número para comparação segura
@@ -120,10 +153,10 @@ exports.salvarNovoRegistro = (req, res) => {
     }
 
     // Se houver um valor de custo, redirecionar para /novo-custo com parâmetros para pré-preencher o formulário
-    if (valorNum > 0) {
+    if (valorNum != 0) {
       req.session.msg = 'Atividade adicionada com sucesso. Agora, registre o custo associado a esta atividade.';
       const qs = new URLSearchParams({
-        dataAtividade: dataAtividade,
+        dataAtividade: dataatv,
         tipoAtividade: tipoAtividade,
         notas: notas || '',
         valor: String(valorNum)
@@ -139,32 +172,5 @@ exports.salvarNovoRegistro = (req, res) => {
       res.redirect('/novo-registro');
     }
   });
-
 };
 
-
-// GET /caderno-campo/editar/:id
-// - NÃO IMPLEMENTADO AINDA.
-// - Deverá buscar uma atividade específica pelo ID no backend e
-//   renderizar o formulário de edição preenchido com os dados atuais.
-exports.editarRegistroForm = (req, res) => {
-  // TODO: buscar atividade por ID no backend e renderizar uma tela de edição.
-};
-
-
-// POST /caderno-campo/editar/:id
-// - NÃO IMPLEMENTADO AINDA.
-// - Recebe os dados editados de uma atividade e envia para o backend atualizar.
-// - Deve tratar validação, erros e redirecionar de volta para o histórico.
-exports.atualizarRegistro = (req, res) => {
-  // TODO: implementar atualização de atividade via backend.
-};
-
-
-// POST /caderno-campo/excluir
-// - NÃO IMPLEMENTADO AINDA.
-// - Vai receber um ou mais IDs de atividades marcadas na tabela
-//   (checkboxes) e pedir ao backend para excluir esses registros.
-exports.excluirRegistros = (req, res) => {
-  // TODO: implementar exclusão em lote de atividades selecionadas.
-};

@@ -27,12 +27,17 @@
                     <div class="left-col">
                         <div class="registros-card rounded-card">
                             <div class="registros-header">
-                                <h2 class="registros-title">Últimos<br>Registros</h2>
-                                <button type="link" onclick="window.location.href='/custos-registrados'" class="nav-button">‹</button>
+                                <h2 class="registros-title">Último<br>Registro</h2>
+                                <button style="cursor:pointer" type="link" onclick="window.location.href='/custos-registrados'" class="nav-button">‹</button>
                             </div>
                             <ol class="registros-list">
+                                <li><%= atividades.data %></li>
+                                <li><%= atividades.dados %></>
+                                <li>R$ <%= atividades.custo %></li>
+                                <li><%= atividades.tipo %></li>
+                                <li><%= atividades.aa || 'N/A' %></li>
                             </ol>
-                            <button type="link" onclick="window.location.href='/custos-registrados'" class="btn-details">Detalhes</button>
+                            <button style="cursor:pointer" type="link" onclick="window.location.href='/custos-registrados'" class="btn-details">Detalhes</button>
                         </div>
                     </div>
                     <div class="right-col">
@@ -42,8 +47,8 @@
                                 <p class="metric-sub">(Custo por Hectare)</p>
                             </div>
                             <div class="metric-right">
-                                <div class="metric-value">R$ Custo total</div>
-                                <div class="metric-small">R$ Custo por hectare</div>
+                                <div class="metric-value">R$ <%= (parseFloat(receitas) + parseFloat(despesas)).toFixed(2) %></div>
+                                <div class="metric-small">R$ <%= porHectare%></div>
                             </div>
                         </div>
 
@@ -51,7 +56,7 @@
                             <div class="circle-icon green">↗</div>
                             <div class="metric-content">
                                 <h4>RECEITA</h4>
-                                <div class="metric-value">+ R$ ganhos</div>
+                                <div class="metric-value">+ R$ <%= receitas %></div>
                             </div>
                         </div>
 
@@ -59,7 +64,7 @@
                             <div class="circle-icon red">↘</div>
                             <div class="metric-content">
                                 <h4>DESPESAS</h4>
-                                <div class="metric-value">- R$ despesas</div>
+                                <div class="metric-value">- R$ <%= despesas %></div>
                             </div>
                         </div>
                     </div>

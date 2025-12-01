@@ -124,6 +124,21 @@ private void tratarCadastro(PedidoDeCadastro pc) {
             System.out.println("[Tratadora] Iniciando login para: " + pl.email);
             var cli = login.autenticar(pl.email, pl.senha);
 
+            if (cli == null){
+
+                String e = "Email ou senha inválido";
+
+                System.out.println("[Tratadora] Falha de login para: " + pl.email + " (" + e + ")");
+                try {
+                    out.writeObject(new RespostaErro(e));
+                    out.flush();
+                } catch (Exception ex) {
+                    System.err.println("[Tratadora] Falha ao enviar RespostaErro de login ao cliente:");
+                    ex.printStackTrace();
+                }
+                return;
+            }
+
             System.out.println("[Tratadora] Login bem-sucedido: " + cli.getEmail());
             out.writeObject(new ClienteLogado(cli));
             out.flush();
@@ -217,7 +232,7 @@ private void tratarCadastro(PedidoDeCadastro pc) {
     public void tratarCadastroCusto(PedidoCadastroCusto pdc){
         try{
             System.out.println("[Tratadora] Iniciando cadastro de caderno de campo para: " + pdc.getUsuarioEmail());
-            custo.addCusto(pdc.getData(), pdc.getTipoAtividade(), pdc.getTexto(), pdc.getUsuarioEmail(), pdc.getValor());
+            custo.addCusto(pdc.getData(), pdc.getTipoAtividade(), pdc.getTexto(), pdc.getUsuarioEmail(), pdc.getValor(), pdc.getAA());
 
             out.writeObject(new RespostaOk("Cadastrado arividade: " + pdc.getUsuarioEmail()));
             out.flush();

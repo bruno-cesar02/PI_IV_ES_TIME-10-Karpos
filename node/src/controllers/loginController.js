@@ -2,21 +2,42 @@ const { spawn } = require('child_process');
 const path = require('path');
 
 exports.login = (req, res) => {
+
+  let msg = req.session.msg || '';
+
+  req.session.msg = '';
+
   res.render('login', {
     css: 'login.css',
     title: 'Login',
-    msg: req.session.msg || ''
+    msg: msg || ''
   });
 }
 
 exports.loginForm = (req, res) => {
   const { email, password } = req.body;
 
-    const processoJava = spawn(
+  if(!email || !password){
+    req.session.msg = 'Por favor, preencha todos os campos.';
+    return res.redirect('/login');
+  }
+
+  if(password.length < 6){
+    req.session.msg = 'A senha deve ter pelo menos 6 caracteres.';
+    return  res.redirect('/login');
+  }
+
+  if(!email.includes('@') || !email.includes('.')){
+    req.session.msg = 'Por favor, insira um e-mail válido.';
+    return res.redirect('/login');
+  }
+
+  let processoJava;
+
+  try{
+        processoJava = spawn(
         'java',
         [
-            '-cp',
-            'out/production/PI_IV_ES_TIME-10-Karpos',
             'cliente.Cliente',
             'login',
             email,
@@ -24,6 +45,7 @@ exports.loginForm = (req, res) => {
         ],
         { cwd: path.resolve(__dirname, '..', '..', '..') }
     );
+
 
 
     let dadosRetornados = '"';
@@ -58,6 +80,10 @@ exports.loginForm = (req, res) => {
     res.redirect('/login');
   }
   });
+  } catch (error) {
+    req.session.msg = 'Usuário ou senha inválidos.';
+    return res.redirect('/login');
+  }
 
   /*
   if (dadosRetornados.loginPermitido){

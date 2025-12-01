@@ -13,7 +13,12 @@
             <section class="dashboard-panel">
                 <div class="panel-header">
                     <div class="page-title">
+                        <h2 style="text-align: center;"><%=msg%></h2>
                         <h1>Custos<br>Registrados</h1>
+                    </div>
+                    <div class="panel-actions">
+                        <button type="link" onclick="window.location.href='/novo-registro'" class="btn btn-primary">Novo Registro</button>
+                        <button type="link" onclick="window.location.href='/novo-custo'" class="btn btn-outline">Novos Custos</button>
                     </div>
                 </div>
 
@@ -56,7 +61,7 @@
                                 <td><%= custo.dados %></td>
                                 <td>R$ <%= custo.custo %></td>
                                 <td><%= custo.tipo %></td>
-                                <td><%= custo.atividadeAssociada || 'N/A' %></td>
+                                <td><%= custo.aa || 'N/A' %></td>
                             </tr>
                             <% }) %>
                         </tbody>

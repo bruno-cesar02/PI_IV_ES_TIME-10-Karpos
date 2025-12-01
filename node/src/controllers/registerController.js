@@ -1,11 +1,17 @@
 const { spawn } = require('child_process');
 const path = require('path');
+const cpfvalid = require('../middlewares/classValidaCPF');
 
 exports.register = (req, res) => {
+
+  let msg = req.session.msg || '';
+
+  req.session.msg = '';
+
   res.render('register', {
     css: 'register.css',
     title: 'Register',
-    msg: req.session.msg || ''
+    msg: msg || ''
   });
 }
 
@@ -14,6 +20,30 @@ exports.registerForm = (req, res) => {
 
     if (password !== confirmPassword) {
       req.session.msg = 'As senhas não coincidem.';
+      console.log(req.session.msg);
+      return res.redirect('/register');
+    }
+
+    if (password.length < 6) {
+      req.session.msg = 'A senha deve ter pelo menos 6 caracteres.';
+      console.log(req.session.msg);
+      return res.redirect('/register');
+    }
+
+    if(!email.includes('@') || !email.includes('.')){
+      req.session.msg = 'Por favor, insira um e-mail válido.';
+      console.log(req.session.msg);
+      return res.redirect('/register');
+    }
+
+    if(cpf.length != 11 || new cpfvalid.cpfvalid(cpf).valida() === false){
+      req.session.msg = 'Por favor, insira um CPF válido com 11 dígitos.';
+      console.log(req.session.msg);
+      return res.redirect('/register');
+    }
+
+    if(!email || !fullName || !birthDate || !phone || !cpf || !password || !confirmPassword || !hectares){
+      req.session.msg = 'Por favor, preencha todos os campos.';
       console.log(req.session.msg);
       return res.redirect('/register');
     }
