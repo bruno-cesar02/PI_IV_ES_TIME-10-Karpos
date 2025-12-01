@@ -18,6 +18,7 @@ public class TratadoraDePedidos implements Runnable {
     private final BuscaPorDataCustoService buscaDataCusto;
     private final CadastroCustoServise custo;
     private final BuscaSemFiltroService busca;
+    private final DeleteServise delete;
 
     public TratadoraDePedidos(ObjectInputStream in, ObjectOutputStream out, RepositorioClientes repo) {
         this.in = in;
@@ -62,6 +63,8 @@ public class TratadoraDePedidos implements Runnable {
                     tratarCadastroCusto(pcd);
                 }else if (msg instanceof PedidoBuscaSemFiltro pbsf){
                     tratarBuscaSemFiltro(pbsf);
+                }else if(msg instanceof PedidoDelete pd){
+                    tratarPedidoDelete(pd);
                 }
                 else {
                     System.out.println("[Tratadora] Comando não reconhecido: " + msg.getClass().getName());
@@ -144,6 +147,31 @@ private void tratarCadastro(PedidoDeCadastro pc) {
             out.flush();
         } catch (Exception e) {
             System.out.println("[Tratadora] Falha de login para: " + pl.email + " (" + e.getMessage() + ")");
+            try {
+                out.writeObject(new RespostaErro(e.getMessage()));
+                out.flush();
+            } catch (Exception ex) {
+                System.err.println("[Tratadora] Falha ao enviar RespostaErro de login ao cliente:");
+                ex.printStackTrace();
+            }
+        }
+    }
+    private void tratarPedidoDelete(PedidoDelete pd) {
+        try {
+            System.out.println("[Tratadora] Iniciando login para: " + pd.email);
+            boolean b = delete.deletear(pd.getData(), pd.getCollection(), pd.getAtividade(), pd.getEmail());
+
+            if (b) {
+                System.out.println("[Tratadora] Login bem-sucedido: " + pd.getEmail());
+                out.writeObject(new RespostaOk("Delete ok: " + pd.getEmail()));
+                out.flush();
+            }
+            System.out.println("[Tratadora]  Delete Erro: " + pd.getEmail());
+            out.writeObject(new RespostaErro("Delete Erro: " + pd.getEmail()));
+            out.flush();
+
+        } catch (Exception e) {
+            System.out.println("[Tratadora] Falha de login para: " + pd.getEmail() + " (" + e.getMessage() + ")");
             try {
                 out.writeObject(new RespostaErro(e.getMessage()));
                 out.flush();

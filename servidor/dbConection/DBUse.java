@@ -192,7 +192,7 @@ public class DBUse {
 
         return false;
     }
-    public static List<Document> buscarPorAtividade(String nomeColecao, String atividadeBusca, String userEmail) {
+    public static List<Document> buscarPorAtividade(String nomeColecao, String atividadeBusca, String userEmail, String data) {
         MongoCollection<Document> collection = DBUse.makeCollection(nomeColecao, "Karpos-BD");
         MongoCollection<Document> userCollection = DBUse.makeCollection("user-data" , "Karpos-BD");
 
@@ -251,5 +251,31 @@ public class DBUse {
         }
         System.out.println("Usuário não encontrado");
         return null;
+    }
+    public static boolean deleteItem(String data, String categoria, String atividade, String email ){
+
+        List<Document> documentosEncontrados = buscarPorAtividade(data, categoria, atividade, email);
+
+        if (documentosEncontrados.isEmpty()){
+            return false;
+        }
+        MongoCollection<Document> userCollection = DBUse.makeCollection("user-data" ,  "Karpos-BD");
+        Document filtroUser = new Document("email", email);
+        Document usuárioExiste = userCollection.find(filtroUser).first();
+
+        if (usuárioExiste == null){
+            return false;
+        }
+        MongoCollection<Document> fieldCollection = DBUse.makeCollection(categoria ,  "Karpos-BD");
+        Document filtroDocument = new Document("data", data).append("atividade", atividade);
+        Document documentoExiste = fieldCollection.find(filtroDocument).first();
+
+        if (documentoExiste == null){
+            return false;
+        }
+
+        fieldCollection.deleteOne(filtroDocument);
+        return true;
+
     }
 }
