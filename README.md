@@ -401,7 +401,8 @@ java -cp . cliente.Cliente
 > 
 > Diagrama mostrando a relação:
 > ```
-> Cliente ⇆ Servidor Java ⇆ MongoDB Atlas
+> <img width="2816" height="1536" alt="DiagramaDeArquitetura" src="https://github.com/user-attachments/assets/a0257614-d91d-4ac7-af8c-fbc1ea99b74b" />
+
 > ```
 
 ---
